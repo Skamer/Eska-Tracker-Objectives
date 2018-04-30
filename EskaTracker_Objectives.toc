@@ -1,0 +1,21 @@
+## Interface: 70300
+## Title: EskaTracker - |cffff6a00Objectives|r
+## Author: Skamer
+## Notes: EskaTracker - |cffff6a00Objectives|r
+## RequiredDeps: EskaTracker
+## Version: 1.0.0
+## X-Stage: Alpha
+
+# BFA Support
+BFA.lua
+
+# Core Files
+Interfaces\interfaces.xml
+Classes\classes.xml
+EskaTracker_Objectives.lua
+
+# Theme Files (add new properties)
+Themes\themes.xml
+
+# Module files
+Modules\modules.xml
