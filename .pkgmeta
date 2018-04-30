@@ -1,0 +1,7 @@
+package-as: EskaTracker_Objectives
+
+manual-changelog:
+  filename: Changelog.txt
+
+required-dependencies:
+  - eskatracker
