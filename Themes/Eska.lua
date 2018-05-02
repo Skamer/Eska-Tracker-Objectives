@@ -14,13 +14,15 @@ if not EskaTheme then return end
 -- ========================================================================== --
 -- Dungeon & Keystone
 EskaTheme:SetElementProperty("block.dungeon.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
-EskaTheme:SetElementProperty("block.dungeon.header", "text-size", 14)
-EskaTheme:SetElementProperty("block.dungeon.header", "text-offsetY", 17)
+EskaTheme:SetElementProperty("block.dungeon.header.text", "text-size", 14)
+--EskaTheme:SetElementProperty("block.dungeon.header", "text-offsetY", 17)
+EskaTheme:SetElementProperty("block.dungeon.header.text", "text-justify-v", "TOP")
 EskaTheme:SetElementProperty("block.dungeon.name", "text-size", 12)
 EskaTheme:SetElementProperty("block.dungeon.name", "text-font", "PT Sans Caption Bold")
 EskaTheme:SetElementProperty("block.dungeon.name", "text-offsetY", -13)
 EskaTheme:SetElementProperty("block.dungeon.name", "text-color", { r = 1, g = 0.42, b = 0})
 EskaTheme:SetElementProperty("block.dungeon.name", "text-transform", "uppercase")
+EskaTheme:SetElementProperty("block.dungeon.name", "text-justify-v", "CENTER")
 EskaTheme:SetElementProperty("block.dungeon.icon", "border-color", { r = 0, g = 0, b = 0 })
 
 EskaTheme:SetElementProperty("block.keystone.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
@@ -34,13 +36,14 @@ EskaTheme:SetElementProperty("block.keystone.level", "text-color", { r = 1, g = 
 EskaTheme:SetElementProperty("block.scenario.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
 
 -- Scenario
-EskaTheme:SetElementProperty("block.scenario.header", "text-size", 14)
-EskaTheme:SetElementProperty("block.scenario.header", "text-offsetY", 17)
+EskaTheme:SetElementProperty("block.scenario.header.text", "text-size", 14)
+EskaTheme:SetElementProperty("block.scenario.header.text", "text-justify-v", "TOP")
 EskaTheme:SetElementProperty("block.scenario.name", "text-size", 12)
 EskaTheme:SetElementProperty("block.scenario.name", "text-font", "PT Sans Caption Bold")
 EskaTheme:SetElementProperty("block.scenario.name", "text-offsetY", -13)
 EskaTheme:SetElementProperty("block.scenario.name", "text-color", { r = 1, g = 0.42, b = 0})
 EskaTheme:SetElementProperty("block.scenario.name", "text-transform", "uppercase")
+EskaTheme:SetElementProperty("block.scenario.name", "text-justify-v", "CENTER")
 
    -- Stage frame
    EskaTheme:SetElementProperty("block.scenario.stage", "background-color", { r = 0, g = 0, b = 0, a = 0.3})

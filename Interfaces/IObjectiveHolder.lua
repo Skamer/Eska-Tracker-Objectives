@@ -22,7 +22,6 @@ interface "IObjectiveHolder" (function(_ENV)
         local objective = self:GetObjective(new + 1)
         if objective then
           self.objectives:Remove(objective)
-          objective.OnHeightChanged = nil
           objective:Recycle()
         end
       end
@@ -39,7 +38,12 @@ interface "IObjectiveHolder" (function(_ENV)
   ------------------------------------------------------------------------------
   function AddObjective(self, objective)
     self.objectives:Insert(objective)
-    objective:SetParent(self)
+
+    if Class.IsSubType(getmetatable(self), Block) then
+      objective:SetParent(self.frame.content)
+    else
+      objective:SetParent(self)
+    end
 
     objective.OnHeightChanged = function(obj, new, old)
       self.height = self.height + (new - old)
@@ -52,7 +56,7 @@ interface "IObjectiveHolder" (function(_ENV)
 
   function ShowDotted(self)
     if not self.dotted then
-      self.dotted = _ObjectManager:Get(DottedObjective)
+      self.dotted = ObjectManager:Get(DottedObjective)
     end
 
     if self.numObjectives > 0 then
@@ -79,7 +83,7 @@ interface "IObjectiveHolder" (function(_ENV)
 
     self.dotted:Hide()
     self.height = self.height - self.dotted.height
-    self.dotted.isReusable = true
+    self.dotted:Recycle()
     self.dotted = nil
   end
 

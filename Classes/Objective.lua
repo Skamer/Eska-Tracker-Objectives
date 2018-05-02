@@ -77,6 +77,11 @@ class "Objective" (function(_ENV)
       self:Skin()
     end
   end
+
+  local function SetText(self, new, old)
+    Theme:SkinText(self.frame.text, Theme.SkinFlags.TEXT_TRANSFORM, new, self:GetCurrentState())
+    self:CalculateHeight()
+  end
   ------------------------------------------------------------------------------
   --                                   Methods                                --
   ------------------------------------------------------------------------------
@@ -164,7 +169,7 @@ class "Objective" (function(_ENV)
   end
 
   __Arguments__ { Number, Number }
-  function SetMinMaxValues(self, min, max)
+  function SetMinMaxProgress(self, min, max)
     if self.frame.fbar then
       self.frame.fbar:SetMinMaxValues(min, max)
     end
@@ -199,6 +204,7 @@ class "Objective" (function(_ENV)
 
     if Theme:NeedSkin(self.frame.text, target) then
       Theme:SkinText(self.frame.text, flags, self.text, state)
+      self:CalculateHeight()
     end
   end
 
@@ -228,9 +234,13 @@ class "Objective" (function(_ENV)
 
   end
 
-  -- NOTE Investigate this code ! 
+  -- NOTE Investigate this code !
   function OnParentWidthChanged(self, width)
     self:CalculateHeight()
+  end
+
+  function UpdateTextHeight(self)
+      self:CalculateHeight()
   end
 
 
@@ -244,7 +254,7 @@ class "Objective" (function(_ENV)
     Theme:RegisterFrame(prefix..".square", self.frame.square)
 
     Theme:SkinFrame(self.frame, nil, state)
-    Theme:SkinText(self.frame.text, Theme.DefaultSkinFlags, self.text, state)
+    Theme:SkinText(self.frame.text, nil, self.text, state)
     Theme:SkinFrame(self.frame.square, nil, state)
   end
 
@@ -255,17 +265,27 @@ class "Objective" (function(_ENV)
     self:HideProgress()
     self:HideTimer()
 
+    -- Remove event handlers
+    self.OnHeightChanged    = nil
+
     self.text = nil
     self.type = nil
     self.isCompleted = nil
   end
+
+  __Static__() function UpdateSize()
+    for obj in pairs(_ObjectiveCache) do
+      obj:CalculateHeight()
+    end
+  end
   ------------------------------------------------------------------------------
   --                            Properties                                    --
   ------------------------------------------------------------------------------
-  property "text" { TYPE = String, DEFAULT = "", HANDLER = UpdateProps }
+  property "text" { TYPE = String, DEFAULT = "", HANDLER = SetText }
   property "type" { TYPE = String, DEFAULT = "" }
   property "isCompleted" { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
   property "failed" { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
+
   __Static__() property "_prefix" { DEFAULT = "objective" }
   ------------------------------------------------------------------------------
   --                            Constructors                                  --
@@ -292,6 +312,7 @@ class "Objective" (function(_ENV)
     text:SetPoint("RIGHT")
     text:SetPoint("TOP", 0, -4)
     text:SetJustifyH("LEFT")
+    text:SetText("LOLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
     text:SetWordWrap(true)
     text:SetNonSpaceWrap(false)
     self.frame.text = text
@@ -307,8 +328,9 @@ class "Objective" (function(_ENV)
 
 end)
 
+__Recyclable__()
 class "DottedObjective" (function(_ENV)
-  inherit "Frame" extend "IReusable"
+  inherit "Frame"
 
   function DottedObjective(self)
     super(self)

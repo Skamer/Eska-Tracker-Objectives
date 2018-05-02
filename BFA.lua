@@ -22,5 +22,26 @@ class "BFASupport" (function(_ENV)
       QuestMapFrame_ShowQuestDetails(questID)
     end
   end
-
+  ------------------------------------------------------------------------------
+  --                             Instance                                     --
+  ------------------------------------------------------------------------------
+  __Arguments__ { ClassType }
+  __Static__() function GetCurrentInstance(self)
+    if self.isBFA then
+      return EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player"))
+    else
+      return EJ_GetCurrentInstance()
+    end
+  end
+  ------------------------------------------------------------------------------
+  --                             Scenario                                     --
+  ------------------------------------------------------------------------------$
+  __Arguments__ { ClassType }
+  __Static__() function GetScenarioWeightedProgress(self)
+    if self.isBFA then
+      return select(10, C_Scenario.GetStepInfo())
+    else
+      return select(9, C_Scenario.GetStepInfo())
+    end
+  end
 end)

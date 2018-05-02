@@ -83,22 +83,22 @@ TransparenceTheme:SetElementProperty("objective.*", "text-transform", "none")
 TransparenceTheme:SetElementProperty("objective.*", "text-location", "LEFT")
 TransparenceTheme:SetElementProperty("objective.*", "text-offsetX", 5)
   -- completed color
-  TransparenceTheme:SetElementProperty("objective.frame[completed]", "text-color", { r = 0, g = 1, b = 0})
+  TransparenceTheme:SetElementProperty("objective.text[completed]", "text-color", { r = 0, g = 1, b = 0})
   TransparenceTheme:SetElementProperty("objective.square[completed]", "background-color", { r = 0, g = 1, b = 0})
   -- in progress color
-  TransparenceTheme:SetElementProperty("objective.frame[progress]", "text-color", { r = 148/255, g = 148/255, b = 148/255 })
+  TransparenceTheme:SetElementProperty("objective.text[progress]", "text-color", { r = 148/255, g = 148/255, b = 148/255 })
   TransparenceTheme:SetElementProperty("objective.square[progress]", "background-color", { r = 148/255, g = 148/255, b = 148/255 })
   -- failed color
-  TransparenceTheme:SetElementProperty("objective.frame[failed]", "text-color", { r = 1, g = 0, b = 0 })
+  TransparenceTheme:SetElementProperty("objective.text[failed]", "text-color", { r = 1, g = 0, b = 0 })
   TransparenceTheme:SetElementProperty("objective.square[failed]", "background-color", { r = 1, g = 0, b = 0 })
 -- ========================================================================== --
 -- == Quest header properties
 -- ========================================================================== --
-TransparenceTheme:SetElementProperty("questHeader.name", "text-size", 12)
-TransparenceTheme:SetElementProperty("questHeader.name", "text-font", "PT Sans Narrow Bold")
-TransparenceTheme:SetElementProperty("questHeader.name", "text-color", { r = 1, g = 0.38, b = 0 })
-TransparenceTheme:SetElementProperty("questHeader.name", "text-transform", "uppercase")
-TransparenceTheme:SetElementProperty("questHeader.name", "text-offsetX", 10)
+TransparenceTheme:SetElementProperty("quest-header.name", "text-size", 12)
+TransparenceTheme:SetElementProperty("quest-header.name", "text-font", "PT Sans Narrow Bold")
+TransparenceTheme:SetElementProperty("quest-header.name", "text-color", { r = 1, g = 0.38, b = 0 })
+TransparenceTheme:SetElementProperty("quest-header.name", "text-transform", "uppercase")
+TransparenceTheme:SetElementProperty("quest-header.name", "text-offsetX", 10)
 -- ========================================================================== --
 -- == Achievement properties
 -- ========================================================================== --

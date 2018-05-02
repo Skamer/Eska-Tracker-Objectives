@@ -25,7 +25,7 @@ class "Quest" (function(_ENV)
   ------------------------------------------------------------------------------
   local function UpdateProps(self, new, old, prop)
     if prop == "name" then
-      self:Skin(nil, "quest.name")
+      self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, "quest.name")
     elseif prop == "level" then
       self:Skin(nil, "quest.level")
     end
@@ -68,7 +68,7 @@ class "Quest" (function(_ENV)
   function OnLayout(self, layout)
       local previousFrame
       for index, obj in self.objectives:GetIterator() do
-        obj:Show()
+        obj:Hide()
         obj:ClearAllPoints()
         if index == 1 then
           obj:SetPoint("TOP", 0, -21)
@@ -78,6 +78,7 @@ class "Quest" (function(_ENV)
           obj:SetPoint("TOPLEFT", previousFrame, "BOTTOMLEFT")
           obj:SetPoint("RIGHT")
         end
+        obj:Show()
         previousFrame = obj.frame
       end
 
@@ -102,7 +103,7 @@ class "Quest" (function(_ENV)
     self:SetParent()
     self:Hide()
 
-    -- Rmove event handlers
+    -- Remove event handlers
     self.OnDistanceChanged  = nil
     self.IsOnMapChanged     = nil
     self.IsCompletedChanged = nil

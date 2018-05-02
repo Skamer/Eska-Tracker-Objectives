@@ -5,7 +5,7 @@
 --============================================================================--
 Scorpio              "EskaTracker.Objectives.Quests"                          ""
 --============================================================================--
-import                             "EKT"
+namespace                             "EKT"
 --============================================================================--
 GetNumQuestLogEntries      = GetNumQuestLogEntries
 GetQuestLogTitle           = GetQuestLogTitle
@@ -26,13 +26,17 @@ QUESTS_CACHE        = {}
 
 function OnLoad(self)
 
-
+  -- Register the options
+  Options:Register("sort-quests-by-distance", true, "quests/sortingByDistance")
+  Options:Register("show-only-quests-in-zone", false, "quests/showOnlyQuestInZone")
+  Options:Register("quest-popup-location", "TOP")
 end
 
 __Async__()
 function OnEnable(self)
   if not _QuestBlock then
-    _QuestBlock = block "eska-quests"
+    _QuestBlock = block "quests"
+    Wait("QUEST_LOG_UPDATE")
   end
 
   self:LoadQuests()
@@ -139,17 +143,38 @@ function LoadQuests(self)
   end
 end
 
+
 function UpdateQuest(self, questID)
   local questLogIndex = GetQuestLogIndexByID(questID)
   local questWatchIndex = GetQuestWatchIndex(questLogIndex)
 
+  if not questWatchIndex then
+    Trace("questWatchIndex is nil")
+    return
+  end
+
   local qID, title, questLogIndex, numObjectives, requiredMoney,
   isComplete, startEvent, isAutoComplete, failureTime, timeElapsed,
   questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI = GetQuestWatchInfo(questWatchIndex)
-
   -- #######################################################################
   -- Is the player wants the quests are filered by zone ?
-  --- --> Make stuffs here
+  if Options:Get("show-only-quests-in-zone") then
+
+    -- @NOTE This seems that GetQuestWorldMapAreaID() uses SetMapToCurrentZone so we
+    -- need to wait the WorldMapFrame is hidden to continue
+    if WorldMapFrame:IsShown() then
+      return
+    end
+
+    local mapID = GetQuestWorldMapAreaID(questID)
+    local currentMapID = GetCurrentMapAreaID()
+    local isLocal = (((mapID ~= 0) and mapID == currentMapID) or (mapID == 0 and isOnMap))
+
+    if not isLocal then
+      _QuestBlock:RemoveQuest(questID)
+      return
+    end
+  end
   -- #######################################################################
 
   local quest = _QuestBlock:GetQuest(questID)
@@ -159,14 +184,14 @@ function UpdateQuest(self, questID)
     isNew = true
   end
 
-  quest.id          = questID
-  quest.name        = title
-  quest.header      = _M:GetQuestHeader(questID)
-  quest.level       = select(2, GetQuestLogTitle(questLogIndex))
-  quest.isOnMap     = isOnMap
-  quest.isTask      = isTask
-  quest.isBounty    = isBounty
-  quest.isCompleted = isComplete
+  quest.id              = questID
+  quest.name            = title
+  quest.header          = _M:GetQuestHeader(questID)
+  quest.level           = select(2, GetQuestLogTitle(questLogIndex))
+  quest.isOnMap         = isOnMap
+  quest.isTask          = isTask
+  quest.isBounty        = isBounty
+  quest.isCompleted     = isComplete
 
 
   -- Update the objective
@@ -198,10 +223,10 @@ function UpdateQuest(self, questID)
     objective.isCompleted = false
   end
 
-   if isNew then
-     _QuestBlock:AddQuest(quest)
-     quest.IsCompletedChanged = function() QuestSuperTracking_OnQuestCompleted() end
-   end
+  if isNew then
+    _QuestBlock:AddQuest(quest)
+    quest.IsCompletedChanged = function() QuestSuperTracking_OnQuestCompleted() end
+  end
 end
 
 

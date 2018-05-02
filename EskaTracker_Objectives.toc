@@ -9,13 +9,14 @@
 # BFA Support
 BFA.lua
 
+# Theme Files (add new properties)
+Themes\themes.xml
+
 # Core Files
 Interfaces\interfaces.xml
 Classes\classes.xml
 EskaTracker_Objectives.lua
 
-# Theme Files (add new properties)
-Themes\themes.xml
 
 # Module files
 Modules\modules.xml

@@ -19,7 +19,7 @@ class "QuestHeader" (function(_ENV)
   --                                Handlers                                  --
   ------------------------------------------------------------------------------
   local function SetName(self, new)
-    self:Skin(nil, self.frame.name.elementID)
+    self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, self.frame.name.elementID)
   end
   ------------------------------------------------------------------------------
   --                             Methods                                      --

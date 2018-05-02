@@ -5,4 +5,7 @@
   <Script file="Quest.lua"/>
   <Script file="QuestHeader.lua"/>
   <Script file="QuestBlock.lua"/>
+  <Script file="DungeonBlock.lua"/>
+  <Script file="ScenarioBlock.lua"/>
+  <Script file="Achievement.lua"/>
 </Ui>

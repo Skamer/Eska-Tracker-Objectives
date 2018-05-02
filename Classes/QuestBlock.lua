@@ -9,8 +9,8 @@ namespace "EKT"
 --============================================================================--
 QUEST_CATEGORIES_ENABLED_OPTION = "quest-categories-enabled"
 --============================================================================--
+__Block__  "quests-basic" "quests"
 class "QuestBlock" (function(_ENV)
-  inherit "Block"
   ------------------------------------------------------------------------------
   --                                   Methods                                --
   ------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ class "QuestBlock" (function(_ENV)
     local header = ObjectManager:Get(QuestHeader)
     header.name       = name
     header._sortIndex = nil
-    header:SetParent(self)
+    header:SetParent(self.frame.content)
 
     header.OnHeightChanged = function(_, new, old)
       self.height = self.height + (new - old)
@@ -149,8 +149,9 @@ class "QuestBlock" (function(_ENV)
         header:ClearAllPoints()
 
         if index == 1 then
-          header:SetPoint("TOPLEFT", 0, -35)
-          header:SetPoint("TOPRIGHT", 0, -35)
+          header:SetPoint("TOP")
+          header:SetPoint("LEFT")
+          header:SetPoint("RIGHT")
         else
           header:SetPoint("TOPLEFT", previousFrame, "BOTTOMLEFT", 0, -2)
           header:SetPoint("RIGHT", previousFrame, "BOTTOMRIGHT")
@@ -253,15 +254,9 @@ class "QuestBlock" (function(_ENV)
         height = height + quest.height + offset
       end
     end
+
+    self.height = height
   end
-
-  ------------------------------------------------------------------------------
-  --                            Properties                                    --
-  ------------------------------------------------------------------------------
-  __Static__() property "_prefix" { DEFAULT = "block.quests" }
-
-  property "category" { TYPE = String, DEFAULT = "eska-quests"}
-  property "id" { TYPE = String, DEFAULT = "eska-quests-basic"}
   ------------------------------------------------------------------------------
   --                            Constructors                                  --
   ------------------------------------------------------------------------------

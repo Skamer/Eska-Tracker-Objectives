@@ -14,7 +14,10 @@ function OnEnable(self)
 end
 
 
-Blocks:RegisterCategory(BlockCategory("eska-quests", "|cff0094FFEska|r Quests", 50, "eska-quests-basic"))
+Blocks:RegisterCategory(BlockCategory("quests", "Quests", 50, "quests-basic"))
+Blocks:RegisterCategory(BlockCategory("dungeon", "Dungeon", 10, "dungeon-basic"))
+Blocks:RegisterCategory(BlockCategory("scenario", "Scenario", 5, "scenario-basic"))
+Blocks:RegisterCategory(BlockCategory("achievements", "Achievements", 10, "achievements-basic"))
 --[[
 Blocks:RegisterCategory(BlockCategory("quests", "Quests", 50, "eska-quests"))
 Blocks:RegisterCategory(BlockCategory("bonus-objectives", "Bonus objectives", 12, "eska-bonus-objectives"))
