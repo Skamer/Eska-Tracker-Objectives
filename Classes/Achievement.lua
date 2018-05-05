@@ -23,6 +23,7 @@ class "Achievement" (function(_ENV)
       self.frame.ftex.texture:SetTexture(new)
     elseif prop == "desc" then
       Theme:SkinText(self.frame.description, Theme.SkinFlags.TEXT_TRANSFORM, new, state)
+      self:CalculateHeight()
     elseif prop == "showDesc" then
       if new then
         self:ShowDescription()
@@ -73,7 +74,7 @@ class "Achievement" (function(_ENV)
       if index == 1 then
         if self.showDesc then
           obj:SetPoint("TOP", self.frame.description, "BOTTOM")
-          obj:SetPoint("LEFT", self.frame.description, "LEFT")
+          obj:SetPoint("LEFT")
           obj:SetPoint("RIGHT")
         else
           obj:SetPoint("TOP", self.frame.header, "BOTTOM")
@@ -132,6 +133,7 @@ class "Achievement" (function(_ENV)
 
     if Theme:NeedSkin(self.frame.description, target) then
       Theme:SkinText(self.frame.description, flags, self.desc, state)
+      self:CalculateHeight()
     end
   end
 
@@ -142,6 +144,10 @@ class "Achievement" (function(_ENV)
 
   function OnParentWidthChanged(self, width)
     self:CalculateHeight()
+  end
+
+  function UpdateTextHeight(self)
+      self:CalculateHeight()
   end
 
   function Init(self)

@@ -20,3 +20,6 @@ EskaTracker_Objectives.lua
 
 # Module files
 Modules\modules.xml
+
+# Options files
+Options\Options.lua

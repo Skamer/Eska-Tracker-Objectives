@@ -4,4 +4,7 @@
   <Script file="Dungeon.lua"/>
   <Script file="Scenario.lua"/>
   <Script file="Achievements.lua"/>
+  <Script file="WorldQuests.lua"/>
+  <Script file="Keystone.lua"/>
+  <Script file="BonusObjectives.lua"/>
 </Ui>

@@ -186,6 +186,7 @@ class "QuestHeader" (function(_ENV)
     local name = self.frame:CreateFontString(nil, "OVERLAY")
     name:SetHeight(29)
     name:SetPoint("TOPLEFT", 10, 0)
+    name:SetPoint("RIGHT")
     self.frame.name = name
 
     self.height     = 29

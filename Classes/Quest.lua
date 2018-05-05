@@ -7,6 +7,9 @@ Scorpio           "EskaTracker.Classes.Quest"                                 ""
 --============================================================================--
 namespace "EKT"
 --============================================================================--
+SHOW_QUEST_LEVEL_OPTION                 = "show-quest-level"
+COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION  = "color-quest-level-by-difficulty"
+--============================================================================--
 __Recyclable__()
 class "Quest" (function(_ENV)
   inherit "Frame" extend "IObjectiveHolder"
@@ -25,9 +28,9 @@ class "Quest" (function(_ENV)
   ------------------------------------------------------------------------------
   local function UpdateProps(self, new, old, prop)
     if prop == "name" then
-      self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, "quest.name")
+      self:ForceSkin(Theme.SkinFlags.TEXT_TRANSFORM, Theme:GetElementID(self.frame.name))
     elseif prop == "level" then
-      self:Skin(nil, "quest.level")
+      self:ForceSkin(Theme.SkinFlags.TEXT_COLOR, Theme:GetElementID(self.frame.level))
     end
   end
   ------------------------------------------------------------------------------
@@ -61,7 +64,13 @@ class "Quest" (function(_ENV)
     end
 
     if Theme:NeedSkin(self.frame.level, target) then
-      Theme:SkinText(self.frame.level, flags, self.level, state)
+      if Options:Get(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION) then
+        local color = GetQuestDifficultyColor(self.level)
+        self.frame.level:SetTextColor(color.r, color.g, color.b)
+        Theme:SkinText(self.frame.level, API:RemoveFlag(flags, Theme.SkinFlags.TEXT_COLOR), self.level, state)
+      else
+        Theme:SkinText(self.frame.level, flags, self.level, state)
+      end
     end
   end
 
@@ -125,6 +134,29 @@ class "Quest" (function(_ENV)
   end
 
 
+  __Arguments__ { String }
+  function IsRegisteredOption(self, option)
+    if option == SHOW_QUEST_LEVEL_OPTION or option == COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION then
+      return true
+    end
+
+    return super.IsRegisteredOption(self, option)
+  end
+
+  __Arguments__ { String, Variable.Optional(), Variable.Optional() }
+  function OnOption(self, option, new, old)
+    if option == SHOW_QUEST_LEVEL_OPTION then
+      if new then
+        self:ShowLevel()
+      else
+        self:HideLevel()
+      end
+    elseif option == COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION then
+        self:ForceSkin(Theme.SkinFlags.TEXT_COLOR, Theme:GetElementID(self.frame.level))
+    end
+  end
+
+
   function Init(self)
     local prefix = self:GetClassPrefix()
     local state  = self:GetCurrentState()
@@ -139,7 +171,11 @@ class "Quest" (function(_ENV)
     Theme:SkinFrame(self.frame, nil, state)
     Theme:SkinFrame(self.frame.header, nil, state)
     Theme:SkinText(self.frame.name, nil, self.name, state)
-    Theme:SkinText(self.frame.level, nil, self.level, state)
+    Theme:SkinText(self.frame.level, API:RemoveFlag(Theme.DefaultSkinFlags, Theme.SkinFlags.TEXT_COLOR), self.level, state)
+
+    -- Load options
+    self:LoadOption(SHOW_QUEST_LEVEL_OPTION)
+    self:LoadOption(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION)
   end
   ------------------------------------------------------------------------------
   --                            Properties                                    --
@@ -243,7 +279,10 @@ Actions:Add(NewAction)
 --------------------------------------------------------------------------------
 function OnLoad(self)
   -- Register the class in the object manager
-  ObjectManager:Register(Quest)
+  --ObjectManager:Register(Quest)
+
+  Options:Register(SHOW_QUEST_LEVEL_OPTION, true)
+  Options:Register(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION, true)
 end
 
 --------------------------------------------------------------------------------

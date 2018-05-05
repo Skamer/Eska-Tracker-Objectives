@@ -131,6 +131,47 @@ class "QuestBlock" (function(_ENV)
     self.headers[name] = nil
   end
 
+  function EnableCategories(self)
+    for index, quest in self.quests:GetIterator() do
+      local header = self:GetHeader(quest.header)
+
+      -- Remove event register by the block
+      quest.OnHeightChanged   = nil
+      quest.OnDistanceChanged = nil
+
+      if not header then
+        header = self:NewHeader(quest.header)
+      end
+
+      -- The quest header handles everything (anchor, register event, ...)
+      header:AddQuest(quest)
+    end
+
+    -- Request a layout
+    self:Layout()
+  end
+
+  function DisableCategories(self)
+    for index, quest in self.quests:GetIterator() do
+      self:RemoveQuestFromHeader(quest)
+
+      -- Don't forget to change the parent
+      quest:SetParent(self.frame.content)
+
+      -- Register events
+      quest.OnHeightChanged = function(_, new, old)
+        self.height = self.height + (new - old)
+      end
+      quest.OnDistanceChanged = function() self:Layout() end
+    end
+
+    -- Request a draw for displaying changes
+    self:Layout()
+  end
+
+
+
+
   function OnLayout(self)
     local enableCategories = Options:Get("quest-categories-enabled")
     local previousFrame
@@ -240,7 +281,7 @@ class "QuestBlock" (function(_ENV)
   end--]]
 
   function CalculateHeight(self)
-    local enableCategories = Options:Get("quest-categories-enabled")
+    local enableCategories = Options:Get(QUEST_CATEGORIES_ENABLED_OPTION)
     local height = self.baseHeight
 
     if enableCategories then
@@ -257,6 +298,26 @@ class "QuestBlock" (function(_ENV)
 
     self.height = height
   end
+
+  __Arguments__ { String }
+  function IsRegisteredOption(self, option)
+    if option == QUEST_CATEGORIES_ENABLED_OPTION then
+      return true
+    end
+
+    return super.IsRegisteredOption(self, option)
+  end
+
+    __Arguments__ { String, Variable.Optional(), Variable.Optional() }
+    function OnOption(self, option, new, old)
+      if option == QUEST_CATEGORIES_ENABLED_OPTION then
+        if new then
+          self:EnableCategories()
+        else
+          self:DisableCategories()
+        end
+      end
+    end
   ------------------------------------------------------------------------------
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
