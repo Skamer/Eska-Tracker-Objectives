@@ -15,19 +15,17 @@ if not EskaTheme then return end
 -- Dungeon & Keystone
 EskaTheme:SetElementProperty("block.dungeon.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
 EskaTheme:SetElementProperty("block.dungeon.header.text", "text-size", 14)
---EskaTheme:SetElementProperty("block.dungeon.header", "text-offsetY", 17)
 EskaTheme:SetElementProperty("block.dungeon.header.text", "text-justify-v", "TOP")
 EskaTheme:SetElementProperty("block.dungeon.name", "text-size", 12)
 EskaTheme:SetElementProperty("block.dungeon.name", "text-font", "PT Sans Caption Bold")
-EskaTheme:SetElementProperty("block.dungeon.name", "text-offsetY", -13)
 EskaTheme:SetElementProperty("block.dungeon.name", "text-color", { r = 1, g = 0.42, b = 0})
 EskaTheme:SetElementProperty("block.dungeon.name", "text-transform", "uppercase")
-EskaTheme:SetElementProperty("block.dungeon.name", "text-justify-v", "CENTER")
+EskaTheme:SetElementProperty("block.dungeon.name", "text-justify-h", "CENTER")
 EskaTheme:SetElementProperty("block.dungeon.icon", "border-color", { r = 0, g = 0, b = 0 })
 
 EskaTheme:SetElementProperty("block.keystone.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
-EskaTheme:SetElementProperty("block.keystone.header", "text-size", 14)
-EskaTheme:SetElementProperty("block.keystone.header", "text-offsetY", 17)
+EskaTheme:SetElementProperty("block.keystone.header.text", "text-size", 14)
+EskaTheme:SetElementProperty("block.keystone.header.text", "text-justify-v", "TOP")
 EskaTheme:SetElementProperty("block.keystone.level", "text-font", "PT Sans Narrow Bold")
 EskaTheme:SetElementProperty("block.keystone.level", "text-size", 14)
 EskaTheme:SetElementProperty("block.keystone.level", "text-color", { r = 1, g = 215/255, b = 0 })
@@ -43,7 +41,7 @@ EskaTheme:SetElementProperty("block.scenario.name", "text-font", "PT Sans Captio
 EskaTheme:SetElementProperty("block.scenario.name", "text-offsetY", -13)
 EskaTheme:SetElementProperty("block.scenario.name", "text-color", { r = 1, g = 0.42, b = 0})
 EskaTheme:SetElementProperty("block.scenario.name", "text-transform", "uppercase")
-EskaTheme:SetElementProperty("block.scenario.name", "text-justify-v", "CENTER")
+EskaTheme:SetElementProperty("block.scenario.name", "text-justify-h", "CENTER")
 
    -- Stage frame
    EskaTheme:SetElementProperty("block.scenario.stage", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
@@ -65,21 +63,22 @@ EskaTheme:SetElementProperty("quest.*", "text-color", { r = 1.0, g = 191/255, b 
 EskaTheme:SetElementProperty("quest.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
 EskaTheme:SetElementProperty("quest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
 EskaTheme:SetElementProperty("quest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
+EskaTheme:SetElementProperty("quest.name", "text-justify-h", "CENTER")
 -- ========================================================================== --
 -- == World Quest properties
 -- ========================================================================== --
-EskaTheme:SetElementProperty("worldQuest.frame[tracked]", "background-color", { r = 0.22, g = 0, b = 0, a = 0.58})
+EskaTheme:SetElementProperty("world-quest.frame[tracked]", "background-color", { r = 0.22, g = 0, b = 0, a = 0.58})
 
 -- ========================================================================== --
 -- == Bonus Quest properties
 -- ========================================================================== --
-EskaTheme:SetElementProperty("bonusQuest.*", "text-font", "DejaVuSansCondensed Bold")
-EskaTheme:SetElementProperty("bonusQuest.*", "text-size", 10)
-EskaTheme:SetElementProperty("bonusQuest.*", "text-transform", "none")
-EskaTheme:SetElementProperty("bonusQuest.*", "text-color", { r = 1.0, g = 106/255, b = 0})
-EskaTheme:SetElementProperty("bonusQuest.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
-EskaTheme:SetElementProperty("bonusQuest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
-EskaTheme:SetElementProperty("bonusQuest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
+EskaTheme:SetElementProperty("bonus-quest.*", "text-font", "DejaVuSansCondensed Bold")
+EskaTheme:SetElementProperty("bonus-quest.*", "text-size", 10)
+EskaTheme:SetElementProperty("bonus-quest.*", "text-transform", "none")
+EskaTheme:SetElementProperty("bonus-quest.*", "text-color", { r = 1.0, g = 106/255, b = 0})
+EskaTheme:SetElementProperty("bonus-quest.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
+EskaTheme:SetElementProperty("bonus-quest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
+EskaTheme:SetElementProperty("bonus-quest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
 -- ========================================================================== --
 -- == Objective properties
 -- ========================================================================== --

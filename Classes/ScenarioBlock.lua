@@ -15,11 +15,11 @@ class "ScenarioBlock" (function(_ENV)
   ------------------------------------------------------------------------------
   local function UpdateProps(self, new, old, prop)
     if prop == "name" then
-      self:Skin(nil, self.frame.name.elementID)
+      self:ForceSkin(nil, self.frame.name.elementID)
     elseif prop == "currentStage" or prop == "numStages" then
-      self:Skin(nil, self.frame.stageCounter.elementID)
+      self:ForceSkin(nil, self.frame.stageCounter.elementID)
     elseif prop == "stageName" then
-      self:Skin(nil, self.frame.stageName.elementID)
+      self:ForceSkin(nil, self.frame.stageName.elementID)
     end
   end
   ------------------------------------------------------------------------------

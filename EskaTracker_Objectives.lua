@@ -13,7 +13,7 @@ Blocks:RegisterCategory(BlockCategory("scenario", "Scenario", 5, "scenario-basic
 Blocks:RegisterCategory(BlockCategory("achievements", "Achievements", 10, "achievements-basic"))
 Blocks:RegisterCategory(BlockCategory("world-quests", "World Quests", 15, "world-quests-basic"))
 Blocks:RegisterCategory(BlockCategory("bonus-objectives", "Bonus Objectives", 12, "bonus-objectives-basic"))
---Blocks:RegisterCategory(BlockCategory("keystone", "Keystone", 5, "eska-keystone"))
+Blocks:RegisterCategory(BlockCategory("keystone", "Keystone", 5, "keystone-basic"))
 
 
 -- @NOTE Transform the two hooks to event for the World quest module. Remove it when the __EnableOnHook_ is implememented.

@@ -15,24 +15,25 @@ if not TransparenceTheme then return end
 -- Dungeon
 TransparenceTheme:SetElementProperty("block.dungeon.frame", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.17})
 TransparenceTheme:SetElementProperty("block.dungeon.header", "background-color", { r = 0, g = 0, b = 0, a = 0.5})
-TransparenceTheme:SetElementProperty("block.dungeon.header", "text-size", 14)
-TransparenceTheme:SetElementProperty("block.dungeon.header", "text-offsetY", 17)
+TransparenceTheme:SetElementProperty("block.dungeon.header.text", "text-size", 14)
+TransparenceTheme:SetElementProperty("block.dungeon.header.text", "text-justify-v", "TOP")
 TransparenceTheme:SetElementProperty("block.dungeon.name", "text-size", 12)
 TransparenceTheme:SetElementProperty("block.dungeon.name", "text-font", "PT Sans Caption Bold")
-TransparenceTheme:SetElementProperty("block.dungeon.name", "text-offsetY", -13)
 TransparenceTheme:SetElementProperty("block.dungeon.name", "text-color", { r = 1, g = 0.42, b = 0})
 TransparenceTheme:SetElementProperty("block.dungeon.name", "text-transform", "uppercase")
+TransparenceTheme:SetElementProperty("block.dungeon.name", "text-justify-h", "CENTER")
 -- Keystone
 TransparenceTheme:SetElementProperty("block.keystone.frame", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.17})
 TransparenceTheme:SetElementProperty("block.keystone.header", "background-color", { r = 0, g = 0, b = 0, a = 0.5})
-TransparenceTheme:SetElementProperty("block.keystone.header", "text-size", 14)
-TransparenceTheme:SetElementProperty("block.keystone.header", "text-offsetY", 17)
+TransparenceTheme:SetElementProperty("block.keystone.header.text", "text-size", 14)
+TransparenceTheme:SetElementProperty("block.keystone.header.text", "text-justify-v", "TOP")
 TransparenceTheme:SetElementProperty("block.keystone.level", "text-font", "PT Sans Narrow Bold")
 TransparenceTheme:SetElementProperty("block.keystone.level", "text-size", 14)
 TransparenceTheme:SetElementProperty("block.keystone.level", "text-color", { r = 1, g = 215/255, b = 0 })
 -- Scenario
 TransparenceTheme:SetElementProperty("block.scenario.frame", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.17})
-TransparenceTheme:SetElementProperty("block.scenario.header", "text-offsetY", 17)
+TransparenceTheme:SetElementProperty("block.scenario.header.text", "text-size", 14)
+TransparenceTheme:SetElementProperty("block.scenario.header.text", "text-justify-v", "TOP")
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-size", 12)
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-font", "PT Sans Caption Bold")
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-offsetY", -13)
@@ -58,21 +59,22 @@ TransparenceTheme:SetElementProperty("quest.*", "text-color", { r = 1.0, g = 191
 TransparenceTheme:SetElementProperty("quest.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
 TransparenceTheme:SetElementProperty("quest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
 TransparenceTheme:SetElementProperty("quest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
+TransparenceTheme:SetElementProperty("quest.name", "text-justify-h", "CENTER")
 -- ========================================================================== --
 -- == World Quest properties
 -- ========================================================================== --
-TransparenceTheme:SetElementProperty("worldQuest.frame[tracked]", "background-color", { r = 0.93, g = 0, b = 0.1, a = 0.13})
+TransparenceTheme:SetElementProperty("world-quest.frame[tracked]", "background-color", { r = 0.93, g = 0, b = 0.1, a = 0.13})
 -- ========================================================================== --
 -- == Bonus Quest properties
 -- ========================================================================== --
-TransparenceTheme:SetElementProperty("bonusQuest.*", "text-font", "DejaVuSansCondensed Bold")
-TransparenceTheme:SetElementProperty("bonusQuest.*", "text-size", 10)
-TransparenceTheme:SetElementProperty("bonusQuest.*", "text-transform", "none")
+TransparenceTheme:SetElementProperty("bonus-quest.*", "text-font", "DejaVuSansCondensed Bold")
+TransparenceTheme:SetElementProperty("bonus-quest.*", "text-size", 10)
+TransparenceTheme:SetElementProperty("bonus-quest.*", "text-transform", "none")
 -- TransparenceTheme:SetElementProperty("bonusQuest.*", "text-color", { r = 1.0, g = 191/255, b = 0})
-TransparenceTheme:SetElementProperty("bonusQuest.*", "text-color", { r = 1.0, g = 106/255, b = 0})
-TransparenceTheme:SetElementProperty("bonusQuest.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
-TransparenceTheme:SetElementProperty("bonusQuest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
-TransparenceTheme:SetElementProperty("bonusQuest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
+TransparenceTheme:SetElementProperty("bonus-quest.*", "text-color", { r = 1.0, g = 106/255, b = 0})
+TransparenceTheme:SetElementProperty("bonus-quest.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
+TransparenceTheme:SetElementProperty("bonus-quest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
+TransparenceTheme:SetElementProperty("bonus-quest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
 -- ========================================================================== --
 -- == Objective properties
 -- ========================================================================== --

@@ -15,7 +15,7 @@ class "DungeonBlock" (function(_ENV)
   ------------------------------------------------------------------------------
   local function UpdateProps(self, new, old, prop)
     if prop == "name" then
-      self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, self.frame.name.elementID)
+      self:ForceSkin(Theme.SkinFlags.TEXT_TRANSFORM, Theme:GetElementID(self.frame.name))
     elseif prop == "texture" then
       self.frame.ftex.texture:SetTexture(new)
     end
@@ -76,9 +76,10 @@ class "DungeonBlock" (function(_ENV)
     local prefix = self:GetClassPrefix()
     local state = self:GetCurrentState()
 
+
     -- Register frames in the theme system
-    Theme:RegisterFrame(prefix..".icon", self.frame.ftex, prefix..".icon")
-    Theme:RegisterText(prefix..".name", self.frame.name, prefix..".name")
+    Theme:RegisterFrame(prefix..".icon", self.frame.ftex, "block;dungeon.icon")
+    Theme:RegisterText(prefix..".name", self.frame.name, "block.dungeon.name")
 
     -- Then skin them
     Theme:SkinFrame(self.frame.ftex, nil, state)

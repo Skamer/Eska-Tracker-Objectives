@@ -59,7 +59,7 @@ function UpdateObjectives()
     if isWeightProgress then
       objective.text = description
       objective:ShowProgress()
-      objective:SetMinMaxValues(0, 100)
+      objective:SetMinMaxProgress(0, 100)
       objective:SetProgress(quantity)
       objective:SetTextProgress(string.format("%i%%", quantity))
     else
