@@ -14,23 +14,6 @@ class "QuestBlock" (function(_ENV)
   ------------------------------------------------------------------------------
   --                                   Methods                                --
   ------------------------------------------------------------------------------
-  --[[__Arguments__ { Quest }
-  function AddQuest(self, quest)
-    if not self.quests:Contains(quest) then
-      -- TODO: Add Stuff about Quest Header
-
-      quest:SetParent(self.frame.content)
-      quest.OnHeightChanged = function(_, new, old)
-        self.height = self.height + (new - old)
-      end
-      --quest.OnDistanceChanged = function() self:Draw() end
-      self.quests:Insert(quest)
-      Scorpio.FireSystemEvent("EKT_QUESTBLOCK_QUEST_ADDED", quest)
-
-      self:Draw()
-    end
-  end--]]
-
   __Arguments__ { Quest }
   function AddQuest(self, quest)
     if not self.quests:Contains(quest) then
@@ -47,7 +30,9 @@ class "QuestBlock" (function(_ENV)
           self.height = self.height + (new - old)
         end
       end
-      --quest.OnDistanceChanged = function() self:Draw() end
+
+      quest.OnDistanceChanged = function() self:Layout() end
+
       self.quests:Insert(quest)
       Scorpio.FireSystemEvent("EKT_QUESTBLOCK_QUEST_ADDED", quest)
       self:Draw()

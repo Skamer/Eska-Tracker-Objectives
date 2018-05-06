@@ -31,11 +31,24 @@ class "Quest" (function(_ENV)
       self:ForceSkin(Theme.SkinFlags.TEXT_TRANSFORM, Theme:GetElementID(self.frame.name))
     elseif prop == "level" then
       self:ForceSkin(Theme.SkinFlags.TEXT_COLOR, Theme:GetElementID(self.frame.level))
+    elseif prop == "isTracked" then
+      self:ForceSkin()
+    elseif prop == "distance" then
+      self.OnDistanceChanged(self, new)
     end
   end
   ------------------------------------------------------------------------------
   --                                   Methods                                --
   ------------------------------------------------------------------------------
+  function GetQuestItem(self)
+    if not self.questItem then
+      self.questItem = ObjectManager:Get(QuestItem)
+      self.questItem:SetParent(self.frame)
+    end
+
+    return self.questItem
+  end
+
   function ShowLevel(self)
     self.frame.level:Show()
   end
@@ -76,12 +89,22 @@ class "Quest" (function(_ENV)
 
   function OnLayout(self, layout)
       local previousFrame
+
+      if self.questItem and not self.questItem:IsShown() then
+        self.questItem:Show()
+      end
+
       for index, obj in self.objectives:GetIterator() do
         obj:Hide()
         obj:ClearAllPoints()
         if index == 1 then
           obj:SetPoint("TOP", 0, -21)
-          obj:SetPoint("LEFT")
+          if self.questItem then
+            self.questItem:SetPoint("TOPLEFT", self.frame.header, "BOTTOMLEFT", 5, -2)
+            obj:SetPoint("LEFT", self.questItem.frame, "RIGHT")
+          else
+            obj:SetPoint("LEFT")
+          end
           obj:SetPoint("RIGHT")
         else
           obj:SetPoint("TOPLEFT", previousFrame, "BOTTOMLEFT")
@@ -94,12 +117,27 @@ class "Quest" (function(_ENV)
       self:CalculateHeight()
   end
 
+  function GetCurrentState(self)
+    if self.isTracked then
+      return "tracked"
+    end
+  end
+
   function CalculateHeight(self)
     local height = self.baseHeight
 
     local objectivesHeight = self:GetObjectivesHeight()
 
-    height = height + objectivesHeight
+    if self.questItem then
+      local itemHeight = self.questItem.height
+      if objectivesHeight > itemHeight + 2 then
+        height = height + objectivesHeight
+      else
+        height = height + itemHeight + 2
+      end
+    else
+      height = height + objectivesHeight
+    end
 
     -- offset
     height = height + 2
@@ -129,8 +167,13 @@ class "Quest" (function(_ENV)
     self.isOnMap        = nil
     self.isTracked      = nil
     self.isInArea       = nil
+    self.isCompleted    = nil
 
-    self:Hide()
+    -- Reset quest item if exists
+    if self.questItem then
+      self.questItem:Recycle()
+      self.questItem = nil
+    end
   end
 
 
@@ -191,6 +234,8 @@ class "Quest" (function(_ENV)
   property "isOnMap"    { TYPE = Boolean, DEFAULT = false, EVENT = "IsOnMapChanged" }
   property "isInArea"   { TYPE = Boolean, DEFAULT = false }
   property "isTracked"  { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
+  property "isCompleted" { TYPE = AnyBool, DEFAULT = false, EVENT = "IsCompletedChanged"}
+
   __Static__() property "_prefix" { DEFAULT = "quest" }
   ------------------------------------------------------------------------------
   --                            Constructors                                  --

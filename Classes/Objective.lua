@@ -134,10 +134,13 @@ class "Objective" (function(_ENV)
     if not self.frame.fbar then
       local fbar = CreateStatusBar(self)
       fbar:SetHeight(18)
+      fbar:SetPoint("TOPLEFT", self.frame.text, "BOTTOMLEFT", 0, -4)
+      fbar:SetPoint("TOPRIGHT", self.frame.text, "BOTTOMRIGHT", -35, 0)
       self.frame.fbar = fbar
     end
 
     self.frame.fbar:Show()
+    self:CalculateHeight()
   end
 
   function HasProgress(self)
@@ -152,6 +155,7 @@ class "Objective" (function(_ENV)
     if self.frame.fbar then
       self.frame.fbar:Hide()
     end
+    self:CalculateHeight()
   end
 
   __Arguments__ { String }

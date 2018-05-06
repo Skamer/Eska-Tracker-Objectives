@@ -10,4 +10,5 @@
   <Script file="Achievement.lua"/>
   <Script file="WorldQuest.lua"/>
   <Script file="WorldQuestBlock.lua"/>
+  <Script file="BonusObjectives.lua"/>
 </Ui>

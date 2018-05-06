@@ -20,7 +20,7 @@ function OnLoad(self)
   Options:Register("achievement-show-description", true, "achievements/updateAll")
 
   -- Callback
-  --CallbackHandlers:Register("achievements/updateAll", CallbackHandler(function() _M:UpdateAll() end))
+  CallbackHandlers:Register("achievements/updateAll", CallbackHandler(function() _M:UpdateAll() end))
 end
 
 

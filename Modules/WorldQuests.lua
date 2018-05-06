@@ -204,6 +204,15 @@ function UpdateWorldQuest(self, worldQuest)
     end
   end
 
+  local itemLink, itemTexture = GetQuestLogSpecialItemInfo(GetQuestLogIndexByID(worldQuest.id))
+  if itemLink and itemTexture then
+    local itemQuest  = worldQuest:GetQuestItem()
+    itemQuest.link = itemLink
+    itemQuest.texture = itemTexture
+    -- TODO Add the item when the new item API is availaible
+    --_Addon.ItemBar:AddItem(worldQuest.id, itemLink, itemTexture)
+  end
+
   if numObjectives then
     worldQuest.numObjectives = numObjectives
     for index = 1, numObjectives do

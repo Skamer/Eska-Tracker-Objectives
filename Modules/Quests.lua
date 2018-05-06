@@ -30,6 +30,9 @@ function OnLoad(self)
   Options:Register("sort-quests-by-distance", true, "quests/sortingByDistance")
   Options:Register("show-only-quests-in-zone", false, "quests/showOnlyQuestInZone")
   Options:Register("quest-popup-location", "TOP")
+
+  CallbackHandlers:Register("quests/sortingByDistance", CallbackHandler(function(enabled) if enabled then self:UpdateDistance() end end))
+  CallbackHandlers:Register("quests/showOnlyQuestInZone", CallbackHandler(EKT_SHOW_ONLY_QUESTS_IN_ZONE))
 end
 
 __Async__()
@@ -40,6 +43,9 @@ function OnEnable(self)
   end
 
   self:LoadQuests()
+  self:UpdateDistance()
+  EKT_SHOW_ONLY_QUESTS_IN_ZONE()
+  UPDATE_BLOCK_VISIBILITY()
 
   -- [FIX] Super track the closest quest for the players having not the blizzad objective quest.
   QuestSuperTracking_ChooseClosestQuest()
@@ -51,8 +57,15 @@ function OnDisable(self)
   end
 end
 
+__SystemEvent__  "EKT_QUESTBLOCK_QUEST_ADDED" "EKT_QUESTBLOCK_QUEST_REMOVED"
+function UPDATE_BLOCK_VISIBILITY(quest)
+  if _QuestBlock then
+    _QuestBlock.isActive = _QuestBlock.quests.Count > 0
+  end
+end
 
-__SystemEvent__ "QUEST_LOG_UPDATE" "ZONE_CHANGED" "EQT_SHOW_ONLY_QUESTS_IN_ZONE"
+
+__SystemEvent__ "QUEST_LOG_UPDATE" "ZONE_CHANGED" "EKT_SHOW_ONLY_QUESTS_IN_ZONE"
 function QUESTS_UPDATE(...)
   for questID in pairs(QUESTS_CACHE) do
     _M:UpdateQuest(questID)
@@ -64,6 +77,47 @@ function QUEST_POI_UPDATE()
   QuestSuperTracking_OnPOIUpdate()
 end
 
+do
+  local alreadyHooked = false
+  local needUpdate = false
+
+  function RunQuestLogUpdate()
+    if Options:Get("show-only-quests-in-zone") then
+      QUESTS_UPDATE()
+      needUpdate = false
+    end
+  end
+
+  __SystemEvent__()
+  function ZONE_CHANGED()
+    -- @NOTE This seems that GetQuestWorldMapAreaID() uses SetMapToCurrentZone so we
+    -- need to wait the WorldMapFrame is hidden to continue
+    if Options:Get("show-only-quests-in-zone") then
+      if WorldMapFrame:IsShown() then
+        needUpdate = true
+      else
+        QUESTS_UPDATE()
+      end
+    end
+  end
+
+  __SystemEvent__()
+  function EKT_SHOW_ONLY_QUESTS_IN_ZONE()
+    if Options:Get("show-only-quests-in-zone") then
+      if not alreadyHooked then
+        WorldMapFrame:HookScript("OnHide", RunQuestLogUpdate)
+        alreadyHooked = true
+      end
+
+      if WorldMapFrame:IsShown() then
+        needUpdate = true
+        return
+      end
+    end
+
+    QUESTS_UPDATE()
+  end
+end
 
 __Async__()
 __SystemEvent__()
@@ -193,6 +247,17 @@ function UpdateQuest(self, questID)
   quest.isBounty        = isBounty
   quest.isCompleted     = isComplete
 
+  -- is the quest has an item quest ?
+  local itemLink, itemTexture = GetQuestLogSpecialItemInfo(questLogIndex)
+  if itemLink and itemTexture then
+    local itemQuest = quest:GetQuestItem()
+    itemQuest.link = itemLink
+    itemQuest.texture = itemTexture
+
+    -- TODO Add Later the item when the new Item API is availaible
+    --_Addon.ItemBar:AddItem(questID, itemLink, itemTexture)
+  end
+
 
   -- Update the objective
   if numObjectives > 0 then
@@ -230,70 +295,32 @@ function UpdateQuest(self, questID)
 end
 
 
-
-
-
-
-
---[[
-function OnLoad(self)
-  print("BLOCK", BLOCK)
-end
-
-[module:RegisterBlockCategories("quests", "blocks")
-
-
-function ReloadBlocks(...)
-
-end
-
-function ReloadBlocks(self)
-  _QuestBlock = nil
-  self:OnEnable()
-end
-
-function OnBlocksChange(self)
-  _QuestBlock = nil
-  self:OnEnable()
-end
-
-__BlocksReloader__ "quests"
-function OnBlocksChange(self)
-
-end
-
-function OnEnable(self)
-  if not _QuestBlock then
-    --_QuestBlock = BLOCK("quests")
-    _QuestBlock = block "quests"
+do
+  local function IsLegionAssaultQuest(questID)
+    return (questID == 45812) -- Assault on Val'sharah
+        or (questID == 45838) -- Assault on Azsuna
+        or (questID == 45840) -- Assault on Highmountain
+        or (questID == 45839) -- Assault on StormHeim
+        or (questID == 45406) -- StomHeim : The Storm's Fury
+        or (questID == 46110) -- StomHeim : Battle for Stormheim
   end
 
 
-  --local quest = _ObjectManager:Get(Quest)
-  --quest.id = 25030
-  --quest.name = "First Quest Name"
-  --quest.category = "Misc"
-  --print(quest, System.Reflector.GetObjectClass(quest))
-  --_QuestBlock:AddQuest(quest)
+  __Async__()
+  function UpdateDistance()
+    while Options:Get("sort-quests-by-distance") do
+      for index, quest in _QuestBlock.quests:GetIterator() do
+        -- If the quest is a legion assault, set it in first.
+        if IsLegionAssaultQuest(quest.id) then
+            quest.distance = 0
+        else
+            local questLogIndex = GetQuestLogIndexByID(quest.id)
+            local distanceSq, onContinent = GetDistanceSqToQuest(questLogIndex)
 
-  local name = "Quest #"
-  for i = 1, 10 do
-    local quest = ObjectManager:Get(Quest)
-    quest.id = i
-    quest.name = name..i
-    quest.category = "Misc"
-    _QuestBlock:AddQuest(quest)
-
-    quest.numObjectives = 2
-
-    for i = 1,  quest.numObjectives do
-      local obj = quest:GetObjective(i)
-      obj.text = "Objective text #".. i
+            quest.distance = distanceSq and math.sqrt(distanceSq) or nil
+        end
+      end
+      Delay(1) -- @TODO Create an option to change the refresh rate.
     end
   end
 end
-
-function OnDisable(self)
-
-end
---]]
