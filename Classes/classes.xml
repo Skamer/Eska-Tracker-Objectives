@@ -8,4 +8,6 @@
   <Script file="DungeonBlock.lua"/>
   <Script file="ScenarioBlock.lua"/>
   <Script file="Achievement.lua"/>
+  <Script file="WorldQuest.lua"/>
+  <Script file="WorldQuestBlock.lua"/>
 </Ui>
