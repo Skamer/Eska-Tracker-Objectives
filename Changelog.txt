@@ -1,4 +1,4 @@
 [1.0.1]
-- New options for changing the left/middle/right click action for quests
-- Finished the actions contained in the context menu for quests
+- New options for changing the left/middle/right click action for quests.
+- Finished the actions contained in the context menu for quests.
 - Added the support of groupfinder addons.
