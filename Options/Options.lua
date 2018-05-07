@@ -12,6 +12,7 @@ _DEFAULT_SKIN_TEXT_FLAGS = Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE
 function OnLoad(self)
   self:AddObjectiveRecipes()
   self:AddQuestRecipes()
+  self:AddGroupFinderRecipes()
 end
 
 
@@ -72,7 +73,30 @@ function AddQuestRecipes(self)
   OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.frame"), "quest/general")
 
   -- Header tab
-  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.header"), "quest/header")
+  local function GetQuestActions()
+        return {
+        ["none"]  = "|cffff0000None|r",
+        ["show-quest-details"] = "Show quest details",
+        ["show-quest-details-with-map"] = "Open the map and show details",
+        ["link-quest-to-chat"] = "Link quest to chat",
+        ["abandon-quest"]      = "Abandon the quest",
+        ["toggle-context-menu"] = "Toggle context menu",
+        ["group-finder-create-group"] = "Create a group",
+        ["group-finder-join-group"] = "Join a group",
+        ["stop-super-tracking-quest"] = "Stop supertracking the quest",
+        ["super-track-quest"] = "Supertrack the quest"
+      }
+  end
+
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.header"):SetOrder(10), "quest/header")
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Left click Action"):SetOrder(20), "quest/header")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Middle click Action"):SetOrder(30), "quest/header")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Right click Action"):SetOrder(40), "quest/header")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(41), "quest/header")
 
   -- Name tab
   OptionBuilder:AddRecipe(ThemePropertyRecipe()
@@ -109,5 +133,27 @@ function AddQuestRecipes(self)
   :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "quest/category")
+end
 
+--------------------------------------------------------------------------------
+--                          GroupFinder Addons                                --
+--------------------------------------------------------------------------------
+function AddGroupFinderRecipes(self)
+  -- Create the quest tree item
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("group-finder"):SetText("Group Finder"):SetBuildingGroup("group-finder/children"), "RootTree")
+
+  local function GetGroupFinders()
+    local list = {}
+    for name in GroupFinderAddon:GetIterator() do
+      list[name] = name
+    end
+    return list
+  end
+
+  local selectGFA = SelectRecipe()
+  selectGFA:SetText("Select the groupfinder addon to use")
+  selectGFA:SetList(GetGroupFinders)
+  selectGFA:Get(function() return select(2,GroupFinderAddon:GetSelected()) end)
+  selectGFA:Set(function(_, value) GroupFinderAddon:SetSelected(value) end)
+  OptionBuilder:AddRecipe(selectGFA, "group-finder/children")
 end

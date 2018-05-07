@@ -9,6 +9,9 @@ namespace "EKT"
 --============================================================================--
 SHOW_QUEST_LEVEL_OPTION                 = "show-quest-level"
 COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION  = "color-quest-level-by-difficulty"
+QUEST_HEADER_LEFT_CLICK_ACTION_OPTION   = "quest-left-click-action"
+QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION = "quest-middle-click-action"
+QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION  = "quest-right-click-action"
 --============================================================================--
 __Recyclable__()
 class "Quest" (function(_ENV)
@@ -220,6 +223,28 @@ class "Quest" (function(_ENV)
     self:LoadOption(SHOW_QUEST_LEVEL_OPTION)
     self:LoadOption(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION)
   end
+
+  function PrepareContextMenu(self)
+    ContextMenu():ClearAll()
+    ContextMenu():AnchorTo(self.frame.header):UpdateAnchorPoint()
+    ContextMenu():AddAction("group-finder-create-group", self)
+    ContextMenu():AddAction("group-finder-join-group", self)
+    --- First seperator
+    ContextMenu():AddItem(MenuItemSeparator())
+    if not QuestUtils_IsQuestWorldQuest(self.id) then
+      if GetSuperTrackedQuestID() == self.id then
+        ContextMenu():AddAction("stop-super-tracking-quest")
+      else
+        ContextMenu():AddAction("super-track-quest", self)
+      end
+    end
+    ContextMenu():AddAction("show-quest-details", self)
+    ContextMenu():AddAction("link-quest-to-chat", self)
+    -- Second seperator
+    ContextMenu():AddItem(MenuItemSeparator())
+    ContextMenu():AddAction("abandon-quest", self)
+    ContextMenu():Finish()
+  end
   ------------------------------------------------------------------------------
   --                            Properties                                    --
   ------------------------------------------------------------------------------
@@ -259,23 +284,20 @@ class "Quest" (function(_ENV)
     -- Script
     headerFrame:SetScript("OnClick", function(_, button, down)
       if button == "RightButton" then
-        ContextMenu():Toggle()
-        if ContextMenu():IsShown() then
-          ContextMenu():ClearAll()
-          ContextMenu():AnchorTo(headerFrame):UpdateAnchorPoint()
-          --ContextMenu():AddItem("Create a group", nil, function() print("Test") end)
-          --ContextMenu():AddAction("join-a-group", 50)
-          --ContextMenu():AddAction("new-action", 98)
-          ContextMenu():AddAction("show-quest-details", self)
-          --ContextMenu():AddAction("join-a-group", self)
-          ContextMenu():AddAction("link-quest-to-chat", self)
-          ContextMenu():AddAction("abandon-quest", self)
-          ContextMenu():Finish()
-        end
+        local action = Options:Get(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION)
+        Actions:Exec(action, self)
+        --Actions:Exec("toggle-context-menu", self)
       elseif button == "LeftButton" then
-        BFASupport:ShowQuestDetailsWithMap(self.id)
+        --BFASupport:ShowQuestDetailsWithMap(self.id)
+        local action = Options:Get(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION)
+        Actions:Exec(action, self)
+      elseif button == "MiddleButton" then
+        local action = Options:Get(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION)
+        Actions:Exec(action, self)
       end
     end)
+
+    -- PrepareContextMenu()
 
     local name = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     name:GetFontObject():SetShadowOffset(0.5, 0)
@@ -323,11 +345,13 @@ Actions:Add(NewAction)
 --                          Scorpio OnLoad                                    --
 --------------------------------------------------------------------------------
 function OnLoad(self)
-  -- Register the class in the object manager
-  --ObjectManager:Register(Quest)
-
+  -- Register the options
   Options:Register(SHOW_QUEST_LEVEL_OPTION, true)
   Options:Register(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION, true)
+  Options:Register(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION, "show-quest-details-with-map")
+  Options:Register(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION, "toggle-context-menu")
+
 end
 
 --------------------------------------------------------------------------------
@@ -348,7 +372,20 @@ class "ShowQuestDetailsAction" (function(_ENV)
 
   __Arguments__ { Quest }
   __Static__() function Exec(quest)
-    QuestShowDetailsAction.Exec(quest.id)
+    ShowQuestDetailsAction.Exec(quest.id)
+  end
+end)
+
+__Action__ "show-quest-details-with-map" "Show details with map"
+class "ShowQuestDetailsWithMapAction" (function(_ENV)
+  __Arguments__ { Number }
+  __Static__() function Exec(questID)
+    BFASupport:ShowQuestDetailsWithMap(questID)
+  end
+
+  __Arguments__ { Quest }
+  __Static__() function Exec(quest)
+    ShowQuestDetailsWithMapAction.Exec(quest.id)
   end
 end)
 
@@ -376,5 +413,26 @@ class "AbandonQuestAction" (function(_ENV)
   __Arguments__ { Quest }
   __Static__() function Exec(quest)
     AbandonQuestAction.Exec(quest.id)
+  end
+end)
+
+__Action__ "stop-super-tracking-quest" "Stop supertracking"
+class "StopSuperTrackingQuestAction" (function(_ENV)
+  __Static__() function Exec()
+    SetSuperTrackedQuestID(0)
+    QuestSuperTracking_ChooseClosestQuest()
+  end
+end)
+
+__Action__ "super-track-quest" "Supertrack quest"
+class "SuperTrackQuestAction" (function(_ENV)
+  __Arguments__ { Number }
+  __Static__() function Exec(questID)
+    SetSuperTrackedQuestID(questID)
+  end
+
+  __Arguments__ { Quest }
+  __Static__() function Exec(quest)
+    SuperTrackQuestAction.Exec(quest.id)
   end
 end)

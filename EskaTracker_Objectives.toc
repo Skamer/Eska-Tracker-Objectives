@@ -3,10 +3,10 @@
 ## Author: Skamer
 ## Notes: EskaTracker - |cffff6a00Objectives|r
 ## RequiredDeps: EskaTracker
-## Version: 1.0.0
+## Version: 1.0.1
 ## X-Stage: Alpha
 
-# BFA Support
+# Battle for Azeroth Support
 BFA.lua
 
 # Theme Files (add new properties)
@@ -15,6 +15,7 @@ Themes\themes.xml
 # Core Files
 Interfaces\interfaces.xml
 Classes\classes.xml
+Supports\supports.xml
 EskaTracker_Objectives.lua
 
 
