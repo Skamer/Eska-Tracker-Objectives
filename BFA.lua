@@ -35,13 +35,24 @@ class "BFASupport" (function(_ENV)
   end
   ------------------------------------------------------------------------------
   --                             Scenario                                     --
-  ------------------------------------------------------------------------------$
+  ------------------------------------------------------------------------------
   __Arguments__ { ClassType }
   __Static__() function GetScenarioWeightedProgress(self)
     if self.isBFA then
       return select(10, C_Scenario.GetStepInfo())
     else
       return select(9, C_Scenario.GetStepInfo())
+    end
+  end
+  ------------------------------------------------------------------------------
+  --                            Map                                            --
+  ------------------------------------------------------------------------------
+  __Arguments__ { ClassType }
+  __Static__() function SetMapToCurrentZone(self)
+    if self.isBFA then
+      -- TODO Find the equivalent for BFA
+    else
+      SetMapToCurrentZone()
     end
   end
 end)

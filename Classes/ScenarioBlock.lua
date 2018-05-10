@@ -87,8 +87,8 @@ class "ScenarioBlock" (function(_ENV)
     -- Register frames in the theme system
     Theme:RegisterFrame(prefix..".stage", self.frame.stage)
     Theme:RegisterText(prefix..".name", self.frame.name)
-    Theme:RegisterText(prefix..".stageName", self.frame.stageName)
-    Theme:RegisterText(prefix..".stageCounter", self.frame.stageCounter)
+    Theme:RegisterText(prefix..".stage-name", self.frame.stageName)
+    Theme:RegisterText(prefix..".stage-counter", self.frame.stageCounter)
 
     -- Then skin them
     Theme:SkinFrame(self.frame.stage, nil, state)

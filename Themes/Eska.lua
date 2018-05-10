@@ -47,12 +47,12 @@ EskaTheme:SetElementProperty("block.scenario.name", "text-justify-h", "CENTER")
    EskaTheme:SetElementProperty("block.scenario.stage", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
    EskaTheme:SetElementProperty("block.scenario.stage", "border-color", { r = 0, g = 0, b = 0, a = 0.4})
    -- Stage name
-   EskaTheme:SetElementProperty("block.scenario.stageName", "text-size", 11)
-   EskaTheme:SetElementProperty("block.scenario.stageName", "text-color", { r = 1, g = 1, b = 0 })
+   EskaTheme:SetElementProperty("block.scenario.stage-name", "text-size", 11)
+   EskaTheme:SetElementProperty("block.scenario.stage-name", "text-color", { r = 1, g = 1, b = 0 })
    -- Stage counter
-   EskaTheme:SetElementProperty("block.scenario.stageCounter", "text-size", 12)
-   EskaTheme:SetElementProperty("block.scenario.stageCounter", "text-font", "PT Sans Narrow Bold")
-   EskaTheme:SetElementProperty("block.scenario.stageCounter", "text-color", { r = 1, g = 1, b = 1 })
+   EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-size", 12)
+   EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-font", "PT Sans Narrow Bold")
+   EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-color", { r = 1, g = 1, b = 1 })
 -- ========================================================================== --
 -- == Quest properties
 -- ========================================================================== --

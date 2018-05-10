@@ -316,7 +316,7 @@ class "Objective" (function(_ENV)
     text:SetPoint("RIGHT")
     text:SetPoint("TOP", 0, -4)
     text:SetJustifyH("LEFT")
-    text:SetText("LOLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
+    text:SetText("")
     text:SetWordWrap(true)
     text:SetNonSpaceWrap(false)
     self.frame.text = text
@@ -335,7 +335,7 @@ end)
 __Recyclable__()
 class "DottedObjective" (function(_ENV)
   inherit "Frame"
-
+  _DottedObjectiveCache = setmetatable({}, { __mode = "k" })
   function DottedObjective(self)
     super(self)
 

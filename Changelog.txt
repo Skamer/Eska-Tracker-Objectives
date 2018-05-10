@@ -1,3 +1,10 @@
+[1.0.2]
+- BFA Support: Fixed SetMapToCurrentZone lua error.
+- Implemented the context menu for achievement.
+- Added options for quest, world quest, bonus quest, achievement, scenario block, keystone block and dungeon block.
+- Fixed an issue where the options categories are never ordered the same way between each loading.
+- Updated theme for applying some element id changes for scenario (block.scenario.stageName -> block.scenario.stage-name and block.scenario.stageCounter -> block.scenario.stage-counter). 
+
 [1.0.1]
 - New options for changing the left/middle/right click action for quests.
 - Finished the actions contained in the context menu for quests.

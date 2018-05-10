@@ -34,16 +34,6 @@ class "Achievement" (function(_ENV)
       self:Skin()
     end
   end
-
-  local function SelectAchievement(achievementID)
-    if not AchievementFrame then
-      AchievementFrame_LoadUI()
-    end
-    if not AchievementFrame:IsShown() then
-      AchievementFrame_ToggleAchievementFrame()
-    end
-    AchievementFrame_SelectAchievement(achievementID)
-  end
   ------------------------------------------------------------------------------
   --                             Methods                                      --
   ------------------------------------------------------------------------------
@@ -186,6 +176,14 @@ class "Achievement" (function(_ENV)
     self.showDesc       = nil
     self.failed         = nil
   end
+
+  function PrepareContextMenu(self)
+    ContextMenu():ClearAll()
+    ContextMenu():AnchorTo(self.frame.ftex, self.frame.header):UpdateAnchorPoint()
+    ContextMenu():AddAction("select-achievement", self)
+    ContextMenu():AddAction("stop-tracking-achievement", self)
+    ContextMenu():Finish()
+  end
   ------------------------------------------------------------------------------
   --                         Properties                                       --
   ------------------------------------------------------------------------------
@@ -229,13 +227,9 @@ class "Achievement" (function(_ENV)
 
     headerFrame:SetScript("OnClick", function(_, button, down)
       if button == "LeftButton" then
-        if not AchievementFrame or AchievementFrameAchievements.selection ~= self.id then
-          SelectAchievement(self.id)
-        else
-          AchievementFrame_ToggleAchievementFrame()
-        end
+        Actions:Exec("select-achievement", self)
       elseif button == "RightButton" then
-          -- Put menu context action
+        Actions:Exec("toggle-context-menu", self)
       end
     end)
 
@@ -361,5 +355,55 @@ class "AchievementBlock" (function(_ENV)
     self.achievements = Array[Achievement]()
   end
 end)
+--------------------------------------------------------------------------------
+--                                                                            --
+--                         Achievements Actions                               --
+--                                                                            --
+--------------------------------------------------------------------------------
+__Action__ "select-achievement" "Open achievement"
+class "SelectAchievementAction" (function(_ENV)
+  ------------------------------------------------------------------------------
+  --                            Helper functions                              --
+  ------------------------------------------------------------------------------
+  local function SelectAchievement(achievementID)
+    if not AchievementFrame then
+      AchievementFrame_LoadUI()
+    end
+    if not AchievementFrame:IsShown() then
+      AchievementFrame_ToggleAchievementFrame()
+    end
+    AchievementFrame_SelectAchievement(achievementID)
+  end
+  ------------------------------------------------------------------------------
+  --                             Methods                                      --
+  ------------------------------------------------------------------------------
+  __Arguments__ { Number }
+  __Static__() function Exec(achievementID)
+    if not AchievementFrame or AchievementFrameAchievements.selection ~= achievementID then
+      SelectAchievement(achievementID)
+    else
+      AchievementFrame_ToggleAchievementFrame()
+    end
+  end
 
-Blocks:Register(AchievementBlock)
+  __Arguments__ { Achievement }
+  __Static__() function Exec(achievement)
+    SelectAchievementAction.Exec(achievement.id)
+  end
+end)
+
+__Action__ "stop-tracking-achievement" "Stop Tracking"
+class "StopTrackingAchievementAction" (function(_ENV)
+  __Arguments__ { Number }
+  __Static__() function Exec(achievementID)
+    RemoveTrackedAchievement(achievementID);
+    if AchievementFrame then
+      AchievementFrameAchievements_ForceUpdate();
+    end
+  end
+
+  __Arguments__ { Achievement }
+  __Static__() function Exec(achievement)
+    StopTrackingAchievementAction.Exec(achievement.id)
+  end
+end)

@@ -2,7 +2,7 @@ package-as: EskaTracker_Objectives
 
 manual-changelog:
   filename: Changelog.txt
-  markup-type: html
+  markup-type: markdown
 
 required-dependencies:
   - eskatracker

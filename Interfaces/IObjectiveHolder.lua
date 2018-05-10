@@ -77,7 +77,7 @@ interface "IObjectiveHolder" (function(_ENV)
       return
     end
 
-    if not self.dotted:IsShow() then
+    if not self.dotted:IsShown() then
       return
     end
 

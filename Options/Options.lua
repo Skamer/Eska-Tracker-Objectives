@@ -12,6 +12,12 @@ _DEFAULT_SKIN_TEXT_FLAGS = Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE
 function OnLoad(self)
   self:AddObjectiveRecipes()
   self:AddQuestRecipes()
+  self:AddWorldQuestRecipes()
+  self:AddBonusQuestRecipes()
+  self:AddAchievementRecipes()
+  self:AddDungeonRecipes()
+  self:AddKeystoneRecipes()
+  self:AddScenarioRecipes()
   self:AddGroupFinderRecipes()
 end
 
@@ -21,7 +27,7 @@ end
 --------------------------------------------------------------------------------
 function AddObjectiveRecipes(self)
   -- Create the objective tree item
-  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("objective"):SetText("Objective"):SetBuildingGroup("objective/children"), "RootTree")
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("objective"):SetText("Objective"):SetBuildingGroup("objective/children"):SetOrder(110), "RootTree")
   -- Create the objective tabs
   OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup("objective/tabs"), "objective/children")
   -- Create the differents tabs
@@ -59,7 +65,7 @@ end
 --------------------------------------------------------------------------------
 function AddQuestRecipes(self)
   -- Create the quest tree item
-  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("quest"):SetText("Quest"):SetBuildingGroup("quest/children"), "RootTree")
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("quest"):SetText("Quest"):SetBuildingGroup("quest/children"):SetOrder(120), "RootTree")
   -- Create the quest tabs
   OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup("quest/tabs"), "quest/children")
   -- Create the differents tabs
@@ -134,13 +140,216 @@ function AddQuestRecipes(self)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "quest/category")
 end
+--------------------------------------------------------------------------------
+--                             World Quest                                    --
+--------------------------------------------------------------------------------
+function AddWorldQuestRecipes(self)
+  -- Create the world quest tree item
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("world-quest"):SetText("World Quest"):SetPath("quest"):SetBuildingGroup("world-quest/children"), "RootTree")
+  -- Create the  world quest tabs
+  OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup("world-quest/tabs"):SetSaveChoiceVariable("worldquest_tab_selected"), "world-quest/children")
+  -- Create the differents tabs
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("General"):SetID("general"):SetBuildingGroup("world-quest/general"), "world-quest/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Header"):SetID("header"):SetBuildingGroup("world-quest/header"), "world-quest/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("world-quest/name"), "world-quest/tabs")
+  -- Create the state select
+  local stateSelect = StateSelectRecipe()
+  stateSelect:SetBuildingGroup("world-quest/:worldquest_tab_selected:/states")
+  stateSelect:AddState("tracked")
+  stateSelect:SetOrder(200)
+  OptionBuilder:AddRecipe(stateSelect, "world-quest/general")
+  OptionBuilder:AddRecipe(stateSelect, "world-quest/header")
+  OptionBuilder:AddRecipe(stateSelect, "world-quest/name")
+
+  -- General Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("world-quest.frame"):SetElementParentID("quest.frame"), "world-quest/general/states")
+
+  -- Header Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("world-quest.header"):SetElementParentID("quest.header"), "world-quest/header/states")
+
+  -- Name Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("world-quest.name")
+  :SetElementParentID("quest.name")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "world-quest/name/states")
+end
+
+--------------------------------------------------------------------------------
+--                             Bonus Quest                                    --
+--------------------------------------------------------------------------------
+function AddBonusQuestRecipes(self)
+  -- Create the bonus quest tree item
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("bonus-quest"):SetText("Bonus Quest"):SetPath("quest"):SetBuildingGroup("bonus-quest/children"), "RootTree")
+  -- Create the  world quest tabs
+  OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup("bonus-quest/tabs"):SetSaveChoiceVariable("bonusquest_tab_selected"), "bonus-quest/children")
+  -- Create the differents tabs
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("General"):SetID("general"):SetBuildingGroup("bonus-quest/general"), "bonus-quest/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Header"):SetID("header"):SetBuildingGroup("bonus-quest/header"), "bonus-quest/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("bonus-quest/name"), "bonus-quest/tabs")
+
+  -- General Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("bonus-quest.frame"):SetElementParentID("quest.frame"), "bonus-quest/general")
+
+  -- Header Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("bonus-quest.header"):SetElementParentID("quest.header"), "bonus-quest/header")
+
+  -- Name Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("bonus-quest.name")
+  :SetElementParentID("quest.name")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "bonus-quest/name")
+end
+--------------------------------------------------------------------------------
+--                                 Achievement                                --
+--------------------------------------------------------------------------------
+function AddAchievementRecipes(self)
+  -- Create the achievement tree item
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("achievement"):SetText("Achievement"):SetBuildingGroup("achievement/children"):SetOrder(130), "RootTree")
+
+  -- Create the Achievement tabs
+  OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup("achievement/tabs"):SetSaveChoiceVariable("achievement_tab_selected"), "achievement/children")
+  -- Create the differents tabs
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("General"):SetID("general"):SetBuildingGroup("achievement/general"):SetOrder(10), "achievement/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Header"):SetID("header"):SetBuildingGroup("achievement/header"):SetOrder(20), "achievement/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("achievement/name"):SetOrder(30), "achievement/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Description"):SetID("description"):SetBuildingGroup("achievement/description"):SetOrder(40), "achievement/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Icon"):SetID("icon"):SetBuildingGroup("achievement/icon"):SetOrder(50), "achievement/tabs")
+
+
+  -- Create the states
+  local stateSelect = StateSelectRecipe()
+  stateSelect:SetBuildingGroup("achievement/:achievement_tab_selected:/states")
+  stateSelect:AddState("failed")
+  stateSelect:SetOrder(200)
+  OptionBuilder:AddRecipe(stateSelect, "achievement/general")
+  OptionBuilder:AddRecipe(stateSelect, "achievement/header")
+  OptionBuilder:AddRecipe(stateSelect, "achievement/name")
+  OptionBuilder:AddRecipe(stateSelect, "achievement/description")
+  OptionBuilder:AddRecipe(stateSelect, "achievement/icon")
+
+    -- General Tab
+    OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Hide completed criteria"):BindOption("achievement-hide-criteria-completed"):SetOrder(10), "achievement/general")
+    OptionBuilder:AddRecipe(RangeRecipe():SetRange(0, 20):SetText("Max criteria displayed"):BindOption("achievement-max-criteria-displayed"):SetOrder(15), "achievement/general")
+    OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("achievement.frame"), "achievement/general/states")
+
+    -- Header Tab
+    OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("achievement.header"), "achievement/header/states")
+
+    -- Name Tab
+    OptionBuilder:AddRecipe(ThemePropertyRecipe()
+    :SetElementID("achievement.name")
+    :ClearFlags()
+    :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+    :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL), "achievement/name/states")
+
+    -- Description Tab
+    OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show"):BindOption("achievement-show-description"), "achievement/description")
+    OptionBuilder:AddRecipe(ThemePropertyRecipe()
+    :SetElementID("achievement.description")
+    :ClearFlags()
+    :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+    :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL), "achievement/description/states")
+
+    -- Icon Tab
+    OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("achievement.icon"), "achievement/icon/states")
+
+  --OptionBuilder:AddRecipe(HeadingRecipe():SetText("General"), "achievement/general/states")
+  --OptionBuilder:AddRecipe(HeadingRecipe():SetText("Name"), "achievement/name/states")
+
+end
+
+--------------------------------------------------------------------------------
+--                                Dungeon                                     --
+--------------------------------------------------------------------------------
+function AddDungeonRecipes(self)
+  -- Name Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("dungeon-block-category/name"):SetOrder(110), "dungeon-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.dungeon.name")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "dungeon-block-category/name")
+
+  -- Icon Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Icon"):SetID("icon"):SetBuildingGroup("dungeon-block-category/icon"):SetOrder(120), "dungeon-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("block.dungeon.icon"), "dungeon-block-category/icon")
+end
+--------------------------------------------------------------------------------
+--                                Keystone                                    --
+--------------------------------------------------------------------------------
+function AddKeystoneRecipes(self)
+  -- Name Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("keystone-block-category/name"):SetOrder(110), "keystone-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.keystone.name")
+  :SetElementParentID("block.dungeon.name")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "keystone-block-category/name")
+
+  -- Icon Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Icon"):SetID("icon"):SetBuildingGroup("keystone-block-category/icon"):SetOrder(120), "keystone-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("block.keystone.icon"), "keystone-block-category/icon")
+
+  -- Level tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Level"):SetID("level"):SetBuildingGroup("keystone-block-category/level"):SetOrder(130), "keystone-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.keystone.level")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "keystone-block-category/level")
+end
+--------------------------------------------------------------------------------
+--                                Scenario                                    --
+--------------------------------------------------------------------------------
+function AddScenarioRecipes(self)
+  -- Name Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("scenario-block-category/name"):SetOrder(110), "scenario-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.scenario.name")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "scenario-block-category/name")
+
+  -- Stage Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Stage"):SetID("stage"):SetBuildingGroup("scenario-block-category/stage"):SetOrder(110), "scenario-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("block.scenario.stage"):SetOrder(110), "scenario-block-category/stage")
+  -- Stage name
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Stage Name"):SetOrder(120), "scenario-block-category/stage")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.scenario.stage-name")
+  :SetOrder(130)
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "scenario-block-category/stage")
+  -- Stage counter
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Stage Counter"):SetOrder(140), "scenario-block-category/stage")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.scenario.stage-counter")
+  :SetOrder(150)
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "scenario-block-category/stage")
+end
 
 --------------------------------------------------------------------------------
 --                          GroupFinder Addons                                --
 --------------------------------------------------------------------------------
 function AddGroupFinderRecipes(self)
   -- Create the quest tree item
-  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("group-finder"):SetText("Group Finder"):SetBuildingGroup("group-finder/children"), "RootTree")
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("group-finder"):SetText("Group Finder"):SetBuildingGroup("group-finder/children"):SetOrder(140), "RootTree")
 
   local function GetGroupFinders()
     local list = {}
