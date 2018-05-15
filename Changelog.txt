@@ -1,9 +1,13 @@
+[1.0.3]
+- Added 'Show only quests in current zone' and 'Sort quests by distance' features.
+NOTE: The BFA version of 'Show only quests in current zone' is currently being tested.
+
 [1.0.2]
 - BFA Support: Fixed SetMapToCurrentZone lua error.
 - Implemented the context menu for achievement.
 - Added options for quest, world quest, bonus quest, achievement, scenario block, keystone block and dungeon block.
 - Fixed an issue where the options categories are never ordered the same way between each loading.
-- Updated theme for applying some element id changes for scenario (block.scenario.stageName -> block.scenario.stage-name and block.scenario.stageCounter -> block.scenario.stage-counter). 
+- Updated theme for applying some element id changes for scenario (block.scenario.stageName -> block.scenario.stage-name and block.scenario.stageCounter -> block.scenario.stage-counter).
 
 [1.0.1]
 - New options for changing the left/middle/right click action for quests.

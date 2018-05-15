@@ -220,9 +220,15 @@ function UpdateQuest(self, questID)
       return
     end
 
-    local mapID = GetQuestWorldMapAreaID(questID)
-    local currentMapID = GetCurrentMapAreaID()
-    local isLocal = (((mapID ~= 0) and mapID == currentMapID) or (mapID == 0 and isOnMap))
+    local isLocal
+    -- TODO Change that when Battle for Azeroth is released
+    if BFASupport.isBFA then
+      isLocal = BFASupport:IsQuestOnMap(questID)
+    else
+      local mapID = GetQuestWorldMapAreaID(questID)
+      local currentMapID = GetCurrentMapAreaID()
+      isLocal = (((mapID ~= 0) and mapID == currentMapID) or (mapID == 0 and isOnMap))
+    end
 
     if not isLocal then
       _QuestBlock:RemoveQuest(questID)

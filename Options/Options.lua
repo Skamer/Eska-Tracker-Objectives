@@ -17,6 +17,7 @@ function OnLoad(self)
   self:AddAchievementRecipes()
   self:AddDungeonRecipes()
   self:AddKeystoneRecipes()
+  self:AddQuestBlockRecipes()
   self:AddScenarioRecipes()
   self:AddGroupFinderRecipes()
 end
@@ -307,6 +308,15 @@ function AddKeystoneRecipes(self)
   :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "keystone-block-category/level")
+end
+--------------------------------------------------------------------------------
+--                                QuestBlock                                --
+--------------------------------------------------------------------------------
+function AddQuestBlockRecipes(self)
+  OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("quests-block-category/general/top-options"), "quests-block-category/general")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show only quests in the current zone"):SetOrder(80):SetWidth(1.0):BindOption("show-only-quests-in-zone"), "quests-block-category/general/top-options")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Sort quests by distance"):SetOrder(81):SetWidth(1.0):BindOption("sort-quests-by-distance"), "quests-block-category/general/top-options")
+
 end
 --------------------------------------------------------------------------------
 --                                Scenario                                    --

@@ -243,7 +243,28 @@ class "Quest" (function(_ENV)
     -- Second seperator
     ContextMenu():AddItem(MenuItemSeparator())
     ContextMenu():AddAction("abandon-quest", self)
+    -- Third separator
+    -- TODO: Remove later (it's currently used for debug)
+    ContextMenu():AddItem(MenuItemSeparator())
+    ContextMenu():AddItem("[DEBUG] Info", nil, function() self:Print() end)
     ContextMenu():Finish()
+  end
+
+  function Print(self)
+    print("------------")
+    print("ID:", self.id)
+    print("Name:", self.name)
+    print("Level:", self.level)
+    print("Header:", self.header)
+    print("Distance:", self.distance)
+    print("isBounty:", self.isBounty)
+    print("isTask:", self.isTask)
+    print("isHidden", self.isHidden)
+    print("isOnMap", self.isOnMap)
+    print("isInArea", self.isInArea)
+    print("isTracked", self.isTracked)
+    print("isCompleted", self.isCompleted)
+    print("------------")
   end
   ------------------------------------------------------------------------------
   --                            Properties                                    --

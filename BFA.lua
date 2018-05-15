@@ -22,6 +22,20 @@ class "BFASupport" (function(_ENV)
       QuestMapFrame_ShowQuestDetails(questID)
     end
   end
+
+  __Arguments__ { ClassType, Number }
+  __Static__() function IsQuestOnMap(self, questID)
+    if self.isBFA then
+      local questsOnMap = C_QuestLog.GetQuestsOnMap(C_Map.GetBestMapForUnit("player"))
+      for index, questInfo in ipairs(questsOnMap) do
+        if questInfo.questID == questID then
+          return true
+        end
+      end
+    end
+
+    return false
+  end
   ------------------------------------------------------------------------------
   --                             Instance                                     --
   ------------------------------------------------------------------------------
