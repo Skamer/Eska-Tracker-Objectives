@@ -1,3 +1,7 @@
+[1.0.4]
+- The 'Quest' popups are now implemented (this will use the notifications system for displaying them).
+- TEST: First test for setup the localization system with Curseforge.
+
 [1.0.3]
 - Added 'Show only quests in current zone' and 'Sort quests by distance' features.
 NOTE: The BFA version of 'Show only quests in current zone' is currently being tested.

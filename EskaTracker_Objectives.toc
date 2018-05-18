@@ -3,8 +3,11 @@
 ## Author: Skamer
 ## Notes: EskaTracker - |cffff6a00Objectives|r
 ## RequiredDeps: EskaTracker
-## Version: 1.0.3
+## Version: 1.0.4
 ## X-Stage: Alpha
+
+# Localization files
+Locales\locales.xml
 
 # Battle for Azeroth Support
 BFA.lua

@@ -1,0 +1,13 @@
+--                         EskaTracker : Objectives                           --
+-- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
+-- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
+--============================================================================--
+Scorpio           "EskaTracker.Objectives.Localization.frFR"                  ""
+--============================================================================--
+import                              "EKT"
+--============================================================================--
+local L = _Locale("frFR")
+
+if not L then return end
+
+--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="concat")@ 

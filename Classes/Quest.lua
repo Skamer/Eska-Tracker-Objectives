@@ -457,3 +457,86 @@ class "SuperTrackQuestAction" (function(_ENV)
     SuperTrackQuestAction.Exec(quest.id)
   end
 end)
+
+class "QuestPopupNotification" (function(_ENV)
+  inherit "InteractiveNotification"
+
+  stringQuestOffer    = string.format("%s\n|cff0fffff%s|r", L["QUEST_POPUP_QUEST_OFFER"], QUEST_WATCH_POPUP_CLICK_TO_VIEW)
+  stringQuestComplete = string.format("%s\n|cff0fffff%s|r", L["QUEST_POPUP_QUEST_COMPLETE"], QUEST_WATCH_POPUP_CLICK_TO_COMPLETE)
+  ------------------------------------------------------------------------------
+  --                                Handlers                                  --
+  ------------------------------------------------------------------------------
+  local function UpdateType(self, new, old)
+    if new == "OFFER" then
+      self.title = QUEST_WATCH_POPUP_QUEST_DISCOVERED
+      self.text = stringQuestOffer:format(self.questName)
+    elseif new == "COMPLETE" then
+      self.title = QUEST_WATCH_POPUP_QUEST_COMPLETE
+      self.text  = stringQuestComplete:format(self.questName)
+    end
+  end
+
+  local function UpdateName(self, new)
+    UpdateType(self, self.type)
+  end
+
+  local function OnEnterHandler(self)
+    self:SetColor(1, 0, 0)
+  end
+
+  local function OnLeaveHandler(self)
+    self:SetColor(200/255, 0, 0)
+  end
+
+  local function OnClickHandler(self)
+    if self.type == "OFFER" then
+      ShowQuestOffer(GetQuestLogIndexByID(self.questID))
+      RemoveAutoQuestPopUp(self.questID)
+    elseif self.type == "COMPLETE" then
+      ShowQuestComplete(GetQuestLogIndexByID(self.questID))
+      RemoveAutoQuestPopUp(self.questID)
+    end
+  end
+  ------------------------------------------------------------------------------
+  --                             Methods                                      --
+  ------------------------------------------------------------------------------
+  __Arguments__ { Number }
+  function SetQuestID(self, questID)
+    self.questID = questID
+    return self
+  end
+
+  __Arguments__ { String }
+  function SetQuestName(self, questName)
+    self.questName = questName
+    return self
+  end
+
+  __Arguments__ { String }
+  function SetType(self, type)
+    self.type = type
+    return self
+  end
+  ------------------------------------------------------------------------------
+  --                         Properties                                       --
+  ------------------------------------------------------------------------------
+  property "questID"   { TYPE = Number }
+  property "questName" { TYPE = String, DEFAULT = "", HANDLER = UpdateName }
+  property "type"      { TYPE = String, DEFAULT = "OFFER", HANDLER = UpdateType } -- COMPLETE
+  ------------------------------------------------------------------------------
+  --                            Constructors                                  --
+  ------------------------------------------------------------------------------
+  function QuestPopupNotification(self)
+    super(self)
+
+    self:SetColor(204/255, 0, 0)
+
+    self.frame.title:SetTextColor(1, 216/255, 0)
+
+    UpdateType(self, self.type)
+
+    self.OnEnter = OnEnterHandler
+    self.OnLeave = OnLeaveHandler
+    self.OnClick = self.OnClick + OnClickHandler
+  end
+end)

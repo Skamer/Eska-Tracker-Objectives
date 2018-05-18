@@ -57,6 +57,22 @@ function OnDisable(self)
   end
 end
 
+__SystemEvent__()
+function QUEST_AUTOCOMPLETE(questID)
+  _M:ShowPopup(questID, "COMPLETE")
+end
+
+__SecureHook__()
+function AutoQuestPopupTracker_AddPopUp(questID, popupType)
+  _M:ShowPopup(questID, popupType)
+end
+
+__SecureHook__()
+function AutoQuestPopupTracker_RemovePopUp(questID)
+  _M:HidePopup(questID)
+end
+
+
 __SystemEvent__  "EKT_QUESTBLOCK_QUEST_ADDED" "EKT_QUESTBLOCK_QUEST_REMOVED"
 function UPDATE_BLOCK_VISIBILITY(quest)
   if _QuestBlock then
@@ -70,6 +86,8 @@ function QUESTS_UPDATE(...)
   for questID in pairs(QUESTS_CACHE) do
     _M:UpdateQuest(questID)
   end
+
+  _M:RefreshPopups()
 end
 
 __SystemEvent__()
@@ -140,6 +158,8 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
     return
   end
 
+  _M:RefreshPopups()
+
   -- @NOTE: World Quest Group Finder addon adds the world quests as watched when you joins.
   -- Don't continue if the quest is a world quest or a emissary
   if IsWorldQuest(questID) or IsQuestBounty(questID) then return end
@@ -151,6 +171,39 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
     QUESTS_CACHE[questID] = nil
     _QuestBlock:RemoveQuest(questID)
     QuestSuperTracking_OnQuestUntracked()
+  end
+end
+
+function ShowPopup(self, questID, popupType)
+  local notification = Notifications():Get(questID)
+  if not notification then
+    local questName = GetQuestLogTitle(GetQuestLogIndexByID(questID))
+    notification = QuestPopupNotification()
+    notification.type       = popupType
+    notification.questID    = questID
+    notification.questName  = questName
+    notification.id         = questID
+    Notifications():Add(notification)
+  else
+    if notification.questName == "" then
+      notification.questName = GetQuestLogTitle(GetQuestLogIndexByID(questID))
+    end
+  end
+
+  return notification
+end
+
+
+function HidePopup(self, questID)
+  Notifications():Remove(questID)
+end
+
+function RefreshPopups(self)
+  for i = 1, GetNumAutoQuestPopUps() do
+    local questID, popupType = GetAutoQuestPopUp(i)
+    if not IsQuestBounty(questID) then
+      self:ShowPopup(questID, popupType)
+    end
   end
 end
 
