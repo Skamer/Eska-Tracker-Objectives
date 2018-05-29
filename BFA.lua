@@ -62,7 +62,7 @@ class "BFASupport" (function(_ENV)
   --                            Map                                            --
   ------------------------------------------------------------------------------
   __Arguments__ { ClassType }
-  __Static__() function SetMapToCurrentZone(self)
+  __Static__() function Support_SetMapToCurrentZone(self)
     if self.isBFA then
       -- TODO Find the equivalent for BFA
     else

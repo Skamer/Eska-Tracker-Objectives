@@ -53,7 +53,7 @@ function OnEnable(self)
   end
 
   UpdateObjectives()
-  BFA:SetMapToCurrentZone()
+  BFASupport:Support_SetMapToCurrentZone()
   self:UpdateTimer()
 
 end

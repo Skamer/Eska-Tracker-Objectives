@@ -170,6 +170,8 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
   else
     QUESTS_CACHE[questID] = nil
     _QuestBlock:RemoveQuest(questID)
+    ActionBars:RemoveButton(questID, "quest-items")
+
     QuestSuperTracking_OnQuestUntracked()
   end
 end
@@ -313,8 +315,14 @@ function UpdateQuest(self, questID)
     itemQuest.link = itemLink
     itemQuest.texture = itemTexture
 
-    -- TODO Add Later the item when the new Item API is availaible
-    --_Addon.ItemBar:AddItem(questID, itemLink, itemTexture)
+    if not ActionBars:HasButton(questID, "quest-items") then
+      local itemButton = ObjectManager:Get(ItemButton)
+      itemButton.id       = questID
+      itemButton.link     = itemLink
+      itemButton.texture  = itemTexture
+      itemButton.category = "quest-items"
+      ActionBars:AddButton(itemButton)
+    end
   end
 
 

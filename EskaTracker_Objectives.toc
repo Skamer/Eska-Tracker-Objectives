@@ -3,7 +3,7 @@
 ## Author: Skamer
 ## Notes: EskaTracker - |cffff6a00Objectives|r
 ## RequiredDeps: EskaTracker
-## Version: 1.0.4
+## Version: 1.0.5
 ## X-Stage: Alpha
 
 # Localization files
