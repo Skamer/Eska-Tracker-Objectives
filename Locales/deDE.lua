@@ -5,10 +5,8 @@
 --============================================================================--
 Scorpio           "EskaTracker.Objectives.Localization.deDE"                  ""
 --============================================================================--
-import                              "EKT"
---============================================================================--
 local L = _Locale("deDE")
 
 if not L then return end
 
---@localization(locale="deDE", format="lua_additive_table", handle-unlocalized="comment", handle-subnamespaces="concat")@ 
+--@localization(locale="deDE", format="lua_additive_table", handle-unlocalized="comment", handle-subnamespaces="concat")@
