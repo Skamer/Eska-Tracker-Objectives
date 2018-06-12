@@ -394,3 +394,45 @@ do
     end
   end
 end
+
+debugQuest = nil
+__SlashCmd__ "qdebug"
+function DebugNewQuest(self)
+  if not debugQuest then
+    debugQuest = ObjectManager:Get(Quest)
+    debugQuest.level = 100
+    debugQuest.name  = "Debug Quest #1"
+    debugQuest.header = "Debug"
+    _QuestBlock:AddQuest(debugQuest)
+  end
+end
+
+__SlashCmd__ "odebug"
+function DebugNewObjective(completed)
+  if debugQuest then
+    debugQuest.numObjectives = debugQuest.numObjectives + 1
+    local objective = debugQuest:GetObjective(debugQuest.numObjectives)
+    objective.text = "Debug Objective #" .. debugQuest.numObjectives
+    objective.isCompleted = completed
+
+    debugQuest:WakeUp(true)
+  end
+end
+
+__SlashCmd__ "wodebug"
+function DebugWakeUpObjective(index)
+  if debugQuest then
+    local obj = debugQuest:GetObjective(tonumber(index))
+    if obj then
+      obj:WakeUp()
+    end
+  end
+end
+
+__SlashCmd__ "idletest"
+function DebugIdleTest()
+  DebugNewQuest()
+  DebugNewObjective()
+  DebugNewObjective(true)
+  DebugNewObjective()
+end
