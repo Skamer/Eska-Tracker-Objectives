@@ -127,6 +127,9 @@ class "Achievement" (function(_ENV)
     end
   end
 
+  function OnHover(self, hover)
+    super.OnHover(self, hover)
+  end
 
   function GetCurrentState(self)
     return self.failed and "failed" or nil
@@ -198,9 +201,7 @@ class "Achievement" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Achievement(self)
-    super(self)
-
-    self.frame = CreateFrame("Frame")
+    super(self, CreateFrame("Frame"))
     self.frame:SetBackdrop(_Backdrops.Common)
 
     local ftex = CreateFrame("Frame", nil, self.frame)
@@ -342,7 +343,6 @@ class "AchievementBlock" (function(_ENV)
         height = height + offset
       end
     end
-
     self.height = height + 2
   end
   ------------------------------------------------------------------------------

@@ -7,6 +7,7 @@ Scorpio                "EskaTracker.Classes.BonusObjective"                   ""
 --============================================================================--
 namespace                       "EKT"
 --============================================================================--
+__Recyclable__()
 class "BonusQuest" (function(_ENV)
   inherit "Quest"
   _BonusQuestCache = setmetatable( {}, { __mode = "k" })
@@ -94,7 +95,7 @@ class "BonusObjectivesBlock" (function(_ENV)
   function CalculateHeight(self)
     local height = self.baseHeight
     local offset = 5
-    for index, worldQuest in self.worldQuests:GetIterator() do
+    for index, bonusQuest in self.bonusQuests:GetIterator() do
       height = height + bonusQuest.height + offset
     end
 

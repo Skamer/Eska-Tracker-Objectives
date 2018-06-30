@@ -24,11 +24,13 @@ class "QuestBlock" (function(_ENV)
           header = self:NewHeader(quest.header)
         end
         header:AddQuest(quest)
+        self:AddChildObject(header)
       else
         quest:SetParent(self.frame.content)
         quest.OnHeightChanged = function(_, new, old)
           self.height = self.height + (new - old)
         end
+        self:AddChildObject(quest)
       end
 
       quest.OnDistanceChanged = function() self:Layout() end
@@ -65,6 +67,8 @@ class "QuestBlock" (function(_ENV)
 
     if Options:Get("quest-categories-enabled") then
       self:RemoveQuestFromHeader(quest)
+    else
+      self:RemoveChildObject(quest)
     end
 
     Scorpio.FireSystemEvent("EKT_QUESTBLOCK_QUEST_REMOVED", quest)
@@ -111,6 +115,7 @@ class "QuestBlock" (function(_ENV)
   __Arguments__ { String }
   function RemoveHeader(self, name)
     local header = self.headers[name]
+    self:RemoveChildObject(header)
     header:Recycle()
 
     self.headers[name] = nil

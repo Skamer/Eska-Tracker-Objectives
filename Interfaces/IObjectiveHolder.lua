@@ -16,12 +16,14 @@ interface "IObjectiveHolder" (function(_ENV)
       for i = 1, new - old do
         local objective = ObjectManager:Get(Objective)
         self:AddObjective(objective)
+        self:AddChildObject(objective)
       end
     elseif new < old then
       for i = 1, old - new do
         local objective = self:GetObjective(new + 1)
         if objective then
           self.objectives:Remove(objective)
+          self:RemoveChildObject(objective)
           objective:Recycle()
         end
       end

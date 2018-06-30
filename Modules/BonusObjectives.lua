@@ -23,10 +23,17 @@ function OnEnable(self)
 
   _BonusObjectives.isActive = true
   self:LoadBonusQuests()
+
+  -- IDLE: Wake up permanently the bonus objective because it's always relevant to player who
+  -- in the zone.
+  _BonusObjectives:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _BonusObjectives then
+    -- IDLE:
+    _BonusObjectives:Idle()
+
     _BonusObjectives.isActive = false
   end
 

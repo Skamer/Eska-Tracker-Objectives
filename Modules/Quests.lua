@@ -176,7 +176,7 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
   end
 
   -- Wake up the tracker (idle mode feature)
-  _QuestBlock:WakeUpTracker()
+  _QuestBlock:WakeUp()
 end
 
 function ShowPopup(self, questID, popupType)

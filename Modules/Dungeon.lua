@@ -25,16 +25,20 @@ function OnEnable(self)
 
   _Dungeon.isActive = true
   UpdateObjectives()
+
+  -- Idle mode: wake up permanently the dungeon
+  _Dungeon:WakeUpPermanently(true)
 end
 
 
 function OnDisable(self)
   if _Dungeon then
+    _Dungeon:Idle()
     _Dungeon.isActive = false
   end
 end
 
-__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START" "SCENARIO_UPDATE"
+__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START" "SCENARIO_UPDATE" "ZONE_CHANGED"
 function ActivatingOn(self, ...)
   local inInstance, type = IsInInstance()
   return inInstance and (type == "party") and IsInScenario() and GetActiveKeystoneInfo() == 0
@@ -71,5 +75,19 @@ end
 
 __SystemEvent__ "WORLD_MAP_UPDATE" "UPDATE_INSTANCE_INFO"
 function UPDATE_TEXTURE()
-  _Dungeon.texture = select(6, EJ_GetInstanceInfo(BFASupport:GetCurrentInstance()))
+  local currentInstance = BFASupport:GetCurrentInstance()
+  if currentInstance then
+    _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
+  end
+end
+
+--------------------------------------------------------------------------------
+--                          BFA Events only
+--------------------------------------------------------------------------------
+__SystemEvent__()
+function ZONE_CHANGED_NEW_AREA()
+  local currentInstance = BFASupport:GetCurrentInstance()
+  if currentInstance then
+    _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
+  end
 end

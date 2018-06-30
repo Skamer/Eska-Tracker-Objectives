@@ -1,3 +1,9 @@
+[1.0.7]
+- [BFA] Fixed an error when the player enters in dungeons.
+- Fixed errors relative to Bonus Objectives.
+- Started to implement the idle mode feature provided by the addon core.
+- Updated the addon to apply the changes bring by EskaTracker.
+
 [1.0.6]
 - Updated to add the idle mode (very experimental).
 

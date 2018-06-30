@@ -42,7 +42,10 @@ class "BFASupport" (function(_ENV)
   __Arguments__ { ClassType }
   __Static__() function GetCurrentInstance(self)
     if self.isBFA then
-      return EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player"))
+      local mapID = C_Map.GetBestMapForUnit("player")
+      if mapID then
+        return EJ_GetInstanceForMap(mapID)
+      end
     else
       return EJ_GetCurrentInstance()
     end

@@ -38,6 +38,12 @@ class "Quest" (function(_ENV)
       self:ForceSkin()
     elseif prop == "distance" then
       self.OnDistanceChanged(self, new)
+    elseif prop == "isOnMap" then
+      if new then
+        self:WakeUpPermanently(true)
+      else
+        self:Idle()
+      end
     end
   end
   ------------------------------------------------------------------------------
@@ -277,9 +283,9 @@ class "Quest" (function(_ENV)
   property "isBounty"   { TYPE = Boolean, DEFAULT = false }
   property "isTask"     { TYPE = Boolean, DEFAULT = false }
   property "isHidden"   { TYPE = Boolean, DEFAULT = false }
-  property "isOnMap"    { TYPE = Boolean, DEFAULT = false, EVENT = "IsOnMapChanged" }
-  property "isInArea"   { TYPE = Boolean, DEFAULT = false }
-  property "isTracked"  { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
+  property "isOnMap"    { TYPE = Boolean, DEFAULT = false, EVENT = "IsOnMapChanged", HANDLER = UpdateProps }
+  property "isInArea"   { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
+  property "isTracked"  { TYPE = Boolean, DEFAULT = false }
   property "isCompleted" { TYPE = AnyBool, DEFAULT = false, EVENT = "IsCompletedChanged"}
 
   __Static__() property "_prefix" { DEFAULT = "quest" }
@@ -287,9 +293,7 @@ class "Quest" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Quest(self)
-    super(self)
-
-    self.frame = CreateFrame("Frame")
+    super(self, CreateFrame("Frame"))
     self.frame:SetBackdrop(_Backdrops.Common)
     self.frame:SetBackdropBorderColor(0, 0, 0, 0)
 
@@ -307,9 +311,7 @@ class "Quest" (function(_ENV)
       if button == "RightButton" then
         local action = Options:Get(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION)
         Actions:Exec(action, self)
-        --Actions:Exec("toggle-context-menu", self)
       elseif button == "LeftButton" then
-        --BFASupport:ShowQuestDetailsWithMap(self.id)
         local action = Options:Get(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION)
         Actions:Exec(action, self)
       elseif button == "MiddleButton" then
@@ -318,7 +320,14 @@ class "Quest" (function(_ENV)
       end
     end)
 
-    -- PrepareContextMenu()
+    headerFrame:SetScript("OnEnter", function()
+      Theme:SkinFrame(headerFrame, nil, "hover")
+      self:OnEnter()
+    end)
+    headerFrame:SetScript("OnLeave", function()
+      Theme:SkinFrame(headerFrame)
+      self:OnLeave()
+    end)
 
     local name = headerFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     name:GetFontObject():SetShadowOffset(0.5, 0)

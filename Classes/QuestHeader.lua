@@ -41,6 +41,8 @@ class "QuestHeader" (function(_ENV)
       end
 
       self:Layout()
+
+      self:AddChildObject(quest)
     end
   end
 
@@ -52,6 +54,7 @@ class "QuestHeader" (function(_ENV)
       quest.OnHeightChanged   = nil
       quest.OnDistanceChanged = nil
       self:Layout()
+      self:RemoveChildObject(quest)
     end
   end
 
@@ -177,9 +180,7 @@ class "QuestHeader" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function QuestHeader(self)
-    super(self)
-
-    self.frame = CreateFrame("Frame")
+    super(self, CreateFrame("Frame"))
     self.frame:SetBackdrop(_Backdrops.Common)
     self.frame:SetBackdropBorderColor(0, 0, 0, 0)
 

@@ -72,7 +72,7 @@ class "Objective" (function(_ENV)
   ------------------------------------------------------------------------------
   local function UpdateProps(self, new, old, prop)
     if prop == "text" then
-      Theme:SkinText(self.frame.text, Theme.SkinFlags.TEXT_TRANSFORM, new, self:GetCurrentState())
+    Theme:SkinText(self.frame.text, Theme.SkinFlags.TEXT_TRANSFORM, new, self:GetCurrentState())
     elseif prop == "failed" or prop == "isCompleted" then
       self:Skin()
     end
@@ -192,10 +192,10 @@ class "Objective" (function(_ENV)
     return "progress"
   end
 
+
   __Arguments__ { Variable.Optional(SkinFlags, Theme.DefaultSkinFlags), Variable.Optional(String) }
   function OnSkin(self, flags, target)
     super.OnSkin(self, flags, target)
-
     local state = self:GetCurrentState()
 
     if Theme:NeedSkin(self.frame, target) then
@@ -263,14 +263,15 @@ class "Objective" (function(_ENV)
   end
 
   function Reset(self)
-    self:Hide()
+    --[[self:Hide()
     self:ClearAllPoints()
     self:SetParent()
     self:HideProgress()
-    self:HideTimer()
+    self:HideTimer()--]]
 
     -- Remove event handlers
-    self.OnHeightChanged    = nil
+    --self.OnHeightChanged    = nil
+    super.Reset(self)
 
     self.text = nil
     self.type = nil
@@ -295,9 +296,7 @@ class "Objective" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Objective(self)
-    super(self)
-
-    self.frame = CreateFrame("Frame")
+    super(self, CreateFrame("Frame"))
     self.frame:SetBackdrop(_Backdrops.Common)
     self.frame:SetBackdropColor(0.1, 1, 0.1, 0)
     self.frame:SetBackdropBorderColor(0, 0, 0, 0)
