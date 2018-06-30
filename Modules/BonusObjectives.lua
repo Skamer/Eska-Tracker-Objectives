@@ -7,8 +7,10 @@ Scorpio              "EskaTracker.Objectives.BonusObjectives"                 ""
 --============================================================================--
 import                            "EKT"
 --============================================================================--
-IsWorldQuest = QuestUtils_IsQuestWorldQuest
-IsQuestTask  = IsQuestTask
+IsWorldQuest  = QuestUtils_IsQuestWorldQuest
+IsQuestTask   = IsQuestTask
+GetTaskInfo   = GetTaskInfo
+GetTasksTable = GetTasksTable
 --============================================================================--
 
 function OnLoad(self)
@@ -43,7 +45,9 @@ __EnablingOnEvent__ "QUEST_ACCEPTED" "PLAYER_ENTERING_WORLD"
 function EnablingOn(self, event, ...)
   if event == "QUEST_ACCEPTED" then
     local _, questID = ...
-    return IsQuestTask(questID) and not IsWorldQuest(questID)
+    return IsQuestTask(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID)
+  elseif event == "PLAYER_ENTERING_WORLD" then
+    return self:HasBonusQuest()
   end
 
   return false
@@ -63,7 +67,7 @@ end
 
 __SystemEvent__()
 function QUEST_ACCEPTED(_, questID)
-  if not IsQuestTask(questID) or IsWorldQuest(questID) or _BonusObjectives:GetBonusQuest(questID) then
+  if not IsQuestTask(questID) or IsWorldQuest(questID) or IsWorldQuestWatched(questID) or _BonusObjectives:GetBonusQuest(questID) then
     return
   end
 
@@ -73,6 +77,7 @@ function QUEST_ACCEPTED(_, questID)
   _M:UpdateBonusQuest(bonusQuest)
 
   _BonusObjectives:AddBonusQuest(bonusQuest)
+  PlaySound(SOUNDKIT.UI_SCENARIO_STAGE_END)
 end
 
 __SystemEvent__()
@@ -81,22 +86,18 @@ function QUEST_REMOVED(questID)
   Scorpio.FireSystemEvent("EKT_BONUSQUEST_REMOVED")
 end
 
-__Async__()
 function LoadBonusQuests(self)
-  local numEntries, numQuests = GetNumQuestLogEntries()
-  for i = 1, numEntries do
-    local title, level, suggestedGroup, isHeader, isCollapsed, isComplete,
-    frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI,
-    isTask, isBounty, isStory, isHidden = GetQuestLogTitle(i)
-
-    if not isHidden and isTask and not IsWorldQuest(questID) and not _BonusObjectives:GetBonusQuest(questID) then
+  local tasksTable = GetTasksTable()
+  for i = 1, #tasksTable do
+    local questID = tasksTable[i]
+    if not IsWorldQuest(questID) and not IsWorldQuestWatched(questID) and not _BonusObjectives:GetBonusQuest(questID) then
       local bonusQuest = ObjectManager:Get(BonusQuest)
-      bonusQuest.id = questID
-      bonusQuest.name = title
+      bonusQuest.id     = questID
 
       self:UpdateBonusQuest(bonusQuest)
-
       _BonusObjectives:AddBonusQuest(bonusQuest)
+
+      PlaySound(SOUNDKIT.UI_SCENARIO_STAGE_END)
     end
   end
 end
@@ -124,9 +125,7 @@ function UpdateBonusQuest(self, bonusQuest)
       else
         objective:HideProgress()
       end
-
     end
-
   end
 end
 
@@ -138,12 +137,15 @@ function QUEST_LOG_UPDATE()
 end
 
 function HasBonusQuest(self)
-  for i = 1, GetNumQuestLogEntries() do
-    local id = select(8, GetQuestLogTitle(i))
-    if IsQuestTask(id) and not IsWorldQuest(id) then
-      return true
+  local tasks = GetTasksTable()
+  for i = 1, #tasks do
+    local questID = tasks[i]
+    if not IsWorldQuest(questID) and not IsWorldQuestWatched(questID) then
+      local isInArea = GetTaskInfo(questID)
+      if isInArea then
+        return true
+      end
     end
   end
-
   return false
 end

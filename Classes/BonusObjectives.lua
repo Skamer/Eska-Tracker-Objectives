@@ -23,6 +23,8 @@ class "BonusQuest" (function(_ENV)
 
       -- Keep it in the cache
       _BonusQuestCache[self] = true
+
+      self:HideLevel()
   end
 end)
 

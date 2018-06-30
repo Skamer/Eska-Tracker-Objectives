@@ -1,3 +1,7 @@
+[1.0.8]
+- Reworked the bonus objectives module. Fixing by the way, an issue where the module isn't loaded when the player is already in a bonus objectives zone.
+- The level is no longer be displayed for bonus objectives.
+
 [1.0.7]
 - [BFA] Fixed an error when the player enters in dungeons.
 - Fixed errors relative to Bonus Objectives.
