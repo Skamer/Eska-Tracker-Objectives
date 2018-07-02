@@ -153,10 +153,8 @@ class "QuestHeader" (function(_ENV)
 
   end
 
-  function Reset(self)
-    self:Hide()
-    self:SetParent()
-    self:ClearAllPoints()
+  function OnReset(self)
+    super.OnReset(self)
 
     -- Reset properties
     self.name = nil

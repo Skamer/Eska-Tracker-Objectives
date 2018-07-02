@@ -1,3 +1,7 @@
+[1.0.9]
+- Updated the addon for applying the changes have been done in the addon core.
+- Added the idle mode feature for all contents. Currently, the current state is simply temporary, and other things are planned about it. 
+
 [1.0.8]
 - Reworked the bonus objectives module. Fixing by the way, an issue where the module isn't loaded when the player is already in a bonus objectives zone.
 - The level is no longer displayed for bonus objectives.

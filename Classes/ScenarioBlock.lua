@@ -97,14 +97,15 @@ class "ScenarioBlock" (function(_ENV)
     Theme:SkinText(self.frame.stageCounter, nil, string.format("%i/%i", self.currentStage, self.numStages), state)
   end
 
-  function Reset(self)
+  function OnReset(self)
+    super.OnReset(self)
+
     -- Reset properties
     self.name           = nil
     self.currentStage   = nil
     self.numStages      = nil
     self.stageName      = nil
     self.numObjectives  = nil
-
   end
   ------------------------------------------------------------------------------
   --                         Properties                                       --

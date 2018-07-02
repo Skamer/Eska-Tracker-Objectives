@@ -56,10 +56,13 @@ function OnEnable(self)
   BFASupport:Support_SetMapToCurrentZone()
   self:UpdateTimer()
 
+  -- IDLE
+  _Keystone:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _Keystone then
+    _Keystone:Idle()
     _Keystone.isActive = false
   end
 end

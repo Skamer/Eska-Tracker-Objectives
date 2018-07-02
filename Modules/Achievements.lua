@@ -31,10 +31,13 @@ function OnEnable(self)
   end
 
   _AchievementBlock.isActive = true
+  -- IDLE
+  _AchievementBlock:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _AchievementBlock then
+    _AchievementBlock:Idle()
     _AchievementBlock.isActive = false
   end
 end

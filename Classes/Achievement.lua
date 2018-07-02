@@ -162,15 +162,9 @@ class "Achievement" (function(_ENV)
     Theme:SkinText(self.frame.description, nil, self.desc, state)
   end
 
-  function Reset(self)
-    self:Hide()
-    self:SetParent(nil)
-    self:ClearAllPoints()
+  function OnReset(self)
+    super.OnReset(self)
 
-    -- Remove event handlers
-    self.OnHeightChanged = nil
-
-    -- Reset properties
     self.numObjectives  = nil
     self.id             = nil
     self.name           = nil

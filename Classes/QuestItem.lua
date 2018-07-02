@@ -39,12 +39,6 @@ class "QuestItem" (function(_ENV)
           GameTooltip:Show()
     end)
   end
-
-  function Reset(self)
-    self:SetParent(nil)
-    self:ClearAllPoints()
-    self:Hide()
-  end
   ------------------------------------------------------------------------------
   --                         Properties                                       --
   ------------------------------------------------------------------------------

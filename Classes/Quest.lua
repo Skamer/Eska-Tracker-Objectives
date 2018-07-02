@@ -154,16 +154,8 @@ class "Quest" (function(_ENV)
     self.height = height
   end
 
-  function Reset(self)
-    self:ClearAllPoints()
-    self:SetParent()
-    self:Hide()
-
-    -- Remove event handlers
-    self.OnDistanceChanged  = nil
-    self.IsOnMapChanged     = nil
-    self.IsCompletedChanged = nil
-    self.OnHeightChanged    = nil
+  function OnReset(self)
+    super.OnReset(self)
 
     -- Reset properties
     self.numObjectives  = nil
@@ -183,6 +175,15 @@ class "Quest" (function(_ENV)
       self.questItem:Recycle()
       self.questItem = nil
     end
+  end
+
+  function OnRecycle(self)
+    super.OnRecycle(self)
+
+    -- Remvoe Event handlers
+    self.OnDistanceChanged  = nil
+    self.IsOnMapChanged     = nil
+    self.IsCompletedChanged = nil
   end
 
 

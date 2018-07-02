@@ -40,11 +40,15 @@ function OnEnable(self)
 
   _WorldQuestBlock.isActive = true
   self:LoadWorldQuests()
+
+  -- IDLE
+  _WorldQuestBlock:WakeUpPermanently(true)
 end
 
 
 function OnDisable(self)
   if _WorldQuestBlock then
+    _WorldQuestBlock:Idle()
     _WorldQuestBlock.isActive = false
   end
 end

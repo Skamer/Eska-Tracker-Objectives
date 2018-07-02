@@ -112,6 +112,8 @@ class "Objective" (function(_ENV)
     end
   end
 
+
+
   function SetTimer(self, duration, elapsed)
     local remainingDuration = duration - elapsed
     local remainingDurationPercent = remainingDuration * 100 / duration
@@ -178,7 +180,6 @@ class "Objective" (function(_ENV)
       self.frame.fbar:SetMinMaxValues(min, max)
     end
   end
-
 
   function GetCurrentState(self)
     if self.failed then
@@ -262,16 +263,8 @@ class "Objective" (function(_ENV)
     Theme:SkinFrame(self.frame.square, nil, state)
   end
 
-  function Reset(self)
-    --[[self:Hide()
-    self:ClearAllPoints()
-    self:SetParent()
-    self:HideProgress()
-    self:HideTimer()--]]
-
-    -- Remove event handlers
-    --self.OnHeightChanged    = nil
-    super.Reset(self)
+  function OnReset(self)
+    super.OnReset(self)
 
     self.text = nil
     self.type = nil
@@ -356,13 +349,6 @@ class "DottedObjective" (function(_ENV)
 
     _DottedObjectiveCache[self] = true
   end
-
-  function Reset(self)
-    self:ClearAllPoints()
-    self:SetParent(nil)
-    self:Hide()
-  end
-
 end)
 --------------------------------------------------------------------------------
 --                          Scorpio OnLoad                                    --

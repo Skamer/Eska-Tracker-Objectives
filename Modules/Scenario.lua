@@ -30,10 +30,14 @@ function OnEnable(self)
 
   self:UpdateScenario()
   self:UpdateObjectives()
+
+  -- IDLE
+  _Scenario:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _Scenario then
+    _Scenario:Idle()
     _Scenario.isActive = false
     _Scenario:Reset()
   end
