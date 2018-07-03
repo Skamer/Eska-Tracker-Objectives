@@ -25,14 +25,38 @@ QUEST_HEADERS_CACHE = {}
 QUESTS_CACHE        = {}
 
 function OnLoad(self)
-
   -- Register the options
   Options:Register("sort-quests-by-distance", true, "quests/sortingByDistance")
   Options:Register("show-only-quests-in-zone", false, "quests/showOnlyQuestInZone")
   Options:Register("quest-popup-location", "TOP")
+  Options:Register("quest-idle-mode-ignore-map-frame", false, "quests/updateAll")
 
   CallbackHandlers:Register("quests/sortingByDistance", CallbackHandler(function(enabled) if enabled then self:UpdateDistance() end end))
   CallbackHandlers:Register("quests/showOnlyQuestInZone", CallbackHandler(EKT_SHOW_ONLY_QUESTS_IN_ZONE))
+  CallbackHandlers:Register("quests/updateAll", CallbackHandler(function()
+    for questID in pairs(QUESTS_CACHE) do
+      _M:UpdateQuest(questID)
+    end
+  end))
+
+  if BFASupport.isBFA then
+    WorldMapFrame:HookScript("OnHide", function() CallbackHandlers:Call("quests/updateAll") end)
+  end
+end
+
+-- TODO: Remove this condition when Battle for Azeroth is released.
+if BFASupport.isBFA then
+  __SecureHook__(WorldMapFrame, "SetMapID")
+  function UpdateMapID(worldMapFrame, mapID)
+    if not Options:Get("quest-idle-mode-ignore-map-frame") then
+      for questID in pairs(QUESTS_CACHE) do
+        local quest = _QuestBlock:GetQuest(questID)
+        if quest then
+          quest.isOnMap = BFASupport:IsQuestOnMap(questID, mapID)
+        end
+      end
+    end
+  end
 end
 
 __Async__()
@@ -306,10 +330,18 @@ function UpdateQuest(self, questID)
   quest.name            = title
   quest.header          = _M:GetQuestHeader(questID)
   quest.level           = select(2, GetQuestLogTitle(questLogIndex))
-  quest.isOnMap         = isOnMap
   quest.isTask          = isTask
   quest.isBounty        = isBounty
   quest.isCompleted     = isComplete
+  if BFASupport.isBFA then
+    if WorldMapFrame:IsShown() and not Options:Get("quest-idle-mode-ignore-map-frame") then
+      quest.isOnMap = BFASupport:IsQuestOnMap(questID, WorldMapFrame:GetMapID())
+    else
+      quest.isOnMap = BFASupport:IsQuestOnMap(questID)
+    end
+  else
+    quest.isOnMap = isOnMap
+  end
 
   -- is the quest has an item quest ?
   local itemLink, itemTexture = GetQuestLogSpecialItemInfo(questLogIndex)

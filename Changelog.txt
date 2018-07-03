@@ -1,6 +1,11 @@
+[1.0.10]
+- [BFA Only] Made improvements how the idle mode is used by Quest module. A quest will now fade if this one is not in the current map.
+Moreover, when you're navigating throught zones from WorldMapFrame, the addon will fade the quests which are not in the zone you're looking.
+NOTE: As said previously, this feature is only avaliable if the client is under the 8.0 (BFA), and the idle mode feature  is enabled.
+
 [1.0.9]
 - Updated the addon for applying the changes have been done in the addon core.
-- Added the idle mode feature for all contents. Currently, the current state is simply temporary, and other things are planned about it. 
+- Added the idle mode feature for all contents. Currently, the current state is simply temporary, and other things are planned about it.
 
 [1.0.8]
 - Reworked the bonus objectives module. Fixing by the way, an issue where the module isn't loaded when the player is already in a bonus objectives zone.

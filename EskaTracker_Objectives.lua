@@ -3,7 +3,7 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio                        "EskaTracker.Objectives"                  "1.0.9"
+Scorpio                        "EskaTracker.Objectives"                 "1.0.10"
 --============================================================================--
 import "EKT"
 --============================================================================--
@@ -31,11 +31,4 @@ function BonusObjectiveTracker_UntrackWorldQuest(questID)
   if Options:Get("show-tracked-world-quests") then
     Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false)
   end
-end
-
-function OnLoad(self)
-  --[[ActionBars:AddButton(ItemButton(), "quest-items")
-  ActionBars:AddButton(ItemButton(), "quest-items")
-  ActionBars:AddButton(ItemButton(), "quest-items")
-  ActionBars:AddButton(ItemButton(), "quest-items")--]]
 end
