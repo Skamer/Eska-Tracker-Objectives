@@ -4,7 +4,7 @@
 ## Notes: EskaTracker - |cffff6a00Objectives|r
 ## RequiredDeps: EskaTracker
 ## Version: 1.0.10
-## X-Stage: Alpha
+## X-Stage: Beta
 
 # Localization files
 Locales\locales.xml
