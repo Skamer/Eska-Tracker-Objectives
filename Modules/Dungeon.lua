@@ -25,15 +25,11 @@ function OnEnable(self)
 
   _Dungeon.isActive = true
   UpdateObjectives()
-
-  -- Idle mode: wake up permanently the dungeon
-  _Dungeon:WakeUpPermanently(true)
 end
 
 
 function OnDisable(self)
   if _Dungeon then
-    _Dungeon:Idle()
     _Dungeon.isActive = false
   end
 end
@@ -51,6 +47,7 @@ function UpdateObjectives()
   local dungeonName, _, numObjectives = GetStepInfo()
   _Dungeon.name          = dungeonName
   _Dungeon.numObjectives = numObjectives
+  _Dungeon:WakeUpTracker()
 
   for index = 1, numObjectives do
     local description, criteriaType, completed, quantity, totalQuantity,

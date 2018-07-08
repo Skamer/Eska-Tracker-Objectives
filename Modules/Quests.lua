@@ -112,6 +112,7 @@ function QUESTS_UPDATE(...)
   end
 
   _M:RefreshPopups()
+  _QuestBlock:WakeUpTracker()
 end
 
 __SystemEvent__()
@@ -199,8 +200,7 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
     QuestSuperTracking_OnQuestUntracked()
   end
 
-  -- Wake up the tracker (idle mode feature)
-  _QuestBlock:WakeUp()
+  _QuestBlock:WakeUpTracker()
 end
 
 function ShowPopup(self, questID, popupType)
@@ -435,7 +435,9 @@ function DebugNewQuest(self)
     debugQuest.level = 100
     debugQuest.name  = "Debug Quest #1"
     debugQuest.header = "Debug"
+    debugQuest:WakeUpTracker()
     _QuestBlock:AddQuest(debugQuest)
+    --debugQuest:WakeUpTracker()
   end
 end
 
@@ -446,17 +448,14 @@ function DebugNewObjective(completed)
     local objective = debugQuest:GetObjective(debugQuest.numObjectives)
     objective.text = "Debug Objective #" .. debugQuest.numObjectives
     objective.isCompleted = completed
-
-    debugQuest:WakeUp(true)
   end
 end
 
 __SlashCmd__ "wodebug"
-function DebugWakeUpObjective(index)
+function DebugObjective(index)
   if debugQuest then
     local obj = debugQuest:GetObjective(tonumber(index))
     if obj then
-      obj:WakeUp()
     end
   end
 end

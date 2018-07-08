@@ -39,11 +39,7 @@ class "Quest" (function(_ENV)
     elseif prop == "distance" then
       self.OnDistanceChanged(self, new)
     elseif prop == "isOnMap" then
-      if new then
-        self:WakeUpPermanently(true)
-      else
-        self:Idle()
-      end
+      
     end
   end
   ------------------------------------------------------------------------------

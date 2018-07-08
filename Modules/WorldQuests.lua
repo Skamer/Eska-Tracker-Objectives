@@ -39,16 +39,13 @@ function OnEnable(self)
   end
 
   _WorldQuestBlock.isActive = true
+  _WorldQuestBlock:WakeUpTracker()
   self:LoadWorldQuests()
-
-  -- IDLE
-  _WorldQuestBlock:WakeUpPermanently(true)
 end
 
 
 function OnDisable(self)
   if _WorldQuestBlock then
-    _WorldQuestBlock:Idle()
     _WorldQuestBlock.isActive = false
   end
 end
@@ -105,6 +102,7 @@ function QUEST_ACCEPTED(_, questID, isTracked)
   _M:UpdateWorldQuest(worldQuest)
 
   _WorldQuestBlock:AddWorldQuest(worldQuest)
+  _WorldQuestBlock:WakeUpTracker()
 end
 
 __SystemEvent__()
@@ -134,6 +132,7 @@ function QUEST_REMOVED(questID, fromTracking)
   end
 
   _WorldQuestBlock:RemoveWorldQuest(questID)
+  _WorldQuestBlock:WakeUpTracker()
   Scorpio.FireSystemEvent("EKT_WORLDQUEST_REMOVED")
 end
 
@@ -151,6 +150,8 @@ function EKT_WORLDQUEST_TRACKED_LIST_CHANGED(questID, isAdded, hardWatch)
   else
     QUEST_REMOVED(questID, true)
   end
+
+  _WorldQuestBlock:WakeUpTracker()
 end
 
 __Async__()
@@ -245,6 +246,8 @@ function QUEST_LOG_UPDATE()
   for _, worldQuest in _WorldQuestBlock.worldQuests:GetIterator() do
     _M:UpdateWorldQuest(worldQuest)
   end
+
+  _WorldQuestBlock:WakeUpTracker()
 end
 
 

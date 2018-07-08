@@ -55,14 +55,10 @@ function OnEnable(self)
   UpdateObjectives()
   BFASupport:Support_SetMapToCurrentZone()
   self:UpdateTimer()
-
-  -- IDLE
-  _Keystone:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _Keystone then
-    _Keystone:Idle()
     _Keystone.isActive = false
   end
 end
@@ -82,6 +78,7 @@ function UpdateObjectives()
   _Keystone.name = dungeonName
   _Keystone.numObjectives = numObjectives
   _Keystone.isCompleted = completed
+  _Keystone:WakeUpTracker()
 
   for index = 1, numObjectives do
     local description, criteriaType, completed, quantity, totalQuantity,
@@ -106,6 +103,7 @@ end
 __Async__()
 __SystemEvent__()
 function CHALLENGE_MODE_START(timerID)
+  _Keystone:WakeUpTracker()
   _Keystone.timer = 0
   Delay(10)
 
@@ -123,5 +121,6 @@ function UpdateTimer(self)
        local _, elapsedTime = GetWorldElapsedTime(1)
       _Keystone.timer = elapsedTime
       Delay(0.1)
+      _Keystone:WakeUpTracker()
     end
 end

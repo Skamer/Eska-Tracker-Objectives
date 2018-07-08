@@ -24,18 +24,12 @@ function OnEnable(self)
   end
 
   _BonusObjectives.isActive = true
+  _BonusObjectives:WakeUpTracker()
   self:LoadBonusQuests()
-
-  -- IDLE: Wake up permanently the bonus objective because it's always relevant to player who
-  -- in the zone.
-  _BonusObjectives:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _BonusObjectives then
-    -- IDLE:
-    _BonusObjectives:Idle()
-
     _BonusObjectives.isActive = false
   end
 
@@ -134,6 +128,8 @@ function QUEST_LOG_UPDATE()
     for _, bonusQuest in _BonusObjectives.bonusQuests:GetIterator() do
       _M:UpdateBonusQuest(bonusQuest)
     end
+
+    _BonusObjectives:WakeUpTracker()
 end
 
 function HasBonusQuest(self)

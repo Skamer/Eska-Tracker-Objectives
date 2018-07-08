@@ -30,14 +30,10 @@ function OnEnable(self)
 
   self:UpdateScenario()
   self:UpdateObjectives()
-
-  -- IDLE
-  _Scenario:WakeUpPermanently(true)
 end
 
 function OnDisable(self)
   if _Scenario then
-    _Scenario:Idle()
     _Scenario.isActive = false
     _Scenario:Reset()
   end
@@ -60,6 +56,7 @@ function UpdateObjectives(self)
   local needRunTimer = false
 
   _Scenario.stageName = stageName
+  _Scenario:WakeUpTracker()
 
   if weightedProgress then
     -- @NOTE : Some scenario (e.g : 7.2 Broken shode indroduction, invasion scenario)
@@ -161,6 +158,7 @@ function UpdateScenario(self, isNewStage)
   _Scenario.name = title
   _Scenario.currentStage = currentStage
   _Scenario.numStages = numStages
+  _Scenario:WakeUpTracker()
 
   if isNewStage then
     LevelUpDisplay_PlayScenario()

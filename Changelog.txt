@@ -1,3 +1,6 @@
+[1.0.11]
+- Updated to apply the changes done in the idle mode by the addon core.
+
 [1.0.10]
 - [BFA Only] Made improvements how the idle mode is used by Quest module. A quest will now fade if this one is not in the current map.
 Moreover, when you're navigating throught zones from WorldMapFrame, the addon will fade the quests which are not in the zone you're looking.

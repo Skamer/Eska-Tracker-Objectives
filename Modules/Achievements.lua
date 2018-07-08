@@ -31,13 +31,11 @@ function OnEnable(self)
   end
 
   _AchievementBlock.isActive = true
-  -- IDLE
-  _AchievementBlock:WakeUpPermanently(true)
+  _AchievementBlock:WakeUpTracker()
 end
 
 function OnDisable(self)
   if _AchievementBlock then
-    _AchievementBlock:Idle()
     _AchievementBlock.isActive = false
   end
 end
@@ -57,6 +55,8 @@ function TRACKED_ACHIEVEMENT_UPDATE(achievementID)
   if achievement then
     _M:UpdateAchievement(achievement)
   end
+
+  _AchievementBlock:WakeUpTracker()
 end
 
 __SystemEvent__()
@@ -83,6 +83,8 @@ function TRACKED_ACHIEVEMENT_LIST_CHANGED(achievementID, isAdded)
     -- Infortunnaly we don't know which achievement has an eligibility change.
     _M:UpdateAll()
   end
+
+  _AchievementBlock:WakeUpTracker()
 end
 
 __Async__()
