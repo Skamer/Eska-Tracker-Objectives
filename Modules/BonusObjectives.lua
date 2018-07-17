@@ -25,11 +25,13 @@ function OnEnable(self)
 
   _BonusObjectives.isActive = true
   _BonusObjectives:WakeUpTracker()
+  _BonusObjectives:PauseIdleCountdown()
   self:LoadBonusQuests()
 end
 
 function OnDisable(self)
   if _BonusObjectives then
+    _BonusObjectives:ResumeIdleCountdown()
     _BonusObjectives.isActive = false
   end
 
@@ -128,8 +130,6 @@ function QUEST_LOG_UPDATE()
     for _, bonusQuest in _BonusObjectives.bonusQuests:GetIterator() do
       _M:UpdateBonusQuest(bonusQuest)
     end
-
-    _BonusObjectives:WakeUpTracker()
 end
 
 function HasBonusQuest(self)

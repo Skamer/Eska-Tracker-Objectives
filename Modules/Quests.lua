@@ -27,12 +27,12 @@ QUESTS_CACHE        = {}
 function OnLoad(self)
   -- Register the options
   Options:Register("sort-quests-by-distance", true, "quests/sortingByDistance")
-  Options:Register("show-only-quests-in-zone", false, "quests/showOnlyQuestInZone")
+  Options:Register("show-only-quests-in-zone", false, "quests/updateAll")
   Options:Register("quest-popup-location", "TOP")
   Options:Register("quest-idle-mode-ignore-map-frame", false, "quests/updateAll")
 
   CallbackHandlers:Register("quests/sortingByDistance", CallbackHandler(function(enabled) if enabled then self:UpdateDistance() end end))
-  CallbackHandlers:Register("quests/showOnlyQuestInZone", CallbackHandler(EKT_SHOW_ONLY_QUESTS_IN_ZONE))
+  -- CallbackHandlers:Register("quests/showOnlyQuestInZone", CallbackHandler(EKT_SHOW_ONLY_QUESTS_IN_ZONE))
   CallbackHandlers:Register("quests/updateAll", CallbackHandler(function()
     for questID in pairs(QUESTS_CACHE) do
       _M:UpdateQuest(questID)
@@ -68,7 +68,7 @@ function OnEnable(self)
 
   self:LoadQuests()
   self:UpdateDistance()
-  EKT_SHOW_ONLY_QUESTS_IN_ZONE()
+  --EKT_SHOW_ONLY_QUESTS_IN_ZONE()
   UPDATE_BLOCK_VISIBILITY()
 
   -- [FIX] Super track the closest quest for the players having not the blizzad objective quest.
@@ -105,7 +105,7 @@ function UPDATE_BLOCK_VISIBILITY(quest)
 end
 
 
-__SystemEvent__ "QUEST_LOG_UPDATE" "ZONE_CHANGED" "EKT_SHOW_ONLY_QUESTS_IN_ZONE"
+__SystemEvent__ "QUEST_LOG_UPDATE" "ZONE_CHANGED" "ZONE_CHANGED_NEW_ARED" "AREA_POIS_UPDATED" "EKT_SHOW_ONLY_QUESTS_IN_ZONE"
 function QUESTS_UPDATE(...)
   for questID in pairs(QUESTS_CACHE) do
     _M:UpdateQuest(questID)
@@ -118,47 +118,50 @@ end
 __SystemEvent__()
 function QUEST_POI_UPDATE()
   QuestSuperTracking_OnPOIUpdate()
+  QUESTS_UPDATE()
 end
 
-do
-  local alreadyHooked = false
-  local needUpdate = false
+if not BFASupport.isBFA then
+  do
+    local alreadyHooked = false
+    local needUpdate = false
 
-  function RunQuestLogUpdate()
-    if Options:Get("show-only-quests-in-zone") then
-      QUESTS_UPDATE()
-      needUpdate = false
-    end
-  end
-
-  __SystemEvent__()
-  function ZONE_CHANGED()
-    -- @NOTE This seems that GetQuestWorldMapAreaID() uses SetMapToCurrentZone so we
-    -- need to wait the WorldMapFrame is hidden to continue
-    if Options:Get("show-only-quests-in-zone") then
-      if WorldMapFrame:IsShown() then
-        needUpdate = true
-      else
+    function RunQuestLogUpdate()
+      if Options:Get("show-only-quests-in-zone") then
         QUESTS_UPDATE()
-      end
-    end
-  end
-
-  __SystemEvent__()
-  function EKT_SHOW_ONLY_QUESTS_IN_ZONE()
-    if Options:Get("show-only-quests-in-zone") then
-      if not alreadyHooked then
-        WorldMapFrame:HookScript("OnHide", RunQuestLogUpdate)
-        alreadyHooked = true
-      end
-
-      if WorldMapFrame:IsShown() then
-        needUpdate = true
-        return
+        needUpdate = false
       end
     end
 
-    QUESTS_UPDATE()
+    __SystemEvent__()
+    function ZONE_CHANGED()
+      -- @NOTE This seems that GetQuestWorldMapAreaID() uses SetMapToCurrentZone so we
+      -- need to wait the WorldMapFrame is hidden to continue
+      if Options:Get("show-only-quests-in-zone") then
+        if WorldMapFrame:IsShown() then
+          needUpdate = true
+        else
+          QUESTS_UPDATE()
+        end
+      end
+    end
+
+    __SystemEvent__()
+    function EKT_SHOW_ONLY_QUESTS_IN_ZONE()
+      if Options:Get("show-only-quests-in-zone") then
+        if not alreadyHooked then
+          WorldMapFrame:HookScript("OnHide", RunQuestLogUpdate)
+          alreadyHooked = true
+        end
+
+        if WorldMapFrame:IsShown() then
+          needUpdate = true
+          return
+        end
+      end
+
+      QUESTS_UPDATE()
+    end
   end
 end
 
@@ -280,6 +283,114 @@ function LoadQuests(self)
 end
 
 
+
+function UpdateQuest(self, questID)
+  local questLogIndex     = GetQuestLogIndexByID(questID)
+  local questWatchIndex   = GetQuestWatchIndex(questLogIndex)
+
+  if not questWatchIndex then
+    Trace("questWatchIndex is nil")
+    return
+  end
+
+  local qID, title, questLogIndex, numObjectives, requiredMoney,
+  isComplete, startEvent, isAutoComplete, failureTime, timeElapsed,
+  questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI = GetQuestWatchInfo(questWatchIndex)
+
+  local quest = _QuestBlock:GetQuest(questID)
+
+  local isLocal
+  if BFASupport.isBFA then
+    isLocal = BFASupport:IsQuestOnMap(questID)
+  else
+    local mapID         = GetQuestWorldMapAreaID(questID)
+    local currentMapID  = GetCurrentMapAreaID()
+    isLocal = (((mapID ~= 0) and mapID == currentMapID) or (mapID == 0 and isOnMap))
+  end
+
+  if Options:Get("show-only-quests-in-zone") and not isLocal then
+    if quest then
+      quest:ResumeIdleCountdown()
+      _QuestBlock:RemoveQuest(quest)
+    end
+    return
+  end
+
+  local isNew = false
+  if not quest then
+    quest = ObjectManager:Get(Quest)
+    isNew = true
+  end
+
+  if isLocal then
+    quest:WakeUpTracker()
+    quest:PauseIdleCountdown()
+  end
+
+  quest.id                = questID
+  quest.name              = title
+  quest.header            = _M:GetQuestHeader(questID)
+  quest.level             = select(2, GetQuestLogTitle(questLogIndex))
+  quest.isTask            = isTask
+  quest.isBounty          = isBounty
+  quest.isCompleted       = isComplete
+  quest.isOnMap           = isLocal
+
+  -- is the quest has an item quest ?
+  local itemLink, itemTexture = GetQuestLogSpecialItemInfo(questLogIndex)
+  if itemLink and itemTexture then
+    local itemQuest = quest:GetQuestItem()
+    itemQuest.link = itemLink
+    itemQuest.texture = itemTexture
+
+    if not ActionBars:HasButton(questID, "quest-items") then
+      local itemButton = ObjectManager:Get(ItemButton)
+      itemButton.id       = questID
+      itemButton.link     = itemLink
+      itemButton.texture  = itemTexture
+      itemButton.category = "quest-items"
+      ActionBars:AddButton(itemButton)
+    end
+  end
+
+
+  -- Update the objective
+  if numObjectives > 0 then
+    quest.numObjectives = numObjectives
+    for index = 1, numObjectives do
+      local text, type, finished = GetQuestObjectiveInfo(quest.id, index, false)
+      local objective = quest:GetObjective(index)
+
+      objective.text = text
+      objective.isCompleted = finished
+
+      if type == "progressbar" then
+        local progress = GetQuestProgressBarPercent(quest.id)
+        objective:ShowProgress()
+        objective:SetMinMaxProgress(0, 100)
+        objective:SetProgress(progress)
+        objective:SetTextProgress(PERCENTAGE_STRING:format(progress))
+      else
+        objective:HideProgress()
+      end
+    end
+  else
+    quest.numObjectives = 1
+    local objective = quest:GetObjective(1)
+    SelectQuestLogEntry(questLogIndex)
+
+    objective.text = GetQuestLogCompletionText()
+    objective.isCompleted = false
+  end
+
+  if isNew then
+    _QuestBlock:AddQuest(quest)
+    quest.IsCompletedChanged = function() QuestSuperTracking_OnQuestCompleted() end
+  end
+end
+
+
+--[[
 function UpdateQuest(self, questID)
   local questLogIndex = GetQuestLogIndexByID(questID)
   local questWatchIndex = GetQuestWatchIndex(questLogIndex)
@@ -292,6 +403,8 @@ function UpdateQuest(self, questID)
   local qID, title, questLogIndex, numObjectives, requiredMoney,
   isComplete, startEvent, isAutoComplete, failureTime, timeElapsed,
   questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI = GetQuestWatchInfo(questWatchIndex)
+
+
   -- #######################################################################
   -- Is the player wants the quests are filered by zone ?
   if Options:Get("show-only-quests-in-zone") then
@@ -318,7 +431,6 @@ function UpdateQuest(self, questID)
     end
   end
   -- #######################################################################
-
   local quest = _QuestBlock:GetQuest(questID)
   local isNew = false
   if not quest then
@@ -395,7 +507,7 @@ function UpdateQuest(self, questID)
     quest.IsCompletedChanged = function() QuestSuperTracking_OnQuestCompleted() end
   end
 end
-
+--]]
 
 do
   local function IsLegionAssaultQuest(questID)

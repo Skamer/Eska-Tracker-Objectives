@@ -37,7 +37,7 @@ class "Objective" (function(_ENV)
 
     bgFrame.background = bgFrame:CreateTexture(nil, "BACKGROUND")
     bgFrame.background:SetAllPoints(bgFrame)
-    bgFrame.background:SetTexture([[Interface\AddOns\EskaQuestTracker\Media\Textures\Frame-Background-6]])
+    bgFrame.background:SetTexture([[Interface\AddOns\EskaTracker\Media\Textures\Frame-Background-6]])
     bgFrame.background:SetVertexColor(0, 0, 0, 0.5)
 
     local borderB = bgFrame:CreateTexture(nil,"OVERLAY")
@@ -165,6 +165,13 @@ class "Objective" (function(_ENV)
     if self.frame.fbar then
       self.frame.fbar.text:SetText(text)
     end
+  end
+
+  __Arguments__ { String, Any, Variable.Rest(Any) }
+  function SetTextProgress(self, text, ...)
+    if self.frame.fbar then
+      self.frame.fbar.text:SetFormattedText(text, ...)
+    end 
   end
 
   __Arguments__ { Number }

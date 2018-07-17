@@ -1,3 +1,19 @@
+[1.0.12]
+- FIX: An incorrect path for a texture.
+
+- UPDATE: The keystone (mythic +) module and its block related.
+- NEW: The elements in the keystone block have been rearranged.
+- NEW: A timer bar and a death count have been included in the keystone block.
+- NEW: Various options has been added for the keystone blocks:
+  - "Show timer bar"
+  - "Show death count"
+  - "Enemy forces format
+  - "Percentage format"
+- FIX: A case where the timer was launched two times.
+- FIX: [BFA] An error lua triggered when there is no quest on the current map.
+- FIX: The quest level will now be correctly updated.
+
+
 [1.0.11]
 - Updated to apply the changes done in the idle mode by the addon core.
 

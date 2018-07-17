@@ -286,6 +286,43 @@ end
 --                                Keystone                                    --
 --------------------------------------------------------------------------------
 function AddKeystoneRecipes(self)
+  -- General
+  OptionBuilder:AddRecipe(CheckBoxRecipe()
+  :SetText("Show Timer bar")
+  :SetOrder(200)
+  :BindOption("keystone-show-timer-bar"), "keystone-block-category/general")
+
+  OptionBuilder:AddRecipe(CheckBoxRecipe()
+  :SetText("Show Death count")
+  :SetOrder(201)
+  :BindOption("keystone-show-death-count"), "keystone-block-category/general")
+
+
+  local enemyForcesFormats = {
+    [1] = "57%",
+    [2] = "152",
+    [3] = "152/268",
+    [4] = "152/268 (57%)",
+  }
+
+  OptionBuilder:AddRecipe(SelectRecipe()
+  :SetText("Enemy Forces format")
+  :SetList(enemyForcesFormats)
+  :SetOrder(202)
+  :BindOption("keystone-enemy-forces-format"), "keystone-block-category/general")
+
+  local percentageFormats = {
+    [0] = "57%",
+    [1] = "57.5%",
+    [2] = "57.54%",
+  }
+
+  OptionBuilder:AddRecipe(SelectRecipe()
+  :SetText("Percentage format")
+  :SetList(percentageFormats)
+  :SetOrder(283)
+  :BindOption("keystone-percentage-format"), "keystone-block-category/general")
+
   -- Name Tab
   OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("keystone-block-category/name"):SetOrder(110), "keystone-block-category/tabs")
   OptionBuilder:AddRecipe(ThemePropertyRecipe()

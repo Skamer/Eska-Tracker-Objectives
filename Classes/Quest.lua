@@ -33,13 +33,13 @@ class "Quest" (function(_ENV)
     if prop == "name" then
       self:ForceSkin(Theme.SkinFlags.TEXT_TRANSFORM, Theme:GetElementID(self.frame.name))
     elseif prop == "level" then
-      self:ForceSkin(Theme.SkinFlags.TEXT_COLOR, Theme:GetElementID(self.frame.level))
+      self:ForceSkin(nil, Theme:GetElementID(self.frame.level))
     elseif prop == "isTracked" then
       self:ForceSkin()
     elseif prop == "distance" then
       self.OnDistanceChanged(self, new)
     elseif prop == "isOnMap" then
-      
+
     end
   end
   ------------------------------------------------------------------------------

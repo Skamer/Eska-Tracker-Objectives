@@ -25,11 +25,15 @@ function OnEnable(self)
 
   _Dungeon.isActive = true
   UpdateObjectives()
+
+  _Dungeon:WakeUpTracker()
+  _Dungeon:PauseIdleCountdown()
 end
 
 
 function OnDisable(self)
   if _Dungeon then
+    _Dungeon:ResumeIdleCountdown()
     _Dungeon.isActive = false
   end
 end
@@ -47,7 +51,6 @@ function UpdateObjectives()
   local dungeonName, _, numObjectives = GetStepInfo()
   _Dungeon.name          = dungeonName
   _Dungeon.numObjectives = numObjectives
-  _Dungeon:WakeUpTracker()
 
   for index = 1, numObjectives do
     local description, criteriaType, completed, quantity, totalQuantity,
