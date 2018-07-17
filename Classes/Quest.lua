@@ -7,11 +7,20 @@ Scorpio           "EskaTracker.Classes.Quest"                                 ""
 --============================================================================--
 namespace "EKT"
 --============================================================================--
-SHOW_QUEST_LEVEL_OPTION                 = "show-quest-level"
-COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION  = "color-quest-level-by-difficulty"
-QUEST_HEADER_LEFT_CLICK_ACTION_OPTION   = "quest-left-click-action"
-QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION = "quest-middle-click-action"
-QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION  = "quest-right-click-action"
+SHOW_QUEST_LEVEL_OPTION                         = "show-quest-level"
+COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION          = "color-quest-level-by-difficulty"
+QUEST_HEADER_LEFT_CLICK_ACTION_OPTION           = "quest-left-click-action"
+QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION         = "quest-middle-click-action"
+QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION          = "quest-right-click-action"
+QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION      = "quest-ctrl-left-click-action"
+QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION    = "quest-ctrl-middle-click-action"
+QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION     = "quest-ctrl-right-click-action"
+QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION     = "quest-shift-left-click-action"
+QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION   = "quest-shift-middle-click-action"
+QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION    = "quest-shift-right-click-action"
+QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION       = "quest-alt-left-click-action"
+QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION     = "quest-alt-middle-click-action"
+QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION      = "quest-alt-right-click-action"
 --============================================================================--
 __Recyclable__()
 class "Quest" (function(_ENV)
@@ -245,6 +254,7 @@ class "Quest" (function(_ENV)
     ContextMenu():AddAction("link-quest-to-chat", self)
     -- Second seperator
     ContextMenu():AddItem(MenuItemSeparator())
+    ContextMenu():AddAction("untrack-quest", self)
     ContextMenu():AddAction("abandon-quest", self)
     -- Third separator
     -- TODO: Remove later (it's currently used for debug)
@@ -305,14 +315,46 @@ class "Quest" (function(_ENV)
 
     -- Script
     headerFrame:SetScript("OnClick", function(_, button, down)
+      local shiftKeyIsDown = IsShiftKeyDown()
+      local altKeyIsDown = IsAltKeyDown()
+      local ctrlKeyIsDown = IsControlKeyDown()
+
+
       if button == "RightButton" then
-        local action = Options:Get(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION)
+        local action
+        if ctrlKeyIsDown then
+          action = Options:Get(QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION)
+        elseif altKeyIsDown then
+          action = Options:Get(QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION)
+        elseif shiftKeyIsDown then
+          action = Options:Get(QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION)
+        else
+          action = Options:Get(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION)
+        end
         Actions:Exec(action, self)
       elseif button == "LeftButton" then
-        local action = Options:Get(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION)
+        local action
+        if ctrlKeyIsDown then
+          action = Options:Get(QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION)
+        elseif altKeyIsDown then
+          action = Options:Get(QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION)
+        elseif shiftKeyIsDown then
+          action = Options:Get(QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION)
+        else
+          action = Options:Get(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION)
+        end
         Actions:Exec(action, self)
       elseif button == "MiddleButton" then
-        local action = Options:Get(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION)
+        local action
+        if ctrlKeyIsDown then
+          action = Options:Get(QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION)
+        elseif altKeyIsDown then
+          action = Options:Get(QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION)
+        elseif shiftKeyIsDown then
+          action = Options:Get(QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION)
+        else
+          action = Options:Get(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION)
+        end
         Actions:Exec(action, self)
       end
     end)
@@ -379,6 +421,18 @@ function OnLoad(self)
   Options:Register(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION, "none")
   Options:Register(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION, "toggle-context-menu")
 
+  -- Ctrl
+  Options:Register(QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION, "none")
+  -- Shift
+  Options:Register(QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION, "none")
+  -- Alt
+  Options:Register(QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Options:Register(QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION, "none")
 end
 
 --------------------------------------------------------------------------------
@@ -428,6 +482,21 @@ class "LinkQuestToChatAction" (function(_ENV)
   __Static__() function Exec(quest)
     LinkQuestToChatAction.Exec(quest.id)
   end
+end)
+
+__Action__ "untrack-quest" "Untrack"
+class "UntrackQuestAction" (function(_ENV)
+  __Arguments__ { Number }
+  __Static__() function Exec(questID)
+    local questLogIndex = GetQuestLogIndexByID(questID)
+    RemoveQuestWatch(questLogIndex)
+  end
+
+  __Arguments__ { Quest }
+  __Static__() function Exec(quest)
+    UntrackQuestAction.Exec(quest.id)
+  end
+
 end)
 
 __Action__ "abandon-quest" "Abandon"

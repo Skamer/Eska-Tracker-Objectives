@@ -13,6 +13,10 @@
 - FIX: [BFA] An error lua triggered when there is no quest on the current map.
 - FIX: The quest level will now be correctly updated.
 
+- NEW: There is now possible to customize the actions for each modifier (ctrl, alt or shift) for the quests header.
+- NEW: Added a new action 'Untrack' in the context menu for quests.
+- NEW: Added the action 'Untrack' in the list for the options.
+
 
 [1.0.11]
 - Updated to apply the changes done in the idle mode by the addon core.

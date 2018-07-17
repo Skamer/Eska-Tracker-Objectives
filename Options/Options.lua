@@ -91,19 +91,64 @@ function AddQuestRecipes(self)
         ["group-finder-create-group"] = "Create a group",
         ["group-finder-join-group"] = "Join a group",
         ["stop-super-tracking-quest"] = "Stop supertracking the quest",
-        ["super-track-quest"] = "Supertrack the quest"
+        ["super-track-quest"] = "Supertrack the quest",
+        ["untrack-quest"] = "Untrack the quest"
       }
   end
 
   OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.header"):SetOrder(10), "quest/header")
-  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Left click Action"):SetOrder(20), "quest/header")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header")
 
-  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Middle click Action"):SetOrder(30), "quest/header")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header")
+  OptionBuilder:AddRecipe(RadioGroupRecipe()
+    :SetOrder(20)
+    :SetWidth(1.0)
+    :SetText("Modifier used:")
+    :AddChoice("no-modifier", "None")
+    :AddChoice("ctrl-modifier", "Ctrl")
+    :AddChoice("alt-modifier", "Alt")
+    :AddChoice("shift-modifier", "Shift")
+    :SetItemWidth(75)
+    :SetSaveChoiceVariable("quest_header_modified_used")
+    :SetBuildingGroup("quest/header/[modifier&:quest_header_modified_used:]"), "quest/header")
 
-  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Right click Action"):SetOrder(40), "quest/header")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(41), "quest/header")
+  -- No modifier
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Left click Action"):SetOrder(10), "quest/header/no-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/no-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Middle click Action"):SetOrder(20), "quest/header/no-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/no-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Right click Action"):SetOrder(30), "quest/header/no-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/no-modifier")
+
+  -- Ctrl modifier
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Ctrl+Left click Action"):SetOrder(10), "quest/header/ctrl-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-ctrl-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/ctrl-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Ctrl+Middle click Action"):SetOrder(20), "quest/header/ctrl-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-ctrl-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/ctrl-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Ctrl+Right click Action"):SetOrder(30), "quest/header/ctrl-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-ctrl-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/ctrl-modifier")
+
+  -- Alt modifier
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Alt+Left click Action"):SetOrder(10), "quest/header/alt-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-alt-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/alt-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Alt+Middle click Action"):SetOrder(20), "quest/header/alt-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-alt-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/alt-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Alt+Right click Action"):SetOrder(30), "quest/header/alt-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-alt-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/alt-modifier")
+
+  -- Shift modifier
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Shift+Left click Action"):SetOrder(10), "quest/header/shift-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-shift-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/shift-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Shift+Middle click Action"):SetOrder(20), "quest/header/shift-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-shift-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/shift-modifier")
+
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Shift+Right click Action"):SetOrder(30), "quest/header/shift-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-shift-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/shift-modifier")
 
   -- Name tab
   OptionBuilder:AddRecipe(ThemePropertyRecipe()
