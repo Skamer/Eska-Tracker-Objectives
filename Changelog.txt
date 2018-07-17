@@ -1,19 +1,22 @@
 [1.0.12]
 - FIX: An incorrect path for a texture.
 
-- UPDATE: The keystone (mythic +) module and its block related.
-- NEW: The elements in the keystone block have been rearranged.
-- NEW: A timer bar and a death count have been included in the keystone block.
-- NEW: Various options has been added for the keystone blocks:
-  - "Show timer bar"
-  - "Show death count"
-  - "Enemy forces format
-  - "Percentage format"
+- UPDATE: The keystone (mythic +) module.
+- NEW: The elements in the keystone block have been rearranged
+- NEW: A Timer bar and Death count are now included in the keystone block.
+- NEW: Various options have been added for the keystone blocks: Show timer bar, Show death count, Enemy forces format and Percentage format.
+- FIX: A case where the mythic + timer was launched two times.
+- FIX:  An error lua triggered when there is no quest on the current map.
+- NEW: Implement Ticket #2 - There is now possible to customize the actions for each modifier (Ctrl, Alt or Shift) for the header of quests.
+- NEW: Added a new action 'Untrack' in the context menu for quests.
+- NEW: Added the action 'Untrack' in the list for the options.
+- FIX: Ticket #3 - The dungeon texture won't no longer be displayed when the block is minimized.
+
+
 - FIX: A case where the timer was launched two times.
 - FIX: [BFA] An error lua triggered when there is no quest on the current map.
 - FIX: The quest level will now be correctly updated.
-
-- NEW: There is now possible to customize the actions for each modifier (ctrl, alt or shift) for the quests header.
+- NEW: Implement Ticket #2 - There is now possible to customize the actions for each modifier (ctrl, alt or shift) for the quests header.
 - NEW: Added a new action 'Untrack' in the context menu for quests.
 - NEW: Added the action 'Untrack' in the list for the options.
 

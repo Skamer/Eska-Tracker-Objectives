@@ -109,7 +109,7 @@ class "DungeonBlock" (function(_ENV)
     self.frame.name = name
 
     -- Dungeon Texture
-    local ftex = CreateFrame("Frame", nil, self.frame)
+    local ftex = CreateFrame("Frame", nil, self.frame.content)
     ftex:SetBackdrop(_Backdrops.Common)
     ftex:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 4, -4)
     ftex:SetHeight(92)
