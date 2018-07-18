@@ -3,7 +3,7 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio                        "EskaTracker.Objectives"                 "1.0.11"
+Scorpio                        "EskaTracker.Objectives"                 "1.0.12"
 --============================================================================--
 import "EKT"
 --============================================================================--
