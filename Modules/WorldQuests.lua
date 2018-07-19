@@ -15,6 +15,7 @@ IsWorldQuestWatched       = IsWorldQuestWatched
 GetSuperTrackedQuestID    = GetSuperTrackedQuestID
 --============================================================================--
 -- The black is used to hide weekly world quests (e.g, 2v2, 3v3, rbg quests)
+-- TODO: With BFA, check if the blacklist is still needed.
 WORLD_QUESTS_BLACKLIST = {
   [44891] = true, -- 2v2 Weekly quest
   [44908] = true, -- 3v3 Weekly quest
@@ -162,11 +163,7 @@ function LoadWorldQuests(self)
     frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI,
     isTask, isBounty, isStory, isHidden = GetQuestLogTitle(i)
 
-    if isHidden then
-      WORLD_QUESTS_BLACKLIST[questID] = true
-    end
-
-    if not isHidden and isTask and IsWorldQuest(questID) and not _WorldQuestBlock:GetWorldQuest(questID) then
+    if IsWorldQuest(questID) and not _WorldQuestBlock:GetWorldQuest(questID) then
       local worldQuest = ObjectManager:Get(WorldQuest)
       worldQuest.id   = questID
       worldQuest.name = title

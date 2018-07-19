@@ -1,72 +1,20 @@
+[1.0.13]
+* ! Fixed an issue preventing the world quests are displayed. 
+
 [1.0.12]
-- FIX: An incorrect path for a texture.
+* Updated the toc for Battle for Azeroth.
+* ! Fixed an incorrect path for a texture.
+* ! Fixed Ticket #3 - The dungeon texture won't no longer be displayed when the block is minimized.
 
-- UPDATE: The keystone (mythic +) module.
-- NEW: The elements in the keystone block have been rearranged
-- NEW: A Timer bar and Death count are now included in the keystone block.
-- NEW: Various options have been added for the keystone blocks: Show timer bar, Show death count, Enemy forces format and Percentage format.
-- FIX: A case where the mythic + timer was launched two times.
-- FIX:  An error lua triggered when there is no quest on the current map.
-- NEW: Implement Ticket #2 - There is now possible to customize the actions for each modifier (Ctrl, Alt or Shift) for the header of quests.
-- NEW: Added a new action 'Untrack' in the context menu for quests.
-- NEW: Added the action 'Untrack' in the list for the options.
-- FIX: Ticket #3 - The dungeon texture won't no longer be displayed when the block is minimized.
+  == Keystone (Mythic +) ==
+  * ! The module has been updated.
+  * + The elements inside of it have been rearranged.
+  * + Added a Timer Bar a Death count.
+  * + Various options have been added: Show timer bar, Show death count, Enemy forces format and Percentage format.
+  * ! Fixed an issue where sometimes the timer was launched two times.
 
-
-- FIX: A case where the timer was launched two times.
-- FIX: [BFA] An error lua triggered when there is no quest on the current map.
-- FIX: The quest level will now be correctly updated.
-- NEW: Implement Ticket #2 - There is now possible to customize the actions for each modifier (ctrl, alt or shift) for the quests header.
-- NEW: Added a new action 'Untrack' in the context menu for quests.
-- NEW: Added the action 'Untrack' in the list for the options.
-
-
-[1.0.11]
-- Updated to apply the changes done in the idle mode by the addon core.
-
-[1.0.10]
-- [BFA Only] Made improvements how the idle mode is used by Quest module. A quest will now fade if this one is not in the current map.
-Moreover, when you're navigating throught zones from WorldMapFrame, the addon will fade the quests which are not in the zone you're looking.
-NOTE: As said previously, this feature is only avaliable if the client is under the 8.0 (BFA), and the idle mode feature  is enabled.
-
-[1.0.9]
-- Updated the addon for applying the changes have been done in the addon core.
-- Added the idle mode feature for all contents. Currently, the current state is simply temporary, and other things are planned about it.
-
-[1.0.8]
-- Reworked the bonus objectives module. Fixing by the way, an issue where the module isn't loaded when the player is already in a bonus objectives zone.
-- The level is no longer displayed for bonus objectives.
-
-[1.0.7]
-- [BFA] Fixed an error when the player enters in dungeons.
-- Fixed errors relative to Bonus Objectives.
-- Started to implement the idle mode feature provided by the addon core.
-- Updated the addon to apply the changes bring by EskaTracker.
-
-[1.0.6]
-- Updated to add the idle mode (very experimental).
-
-[1.0.5]
-- You can now display the quest items buttons in using the action bars feature.
-- Fixed an error which preventing the keystone (mythic +) module to work.
-- Setup the remain localization files for linking the addon with localization system provided by Curse.
-
-[1.0.4]
-- The 'Quest' popups are now implemented (this will use the notifications system for displaying them).
-- TEST: First test for setup the localization system with Curseforge.
-
-[1.0.3]
-- Added 'Show only quests in current zone' and 'Sort quests by distance' features.
-NOTE: The BFA version of 'Show only quests in current zone' is currently being tested.
-
-[1.0.2]
-- BFA Support: Fixed SetMapToCurrentZone lua error.
-- Implemented the context menu for achievement.
-- Added options for quest, world quest, bonus quest, achievement, scenario block, keystone block and dungeon block.
-- Fixed an issue where the options categories are never ordered the same way between each loading.
-- Updated theme for applying some element id changes for scenario (block.scenario.stageName -> block.scenario.stage-name and block.scenario.stageCounter -> block.scenario.stage-counter).
-
-[1.0.1]
-- New options for changing the left/middle/right click action for quests.
-- Finished the actions contained in the context menu for quests.
-- Added the support of groupfinder addons.
+  == Quests ==
+  * ! Fixed an error lua triggered when there is no quest on the current map.
+  * + Implemented Ticket #2 - There is now possible to customize the clicking actions for each modifier (Ctrl, Alt or Shift) for the header.
+  * + Added a new action 'Untrack' in the context menu.
+  * + Added the action 'Untrack' in the list for the options.
