@@ -171,7 +171,7 @@ class "Objective" (function(_ENV)
   function SetTextProgress(self, text, ...)
     if self.frame.fbar then
       self.frame.fbar.text:SetFormattedText(text, ...)
-    end 
+    end
   end
 
   __Arguments__ { Number }
@@ -276,6 +276,13 @@ class "Objective" (function(_ENV)
     self.text = nil
     self.type = nil
     self.isCompleted = nil
+  end
+
+  function OnRecycle(self)
+    super.OnRecycle(self)
+
+    self:HideProgress()
+    self:HideTimer()
   end
 
   __Static__() function UpdateSize()

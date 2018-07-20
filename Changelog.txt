@@ -1,5 +1,8 @@
+[1.0.14]
+* ! Fixed Ticket #9 - The objectives will now be correctly recycled.
+
 [1.0.13]
-* ! Fixed an issue preventing the world quests are displayed. 
+* ! Fixed an issue preventing the world quests are displayed.
 
 [1.0.12]
 * Updated the toc for Battle for Azeroth.
