@@ -1,7 +1,7 @@
 
 [1.0.14]
 * ! Fixed Ticket #9 - The objectives will now be correctly recycled.
-* ! Fixed Ticket #11 - The Mythic + module now works correctly.
+* ! Fixed Ticket #11 - The Mythic + module will now work correctly.
 
 [1.0.13]
 * ! Fixed an issue preventing the world quests are displayed.
