@@ -10,7 +10,7 @@ import                              "EKT"
 GetPowerLevelDamageHealthMod = C_ChallengeMode.GetPowerLevelDamageHealthMod
 GetActiveKeystoneInfo        = C_ChallengeMode.GetActiveKeystoneInfo
 GetAffixInfo                 = C_ChallengeMode.GetAffixInfo
-GetMapInfo                   = C_ChallengeMode.GetMapInfo
+GetMapInfo                   = C_ChallengeMode.GetMapUIInfo
 GetActiveChallengeMapID      = C_ChallengeMode.GetActiveChallengeMapID
 GetDeathCount                = C_ChallengeMode.GetDeathCount
 GetWorldElapsedTimers        = GetWorldElapsedTimers
