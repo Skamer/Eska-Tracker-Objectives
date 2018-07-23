@@ -1,3 +1,8 @@
+[1.0.15]
+  == Keystone (Mythic +) ==
+  * ! Reworked the Keystone module.
+  * ! Fixed an issue where the dungeon picture isn't displayed.
+
 
 [1.0.14]
 * ! Fixed Ticket #9 - The objectives will now be correctly recycled.

@@ -1,30 +1,33 @@
 --============================================================================--
---                         EskaTracker : Objectives                           --
+--                          EskaTracker                                       --
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
--- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
+-- Website    : https://wow.curseforge.com/projects/eskatracker               --
 --============================================================================--
-Scorpio                    "EskaTracker.Objectives.Keystone"                  ""
+Scorpio              "EskaTracker.Objectives.Keystone"                        ""
 --============================================================================--
-import                              "EKT"
+import                           "EKT"
 --============================================================================--
-GetPowerLevelDamageHealthMod = C_ChallengeMode.GetPowerLevelDamageHealthMod
-GetActiveKeystoneInfo        = C_ChallengeMode.GetActiveKeystoneInfo
-GetAffixInfo                 = C_ChallengeMode.GetAffixInfo
-GetMapInfo                   = C_ChallengeMode.GetMapUIInfo
-GetActiveChallengeMapID      = C_ChallengeMode.GetActiveChallengeMapID
-GetDeathCount                = C_ChallengeMode.GetDeathCount
-GetWorldElapsedTimers        = GetWorldElapsedTimers
-GetWorldElapsedTime          = GetWorldElapsedTime
-EJ_GetCurrentInstance        = EJ_GetCurrentInstance
-EJ_GetInstanceInfo           = EJ_GetInstanceInfo
-GetInfo                      = C_Scenario.GetInfo
-GetStepInfo                  = C_Scenario.GetStepInfo
-GetCriteriaInfo              = C_Scenario.GetCriteriaInfo
+_Enabled                      = false
+--============================================================================--
+GetPowerLevelDamageHealthMod  = C_ChallengeMode.GetPowerLevelDamageHealthMod
+GetActiveKeystoneInfo         = C_ChallengeMode.GetActiveKeystoneInfo
+GetAffixInfo                  = C_ChallengeMode.GetAffixInfo
+GetMapInfo                    = C_ChallengeMode.GetMapUIInfo
+GetActiveChallengeMapID       = C_ChallengeMode.GetActiveChallengeMapID
+GetDeathCount                 = C_ChallengeMode.GetDeathCount
+GetWorldElapsedTimers         = GetWorldElapsedTimers
+GetWorldElapsedTime           = GetWorldElapsedTime
+EJ_GetCurrentInstance         = EJ_GetCurrentInstance
+EJ_GetInstanceInfo            = EJ_GetInstanceInfo
+GetInfo                       = C_Scenario.GetInfo
+GetStepInfo                   = C_Scenario.GetStepInfo
+GetCriteriaInfo               = C_Scenario.GetCriteriaInfo
 --============================================================================--
 ENEMY_FORCES_FORMAT_OPTION    = "keystone-enemy-forces-format"
-PERCENTAGE_FORMAT_OPTION      = "keystone-percentage-format"
+PERCENTAGE_FORMAT_OPTION      =  "keystone-percentage-format"
 --============================================================================--
 KEYSTONE_TIMER_STARTED        = false
+--============================================================================--
 enum "EnemyForcesFormat" {
   -- Displays only the percent -> 25%
   -- Example: 57%
@@ -43,11 +46,13 @@ enum "EnemyForcesFormat" {
   -- Example: 152/268 (57%)
   FULL_MOB_INFO_WITH_PERCENT = 4,
 }
-
-
+--============================================================================--
+__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START"
+function ActivatingOn(self)
+  return GetActiveKeystoneInfo() > 0
+end
+--============================================================================--
 function OnLoad(self)
-  self._Enabled = false
-
   Options:Register(ENEMY_FORCES_FORMAT_OPTION, EnemyForcesFormat.ONLY_PERCENT, "keystone/updateAll")
   Options:Register(PERCENTAGE_FORMAT_OPTION, 1, "keystone/updateAll")
 
@@ -59,37 +64,13 @@ function OnEnable(self)
     _Keystone = block "keystone"
   end
 
-  _Keystone.isActive = true
-
-  local level, affixes, wasEnergized = GetActiveKeystoneInfo()
-  local mapID = GetActiveChallengeMapID()
-  if mapID then
-    local _, _, timeLimit = GetMapInfo(mapID)
-    _Keystone.timeLimit = timeLimit
-  end
-
-  _Keystone.level = level
-  _Keystone.wasEnergized = wasEnergized
-  _Keystone.numAffixes = #affixes
-
-  for i = 1, _Keystone.numAffixes do
-    local affix = _Keystone:GetAffix(i)
-
-    if i == 4 then
-      affix.id = affixes[3]
-    else
-      affix.id = affixes[i]
-    end
-
-    local name, desc, texture = GetAffixInfo(affix.id)
-    affix.name = name
-    affix.texture = texture
-    affix.desc = desc
-  end
-
   UpdateObjectives()
-  BFASupport:Support_SetMapToCurrentZone()
-  self:UpdateTimer()
+  self:GetKeystoneInfo()
+
+  if _EnablingEvent and _EnablingEvent == "PLAYER_ENTERING_WORLD" then
+    _Keystone.isActive = true
+    self:UpdateTimer()
+  end
 end
 
 function OnDisable(self)
@@ -97,11 +78,18 @@ function OnDisable(self)
     _Keystone.isActive = false
   end
 end
+--============================================================================--
+__Async__()
+__SystemEvent__()
+function CHALLENGE_MODE_START()
+  _Keystone.isActive = true
+  _Keystone.timer = 0
 
+  -- Represents the '10s' Blizzard countdown
+  Delay(10)
 
-__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START"
-function ActivatingOn(self)
-  return GetActiveKeystoneInfo() > 0
+  -- Start the timer
+  _M:UpdateTimer()
 end
 
 local function GetPercentageString(current, total)
@@ -118,7 +106,6 @@ local function GetPercentageString(current, total)
   return string.format("%i", current/total*100)
 end
 
-__Async__()
 __SystemEvent__ "SCENARIO_CRITERIA_UPDATE" "CRITERIA_UPDATE" "SCENARIO_UPDATE"
 function UpdateObjectives()
   local dungeonName, _, numObjectives = GetStepInfo()
@@ -172,20 +159,6 @@ function CHALLENGE_MODE_DEATH_COUNT_UPDATED()
   _Keystone.timeLost    = timeLost
 end
 
-__Async__()
-__SystemEvent__()
-function CHALLENGE_MODE_START(timerID)
-  _Keystone:WakeUpTracker()
-  _Keystone.timer = 0
-  Delay(10)
-
-  _M:UpdateTimer()
-end
-
-__SystemEvent__()
-function WORLD_MAP_UPDATE()
-  _Keystone.texture = select(6, EJ_GetInstanceInfo(EJ_GetCurrentInstance()))
-end
 
 __Async__()
 function UpdateTimer(self)
@@ -203,4 +176,40 @@ function UpdateTimer(self)
   end
 
   KEYSTONE_TIMER_STARTED = false
+end
+
+__Async__()
+function GetKeystoneInfo(self)
+  local level, affixes, wasEnergized = GetActiveKeystoneInfo()
+  _Keystone.level         = level
+  _Keystone.wasEnergized  = wasEnergized
+  _Keystone.numAffixes    = #affixes
+
+  for i = 1, _Keystone.numAffixes do
+    local affix = _Keystone:GetAffix(i)
+
+    if i == 4 then
+      affix.id = affixes[3]
+    else
+      affix.id = affixes[i]
+    end
+
+    local name, desc, texture = GetAffixInfo(affix.id)
+    affix.name    = name
+    affix.texture = texture
+    affix.desc    = desc
+  end
+
+  -- If the module has been enabled by the PLAYER_ENTERING_WORLD, we need to wait
+  -- the next 'UPDATE_INSTANCE_INFO' for getting a valid dungeon texture.
+  if _EnablingEvent and _EnablingEvent == "PLAYER_ENTERING_WORLD" then
+    Wait("UPDATE_INSTANCE_INFO")
+  end
+
+  local mapID = GetActiveChallengeMapID()
+  if mapID then
+    local _, _, timeLimit, texture = GetMapInfo(mapID)
+    _Keystone.timeLimit = timeLimit
+    _Keystone.texture   = texture
+  end
 end
