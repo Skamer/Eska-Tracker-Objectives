@@ -9,6 +9,9 @@
 # Localization files
 Locales\locales.xml
 
+# Utils & Helper functions
+Utils.lua
+
 # Battle for Azeroth Support
 BFA.lua
 

@@ -3,6 +3,9 @@
   * ! Reworked the Keystone module.
   * ! Fixed an issue where the dungeon picture isn't displayed.
 
+  == World Quests ==
+  * ! Reworked the Worldquests module.
+  * ! Fixed an issue where the world quests item wasn't added in the action bar.
 
 [1.0.14]
 * ! Fixed Ticket #9 - The objectives will now be correctly recycled.

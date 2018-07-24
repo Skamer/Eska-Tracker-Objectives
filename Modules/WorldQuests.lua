@@ -3,64 +3,30 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio                  "EskaTracker.Objectives.Worldquests"                 ""
+Scorpio                   "EskaTracker.Objectives.WorldQuests"                ""
 --============================================================================--
-import                            "EKT"
+import                              "EKT"
 --============================================================================--
-IsWorldQuest              = QuestUtils_IsQuestWorldQuest
-GetTaskInfo               = GetTaskInfo
-IsInInstance              = IsInInstance
-IsWorldQuestHardWatched   = IsWorldQuestHardWatched
-IsWorldQuestWatched       = IsWorldQuestWatched
-GetSuperTrackedQuestID    = GetSuperTrackedQuestID
+_Enabled                            = false
 --============================================================================--
--- The black is used to hide weekly world quests (e.g, 2v2, 3v3, rbg quests)
--- TODO: With BFA, check if the blacklist is still needed.
-WORLD_QUESTS_BLACKLIST = {
-  [44891] = true, -- 2v2 Weekly quest
-  [44908] = true, -- 3v3 Weekly quest
-  [44909] = true, -- RBG Weekly quest
-}
-LAST_TRACKED_WORLD_QUEST = nil
+IsWorldQuest                        = QuestUtils_IsQuestWorldQuest
+GetTasksTable                       = GetTasksTable
+IsWorldQuestHardWatched             = IsWorldQuestHardWatched
+IsWorldQuestWatched                 = IsWorldQuestWatched
+GetSuperTrackedQuestID              = GetSuperTrackedQuestID
 --============================================================================--
-SHOW_TRACKED_WORLD_QUESTS_OPTION = "show-tracked-world-quests"
+SHOW_TRACKED_WORLD_QUESTS_OPTION    = "show-tracked-world-quests"
 --============================================================================--
-function OnLoad(self)
-  -- Register the options
-  Options:Register(SHOW_TRACKED_WORLD_QUESTS_OPTION, true , "worldquests/enableTracking")
-  CallbackHandlers:Register("worldquests/enableTracking",  CallbackHandler(function(enable) _M:EnableWorldQuestsTracking(enable) end))
-
-  -- Check if the player is in a worldquest zone
-  self._Enabled = self:HasWorldQuest()
-end
-
-function OnEnable(self)
-  if not _WorldQuestBlock then
-    _WorldQuestBlock = block "world-quests"
-  end
-
-  _WorldQuestBlock.isActive = true
-  _WorldQuestBlock:WakeUpTracker()
-  self:LoadWorldQuests()
-end
-
-
-function OnDisable(self)
-  if _WorldQuestBlock then
-    _WorldQuestBlock.isActive = false
-  end
-end
-
-__EnablingOnEvent__ "QUEST_ACCEPTED" "PLAYER_ENTERING_WORLD" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
+LAST_TRACKED_WORLD_QUEST            = nil
+WORLDQUEST_PROGRESS_LIST            = {}
+--============================================================================--
+__EnablingOnEvent__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
 function EnablingOn(self, event, ...)
-  if event == "QUEST_ACCEPTED" then
+  if event == "PLAYER_ENTERING_WORLD" then
+    return self:HasWorldQuest()
+  elseif event == "QUEST_ACCEPTED" then
     local _, questID = ...
-    return IsWorldQuest(questID) and not WORLD_QUESTS_BLACKLIST[questID]
-  elseif event == "PLAYER_ENTERING_WORLD" then
-    local inInstance, type = IsInInstance()
-    if inInstance and type == "party" then
-      return self:HasWorldQuest()
-    end
+    return IsWorldQuest(questID)
   elseif event == "EKT_WORLDQUEST_TRACKED_LIST_CHANGED" then
     local _, isAdded = ...
     if isAdded then
@@ -71,107 +37,82 @@ function EnablingOn(self, event, ...)
   return false
 end
 
-__DisablingOnEvent__ "PLAYER_ENTERING_WORLD" "EKT_WORLDQUEST_REMOVED"
+__SafeDisablingOnEvent__  "QUEST_REMOVED" "PLAYER_ENTERING_WORLD" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
 function DisablingOn(self, event, ...)
-  if event == "EKT_WORLDQUEST_REMOVED" then
-    if _WorldQuestBlock then
-      return _WorldQuestBlock.worldQuests.Count == 0
-    end
-  elseif event == "PLAYER_ENTERING_WORLD" then
-    return not self:HasWorldQuest()
+  return not self:HasWorldQuest()
+end
+--============================================================================--
+function OnLoad(self)
+  -- Register the options
+  Options:Register(SHOW_TRACKED_WORLD_QUESTS_OPTION, true, "worldquests/enableTracking")
+  CallbackHandlers:Register("worldquests/enableTracking",  CallbackHandler(function(enable) _M:EnableWorldQuestsTracking(enable) end))
+end
+
+function OnEnable(self)
+  if not _WorldQuestBlock then
+    _WorldQuestBlock = block "world-quests"
   end
 
-  return false
+  _WorldQuestBlock.isActive = true
+
+  LAST_TRACKED_WORLD_QUEST = GetSuperTrackedQuestID()
+end
+
+function OnDisable(self)
+  if _WorldQuestBlock then
+    _WorldQuestBlock.isActive = false
+    _WorldQuestBlock.worldQuests:Clear()
+  end
+end
+--============================================================================--
+__ForceSecureHook__()
+function BonusObjectiveTracker_TrackWorldQuest(questID, hardWatch)
+  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+    Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, true, hardWatch)
+  end
+end
+
+__SecureHook__()
+function BonusObjectiveTracker_UntrackWorldQuest(questID)
+  if Options:Get("show-tracked-world-quests") then
+    Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false)
+  end
+end
+
+
+__SystemEvent__()
+function PLAYER_ENTERING_WORLD()
+  _M:LoadWorldQuests()
 end
 
 __SystemEvent__()
 function QUEST_ACCEPTED(_, questID, isTracked)
-  -- NOTE Fix WorldQuestGroupFinder addon
-  if not isTracked and IsWorldQuest(questID) then
-    ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_WORLD_QUEST_ADDED, questID)
-  end
-
-  -- if the quest isn't a worldquest or is blacklisted, stop here
-  if not IsWorldQuest(questID) or WORLD_QUESTS_BLACKLIST[questID] or _WorldQuestBlock:GetWorldQuest(questID) then
+  if not IsWorldQuest(questID) or _WorldQuestBlock:GetWorldQuest(questID) then
     return
   end
 
   local worldQuest = ObjectManager:Get(WorldQuest)
-  worldQuest.id         = questID
-  worldQuest.isTracked  = isTracked
+  worldQuest.id = questID
 
   _M:UpdateWorldQuest(worldQuest)
-
   _WorldQuestBlock:AddWorldQuest(worldQuest)
-  _WorldQuestBlock:WakeUpTracker()
 end
 
-__SystemEvent__()
-function QUEST_REMOVED(questID, fromTracking)
-  -- if the quest isn't a worldquest, don't continue
-  if not IsWorldQuest(questID) then
-    return
-  end
-
-  if fromTracking then
-    local worldQuest = _WorldQuestBlock:GetWorldQuest(questID)
-    if worldQuest and WorldQuest.isInArea then
-      return
-    end
-  end
-
-  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
-    -- TODO Check this isTracked, two IsWorldQuestHardWatched
-    local isTracked = IsWorldQuestHardWatched(questID) or IsWorldQuestHardWatched(questID) or GetSuperTrackedQuestID() == questID
-    if isTracked then
-      local worldQuest = _WorldQuestBlock:GetWorldQuest(questID)
-      if worldQuest then
-        worldQuest.isTracked = true
-        return
-      end
-    end
-  end
-
-  _WorldQuestBlock:RemoveWorldQuest(questID)
-  _WorldQuestBlock:WakeUpTracker()
-  Scorpio.FireSystemEvent("EKT_WORLDQUEST_REMOVED")
-end
-
-local lastTrackedQuestID = nil
-__SystemEvent__()
-function EKT_WORLDQUEST_TRACKED_LIST_CHANGED(questID, isAdded, hardWatch)
-  if isAdded then
-    QUEST_ACCEPTED(nil, questID, true)
-    if not hardWatch then
-      if LAST_TRACKED_WORLD_QUEST and LAST_TRACKED_WORLD_QUEST ~= questID then
-        QUEST_REMOVED(LAST_TRACKED_WORLD_QUEST, true)
-      end
-      LAST_TRACKED_WORLD_QUEST = questID
-    end
-  else
-    QUEST_REMOVED(questID, true)
-  end
-
-  _WorldQuestBlock:WakeUpTracker()
-end
-
-__Async__()
+--- Load the world quests, this function is used after the loading.
 function LoadWorldQuests(self)
-  local numEntries, numQuests = GetNumQuestLogEntries()
-  for i = 1, numEntries do
-    local title, level, suggestedGroup, isHeader, isCollapsed, isComplete,
-    frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI,
-    isTask, isBounty, isStory, isHidden = GetQuestLogTitle(i)
+  local tasks = GetTasksTable()
+  for i = 1, #tasks do
+    local questID = tasks[i]
+    local isInArea, isOnMap, numObjectives, taskName, displayAsObjective = GetTaskInfo(questID)
+     if isInArea and not _WorldQuestBlock:GetWorldQuest(questID) then
+       local worldQuest = ObjectManager:Get(WorldQuest)
+       worldQuest.id = questID
 
-    if IsWorldQuest(questID) and not _WorldQuestBlock:GetWorldQuest(questID) then
-      local worldQuest = ObjectManager:Get(WorldQuest)
-      worldQuest.id   = questID
-      worldQuest.name = title
+       local cache = { isInArea = isInArea, isOnMap = isOnMap, numObjectives = numObjectives, taskName = taskName, displayAsObjective = displayAsObjective }
+       self:UpdateWorldQuest(worldQuest, cache)
 
-      self:UpdateWorldQuest(worldQuest)
-
-      _WorldQuestBlock:AddWorldQuest(worldQuest)
-    end
+       _WorldQuestBlock:AddWorldQuest(worldQuest)
+     end
   end
 
   if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
@@ -179,8 +120,7 @@ function LoadWorldQuests(self)
       local questID = GetWorldQuestWatchInfo(i)
       if questID and not _WorldQuestBlock:GetWorldQuest(questID) then
         local worldQuest = ObjectManager:Get(WorldQuest)
-        worldQuest.id   = questID
-        worldQuest.name = title
+        worldQuest.id = questID
 
         self:UpdateWorldQuest(worldQuest)
 
@@ -190,15 +130,25 @@ function LoadWorldQuests(self)
   end
 end
 
-function UpdateWorldQuest(self, worldQuest)
-  local isInArea, isOnMap, numObjectives, taskName, displayAsObjective = GetTaskInfo(worldQuest.id)
-  worldQuest.isOnMap  = true
-  worldQuest.name     = taskName
+-- The cache is used to avoid a useless GetTaskInfo call after LoadWorldQuests
+function UpdateWorldQuest(self, worldQuest, cache)
+  local isInArea, isOnMap, numObjectives, taskName, displayAsObjective
+  if cache then
+    isInArea            = cache.isInArea
+    isOnMap             = cache.isOnMap
+    numObjectives       = cache.numObjectives
+    taskName            = cache.taskName
+    displayAsObjective  = cache.taskName
+  else
+    isInArea, isOnMap, numObjectives, taskName, displayAsObjective = GetTaskInfo(worldQuest.id)
+  end
+
+  worldQuest.name = taskName
   worldQuest.isInArea = isInArea
+  worldQuest.isOnMap  = isOnMap
 
   if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
-    -- TODO Check this isTracked, two IsWorldQuestHardWatched
-    local isTracked = IsWorldQuestHardWatched(worldQuest.id) or IsWorldQuestHardWatched(worldQuest.id) or GetSuperTrackedQuestID() == worldQuest.id
+    local isTracked = IsWorldQuestWatched(worldQuest.id) or IsWorldQuestHardWatched(worldQuest.id) or GetSuperTrackedQuestID() == worldQuest.id
     if isInArea and worldQuest.isTracked then
       worldQuest.isTracked = false
     elseif not isInArea and isTracked then
@@ -206,13 +156,21 @@ function UpdateWorldQuest(self, worldQuest)
     end
   end
 
+
   local itemLink, itemTexture = GetQuestLogSpecialItemInfo(GetQuestLogIndexByID(worldQuest.id))
   if itemLink and itemTexture then
     local itemQuest  = worldQuest:GetQuestItem()
     itemQuest.link = itemLink
     itemQuest.texture = itemTexture
-    -- TODO Add the item when the new item API is availaible
-    --_Addon.ItemBar:AddItem(worldQuest.id, itemLink, itemTexture)
+
+    if not ActionBars:HasButton(worldQuest.id, "quest-items") then
+      local itemButton = ObjectManager:Get(ItemButton)
+      itemButton.id = worldQuest.id
+      itemButton.link = itemLink
+      itemButton.texture = itemTexture
+      itemButton.category = "quest-items"
+      ActionBars:AddButton(itemButton)
+    end
   end
 
   if numObjectives then
@@ -230,29 +188,93 @@ function UpdateWorldQuest(self, worldQuest)
         objective:SetMinMaxProgress(0, 100)
         objective:SetProgress(progress)
         objective:SetTextProgress(string.format("%i%%", progress))
+        WORLDQUEST_PROGRESS_LIST[worldQuest.id] = objective
       else
         objective:HideProgress()
+        WORLDQUEST_PROGRESS_LIST[worldQuest.id] = nil
       end
     end
+  end
+end
 
+
+
+__SystemEvent__()
+function QUEST_REMOVED(questID, fromTracking)
+  if not IsWorldQuest(questID) then
+    return
+  end
+
+  local worldQuest = _WorldQuestBlock:GetWorldQuest(questID)
+  if not worldQuest then
+    return
+  end
+
+  if fromTracking and worldQuest.isInArea then
+    return
+  end
+
+  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+    local isTracked = IsWorldQuestWatched(questID) or IsWorldQuestHardWatched(questID) or GetSuperTrackedQuestID() == questID
+    if isTracked then
+      worldQuest.isTracked = true
+      return
+    end
+  end
+
+  WORLDQUEST_PROGRESS_LIST[worldQuest.id] = nil
+  _WorldQuestBlock:RemoveWorldQuest(worldQuest)
+  ActionBars:RemoveButton(questID, "quest-items")
+end
+
+
+__SystemEvent__()
+function EKT_WORLDQUEST_TRACKED_LIST_CHANGED(questID, isAdded, hardWatch)
+  if isAdded then
+    QUEST_ACCEPTED(nil, questID, true)
+    if not hardWatch then
+      if LAST_TRACKED_WORLD_QUEST and LAST_TRACKED_WORLD_QUEST ~= questID then
+        QUEST_REMOVED(LAST_TRACKED_WORLD_QUEST, true)
+      end
+      LAST_TRACKED_WORLD_QUEST = questID
+    end
+  else
+    QUEST_REMOVED(questID, true)
   end
 end
 
 __SystemEvent__()
 function QUEST_LOG_UPDATE()
-  for _, worldQuest in _WorldQuestBlock.worldQuests:GetIterator() do
-    _M:UpdateWorldQuest(worldQuest)
+  for questID, objective in pairs(WORLDQUEST_PROGRESS_LIST) do
+    local progress = GetQuestProgressBarPercent(questID)
+    objective:SetProgress(progress)
+    objective:SetTextProgress(string.format("%i%%", progress))
   end
+end
 
-  _WorldQuestBlock:WakeUpTracker()
+__Async__()
+__SystemEvent__()
+function QUEST_WATCH_UPDATE(questIndex)
+  for _, worldQuest in _WorldQuestBlock.worldQuests:GetIterator() do
+    if questIndex == GetQuestLogIndexByID(worldQuest.id) then
+      -- The objective text returned by GetQuestObjectiveInfo isn't still updated,
+      -- it's why we wait the next 'QUEST_LOG_UPDATE'.
+      Wait("QUEST_LOG_UPDATE")
+      -- At this moment, the objectve text is well updated.
+      _M:UpdateWorldQuest(worldQuest)
+      return
+    end
+  end
 end
 
 
 
 function HasWorldQuest(self)
-  for i = 1, GetNumQuestLogEntries() do
-    local questID = select(8, GetQuestLogTitle(i))
-    if IsWorldQuest(questID) and not WORLD_QUESTS_BLACKLIST[questID] then
+  local tasks = GetTasksTable()
+  for i = 1, #tasks do
+    local questID = tasks[i]
+    local isInArea = GetTaskInfo(questID)
+    if IsWorldQuest(questID) and isInArea then
       return true
     end
   end
@@ -271,9 +293,9 @@ function EnableWorldQuestsTracking(self, enable)
     local questID = GetWorldQuestWatchInfo(i)
     local hardWatched = IsWorldQuestHardWatched(questID)
     if enable then
-      self:FireSystemEvent("EQT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, true, hardWatched)
+      self:FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, true, hardWatched)
     else
-      self:FireSystemEvent("EQT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false, hardWatched)
+      self:FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false, hardWatched)
     end
   end
 end
