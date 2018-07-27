@@ -247,9 +247,7 @@ end
 
 __SystemEvent__()
 function QUEST_LOG_UPDATE()
-  print("QUEST_LOG_UPDATE")
   for questID, objective in pairs(WORLDQUEST_PROGRESS_LIST) do
-    print(questID, objective)
     local progress = GetQuestProgressBarPercent(questID)
     objective:SetProgress(progress)
     objective:SetTextProgress(string.format("%i%%", progress))
