@@ -44,7 +44,7 @@ end
 --============================================================================--
 function OnLoad(self)
   -- Register the options
-  Options:Register(SHOW_TRACKED_WORLD_QUESTS_OPTION, true, "worldquests/enableTracking")
+  Settings:Register(SHOW_TRACKED_WORLD_QUESTS_OPTION, true, "worldquests/enableTracking")
   CallbackHandlers:Register("worldquests/enableTracking",  CallbackHandler(function(enable) _M:EnableWorldQuestsTracking(enable) end))
 end
 
@@ -67,14 +67,14 @@ end
 --============================================================================--
 __ForceSecureHook__()
 function BonusObjectiveTracker_TrackWorldQuest(questID, hardWatch)
-  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, true, hardWatch)
   end
 end
 
 __SecureHook__()
 function BonusObjectiveTracker_UntrackWorldQuest(questID)
-  if Options:Get("show-tracked-world-quests") then
+  if Settings:Get("show-tracked-world-quests") then
     Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false)
   end
 end
@@ -115,7 +115,7 @@ function LoadWorldQuests(self)
      end
   end
 
-  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     for i = 1, GetNumWorldQuestWatches() do
       local questID = GetWorldQuestWatchInfo(i)
       if questID and not _WorldQuestBlock:GetWorldQuest(questID) then
@@ -129,6 +129,8 @@ function LoadWorldQuests(self)
     end
   end
 end
+
+-- Settings:Get
 
 -- The cache is used to avoid a useless GetTaskInfo call after LoadWorldQuests
 function UpdateWorldQuest(self, worldQuest, cache)
@@ -147,7 +149,7 @@ function UpdateWorldQuest(self, worldQuest, cache)
   worldQuest.isInArea = isInArea
   worldQuest.isOnMap  = isOnMap
 
-  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     local isTracked = IsWorldQuestWatched(worldQuest.id) or IsWorldQuestHardWatched(worldQuest.id) or GetSuperTrackedQuestID() == worldQuest.id
     if isInArea and worldQuest.isTracked then
       worldQuest.isTracked = false
@@ -214,7 +216,7 @@ function QUEST_REMOVED(questID, fromTracking)
     return
   end
 
-  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     local isTracked = IsWorldQuestWatched(questID) or IsWorldQuestHardWatched(questID) or GetSuperTrackedQuestID() == questID
     if isTracked then
       worldQuest.isTracked = true
@@ -245,7 +247,9 @@ end
 
 __SystemEvent__()
 function QUEST_LOG_UPDATE()
+  print("QUEST_LOG_UPDATE")
   for questID, objective in pairs(WORLDQUEST_PROGRESS_LIST) do
+    print(questID, objective)
     local progress = GetQuestProgressBarPercent(questID)
     objective:SetProgress(progress)
     objective:SetTextProgress(string.format("%i%%", progress))
@@ -279,7 +283,7 @@ function HasWorldQuest(self)
     end
   end
 
-  if Options:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     for i = 1, GetNumWorldQuestWatches() do
       return true
     end

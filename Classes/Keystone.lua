@@ -178,7 +178,7 @@ class "BFAKeystoneBlock" (function(_ENV)
   end
 
   local function SetDeathCount(self, new)
-    if new > 0 and Options:Get(SHOW_DEATH_COUNT_OPTION) then
+    if new > 0 and Settings:Get(SHOW_DEATH_COUNT_OPTION) then
       self.frame.death:Show()
       self.frame.deathCount:SetText(new)
     else
@@ -318,16 +318,16 @@ class "BFAKeystoneBlock" (function(_ENV)
   end
 
   __Arguments__ { String }
-  function IsRegisteredOption(self, option)
+  function IsRegisteredSetting(self, option)
     if option == SHOW_DEATH_COUNT_OPTION or option == SHOW_TIMER_BAR_OPTION then
       return true
     end
 
-    return super.IsRegisteredOption(self, option)
+    return super.IsRegisteredSetting(self, option)
   end
 
   __Arguments__ { String, Variable.Optional(), Variable.Optional() }
-  function OnOption(self, option, new, old)
+  function OnSetting(self, option, new, old)
     if option == SHOW_TIMER_BAR_OPTION then
       if new then
         self:ShowTimerBar()
@@ -354,8 +354,8 @@ class "BFAKeystoneBlock" (function(_ENV)
     Theme:SkinText(self.frame.level, nil, self.level, state)
 
     -- Load options
-    self:LoadOption(SHOW_TIMER_BAR_OPTION)
-    self:LoadOption(SHOW_DEATH_COUNT_OPTION)
+    self:LoadSetting(SHOW_TIMER_BAR_OPTION)
+    self:LoadSetting(SHOW_DEATH_COUNT_OPTION)
   end
 
   ------------------------------------------------------------------------------
@@ -712,6 +712,6 @@ end)
 
 function OnLoad(self)
   -- Register the options
-  Options:Register(SHOW_DEATH_COUNT_OPTION, true)
-  Options:Register(SHOW_TIMER_BAR_OPTION, true)
+  Settings:Register(SHOW_DEATH_COUNT_OPTION, true)
+  Settings:Register(SHOW_TIMER_BAR_OPTION, true)
 end

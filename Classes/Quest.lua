@@ -91,7 +91,7 @@ class "Quest" (function(_ENV)
     end
 
     if Theme:NeedSkin(self.frame.level, target) then
-      if Options:Get(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION) then
+      if Settings:Get(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION) then
         local color = GetQuestDifficultyColor(self.level)
         self.frame.level:SetTextColor(color.r, color.g, color.b)
         Theme:SkinText(self.frame.level, API:RemoveFlag(flags, Theme.SkinFlags.TEXT_COLOR), self.level, state)
@@ -193,16 +193,16 @@ class "Quest" (function(_ENV)
 
 
   __Arguments__ { String }
-  function IsRegisteredOption(self, option)
+  function IsRegisteredSetting(self, option)
     if option == SHOW_QUEST_LEVEL_OPTION or option == COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION then
       return true
     end
 
-    return super.IsRegisteredOption(self, option)
+    return super.IsRegisteredSetting(self, option)
   end
 
   __Arguments__ { String, Variable.Optional(), Variable.Optional() }
-  function OnOption(self, option, new, old)
+  function OnSetting(self, option, new, old)
     if option == SHOW_QUEST_LEVEL_OPTION then
       if new then
         self:ShowLevel()
@@ -232,8 +232,8 @@ class "Quest" (function(_ENV)
     Theme:SkinText(self.frame.level, API:RemoveFlag(Theme.DefaultSkinFlags, Theme.SkinFlags.TEXT_COLOR), self.level, state)
 
     -- Load options
-    self:LoadOption(SHOW_QUEST_LEVEL_OPTION)
-    self:LoadOption(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION)
+    self:LoadSetting(SHOW_QUEST_LEVEL_OPTION)
+    self:LoadSetting(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION)
   end
 
   function PrepareContextMenu(self)
@@ -323,37 +323,37 @@ class "Quest" (function(_ENV)
       if button == "RightButton" then
         local action
         if ctrlKeyIsDown then
-          action = Options:Get(QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION)
         elseif altKeyIsDown then
-          action = Options:Get(QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION)
         elseif shiftKeyIsDown then
-          action = Options:Get(QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION)
         else
-          action = Options:Get(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION)
         end
         Actions:Exec(action, self)
       elseif button == "LeftButton" then
         local action
         if ctrlKeyIsDown then
-          action = Options:Get(QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION)
         elseif altKeyIsDown then
-          action = Options:Get(QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION)
         elseif shiftKeyIsDown then
-          action = Options:Get(QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION)
         else
-          action = Options:Get(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION)
         end
         Actions:Exec(action, self)
       elseif button == "MiddleButton" then
         local action
         if ctrlKeyIsDown then
-          action = Options:Get(QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION)
         elseif altKeyIsDown then
-          action = Options:Get(QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION)
         elseif shiftKeyIsDown then
-          action = Options:Get(QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION)
         else
-          action = Options:Get(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION)
+          action = Settings:Get(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION)
         end
         Actions:Exec(action, self)
       end
@@ -415,24 +415,24 @@ Actions:Add(NewAction)
 --------------------------------------------------------------------------------
 function OnLoad(self)
   -- Register the options
-  Options:Register(SHOW_QUEST_LEVEL_OPTION, true)
-  Options:Register(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION, true)
-  Options:Register(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION, "show-quest-details-with-map")
-  Options:Register(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION, "toggle-context-menu")
+  Settings:Register(SHOW_QUEST_LEVEL_OPTION, true)
+  Settings:Register(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION, true)
+  Settings:Register(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION, "show-quest-details-with-map")
+  Settings:Register(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION, "toggle-context-menu")
 
   -- Ctrl
-  Options:Register(QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_CTRL_LEFT_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_CTRL_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_CTRL_RIGHT_CLICK_ACTION_OPTION, "none")
   -- Shift
-  Options:Register(QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_SHIFT_LEFT_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_SHIFT_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_SHIFT_RIGHT_CLICK_ACTION_OPTION, "none")
   -- Alt
-  Options:Register(QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION, "none")
-  Options:Register(QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_ALT_LEFT_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_ALT_MIDDLE_CLICK_ACTION_OPTION, "none")
+  Settings:Register(QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION, "none")
 end
 
 --------------------------------------------------------------------------------

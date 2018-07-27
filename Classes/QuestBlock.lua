@@ -18,7 +18,7 @@ class "QuestBlock" (function(_ENV)
   function AddQuest(self, quest)
     if not self.quests:Contains(quest) then
       -- TODO: Add Stuff about Quest Header
-      if Options:Get("quest-categories-enabled") then
+      if Settings:Get("quest-categories-enabled") then
         local header = self:GetHeader(quest.header)
         if not header then
           header = self:NewHeader(quest.header)
@@ -65,7 +65,7 @@ class "QuestBlock" (function(_ENV)
   function RemoveQuest(self, quest)
     self.quests:Remove(quest)
 
-    if Options:Get("quest-categories-enabled") then
+    if Settings:Get("quest-categories-enabled") then
       self:RemoveQuestFromHeader(quest)
     else
       self:RemoveChildObject(quest)
@@ -163,7 +163,7 @@ class "QuestBlock" (function(_ENV)
 
 
   function OnLayout(self)
-    local enableCategories = Options:Get("quest-categories-enabled")
+    local enableCategories = Settings:Get("quest-categories-enabled")
     local previousFrame
 
     if enableCategories then
@@ -227,7 +227,7 @@ class "QuestBlock" (function(_ENV)
 
 --[[
   function OnLayout(self)
-    local enableCategories = Options:Get("quest-categories-enabled")
+    local enableCategories = Settings:Get("quest-categories-enabled")
 
     -- Quest compare function (Priorty : Distance > ID > Name)
     local function QuestSortMethod(a, b)
@@ -271,7 +271,7 @@ class "QuestBlock" (function(_ENV)
   end--]]
 
   function CalculateHeight(self)
-    local enableCategories = Options:Get(QUEST_CATEGORIES_ENABLED_OPTION)
+    local enableCategories = Settings:Get(QUEST_CATEGORIES_ENABLED_OPTION)
     local height = self.baseHeight
 
     if enableCategories then
@@ -290,17 +290,17 @@ class "QuestBlock" (function(_ENV)
   end
 
   __Arguments__ { String }
-  function IsRegisteredOption(self, option)
-    if option == QUEST_CATEGORIES_ENABLED_OPTION then
+  function IsRegisteredSetting(self, id)
+    if id == QUEST_CATEGORIES_ENABLED_OPTION then
       return true
     end
 
-    return super.IsRegisteredOption(self, option)
+    return super.IsRegisteredSetting(self, id)
   end
 
     __Arguments__ { String, Variable.Optional(), Variable.Optional() }
-    function OnOption(self, option, new, old)
-      if option == QUEST_CATEGORIES_ENABLED_OPTION then
+    function OnSetting(self, id, new, old)
+      if id == QUEST_CATEGORIES_ENABLED_OPTION then
         if new then
           self:EnableCategories()
         else
@@ -323,7 +323,7 @@ class "QuestBlock" (function(_ENV)
 end)
 
 function OnLoad(self)
-  Options:Register("quest-categories-enabled", true)
+  Settings:Register("quest-categories-enabled", true)
 end
 
 

@@ -53,8 +53,8 @@ function ActivatingOn(self)
 end
 --============================================================================--
 function OnLoad(self)
-  Options:Register(ENEMY_FORCES_FORMAT_OPTION, EnemyForcesFormat.ONLY_PERCENT, "keystone/updateAll")
-  Options:Register(PERCENTAGE_FORMAT_OPTION, 1, "keystone/updateAll")
+  Settings:Register(ENEMY_FORCES_FORMAT_OPTION, EnemyForcesFormat.ONLY_PERCENT, "keystone/updateAll")
+  Settings:Register(PERCENTAGE_FORMAT_OPTION, 1, "keystone/updateAll")
 
   CallbackHandlers:Register("keystone/updateAll", CallbackHandler(UpdateObjectives))
 end
@@ -93,7 +93,7 @@ function CHALLENGE_MODE_START()
 end
 
 local function GetPercentageString(current, total)
-  local decimal = Options:Get(PERCENTAGE_FORMAT_OPTION)
+  local decimal = Settings:Get(PERCENTAGE_FORMAT_OPTION)
 
   if decimal == 0 then
     return string.format("%i%%", math.floor(current/total*100))
@@ -134,7 +134,7 @@ function UpdateObjectives()
       objective:SetMinMaxProgress(0, totalQuantity)
       objective:SetProgress(quantity)
 
-      local enemyFormat = Options:Get(ENEMY_FORCES_FORMAT_OPTION)
+      local enemyFormat = Settings:Get(ENEMY_FORCES_FORMAT_OPTION)
       if enemyFormat == EnemyForcesFormat.ONLY_PERCENT then
         objective:SetTextProgress(GetPercentageString(quantity, totalQuantity))
       elseif enemyFormat == EnemyForcesFormat.CURRENT_MOB_POINT then

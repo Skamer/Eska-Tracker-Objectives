@@ -59,7 +59,7 @@ class "GroupFinderAddon" (function(_ENV)
 
   __Static__() __Arguments__ { ClassType }
   function GetSelected(self)
-    local selected = Options:Get(GROUP_FINDER_ADDON_SELECTED_OPTION)
+    local selected = Settings:Get(GROUP_FINDER_ADDON_SELECTED_OPTION)
     local firstName   = ""
     local firstObject
     for name, groupFinder in self:GetIterator() do
@@ -75,7 +75,7 @@ class "GroupFinderAddon" (function(_ENV)
 
   __Arguments__ { ClassType, String }
   __Static__() function SetSelected(self, addonName)
-    Options:Set(GROUP_FINDER_ADDON_SELECTED_OPTION, addonName)
+    Settings:Set(GROUP_FINDER_ADDON_SELECTED_OPTION, addonName)
   end
 end)
 

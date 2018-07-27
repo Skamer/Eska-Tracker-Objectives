@@ -112,43 +112,43 @@ function AddQuestRecipes(self)
 
   -- No modifier
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Left click Action"):SetOrder(10), "quest/header/no-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/no-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/no-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Middle click Action"):SetOrder(20), "quest/header/no-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/no-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/no-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Right click Action"):SetOrder(30), "quest/header/no-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/no-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/no-modifier")
 
   -- Ctrl modifier
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Ctrl+Left click Action"):SetOrder(10), "quest/header/ctrl-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-ctrl-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/ctrl-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-ctrl-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/ctrl-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Ctrl+Middle click Action"):SetOrder(20), "quest/header/ctrl-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-ctrl-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/ctrl-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-ctrl-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/ctrl-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Ctrl+Right click Action"):SetOrder(30), "quest/header/ctrl-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-ctrl-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/ctrl-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-ctrl-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/ctrl-modifier")
 
   -- Alt modifier
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Alt+Left click Action"):SetOrder(10), "quest/header/alt-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-alt-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/alt-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-alt-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/alt-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Alt+Middle click Action"):SetOrder(20), "quest/header/alt-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-alt-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/alt-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-alt-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/alt-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Alt+Right click Action"):SetOrder(30), "quest/header/alt-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-alt-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/alt-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-alt-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/alt-modifier")
 
   -- Shift modifier
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Shift+Left click Action"):SetOrder(10), "quest/header/shift-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-shift-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/shift-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-shift-left-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(11), "quest/header/shift-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Shift+Middle click Action"):SetOrder(20), "quest/header/shift-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-shift-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/shift-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-shift-middle-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(21), "quest/header/shift-modifier")
 
   OptionBuilder:AddRecipe(HeadingRecipe():SetText("Shift+Right click Action"):SetOrder(30), "quest/header/shift-modifier")
-  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindOption("quest-shift-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/shift-modifier")
+  OptionBuilder:AddRecipe(SelectRecipe():SetWidth(0.5):BindSetting("quest-shift-right-click-action"):SetList(GetQuestActions):SetText("Select an action"):SetOrder(31), "quest/header/shift-modifier")
 
   -- Name tab
   OptionBuilder:AddRecipe(ThemePropertyRecipe()
@@ -161,12 +161,12 @@ function AddQuestRecipes(self)
   -- level tab
   local showQuestLevelRecipe = CheckBoxRecipe()
   showQuestLevelRecipe:SetText("Show")
-  showQuestLevelRecipe:BindOption("show-quest-level")
+  showQuestLevelRecipe:BindSetting("show-quest-level")
   OptionBuilder:AddRecipe(showQuestLevelRecipe, "quest/level")
 
   local useDifficultyForLevelRecipe = CheckBoxRecipe()
   useDifficultyForLevelRecipe:SetText("Use difficulty color")
-  useDifficultyForLevelRecipe:BindOption("color-quest-level-by-difficulty")
+  useDifficultyForLevelRecipe:BindSetting("color-quest-level-by-difficulty")
   OptionBuilder:AddRecipe(useDifficultyForLevelRecipe, "quest/level")
 
   OptionBuilder:AddRecipe(ThemePropertyRecipe()
@@ -177,7 +177,7 @@ function AddQuestRecipes(self)
   :AddFlag(Theme.SkinFlags.TEXT_SIZE), "quest/level")
 
   -- Category tab
-  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Enable"):BindOption("quest-categories-enabled"), "quest/category")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Enable"):BindSetting("quest-categories-enabled"), "quest/category")
   OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest-header.frame"), "quest/category")
   OptionBuilder:AddRecipe(ThemePropertyRecipe()
   :SetElementID("quest-header.name")
@@ -280,8 +280,8 @@ function AddAchievementRecipes(self)
   OptionBuilder:AddRecipe(stateSelect, "achievement/icon")
 
     -- General Tab
-    OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Hide completed criteria"):BindOption("achievement-hide-criteria-completed"):SetOrder(10), "achievement/general")
-    OptionBuilder:AddRecipe(RangeRecipe():SetRange(0, 20):SetText("Max criteria displayed"):BindOption("achievement-max-criteria-displayed"):SetOrder(15), "achievement/general")
+    OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Hide completed criteria"):BindSetting("achievement-hide-criteria-completed"):SetOrder(10), "achievement/general")
+    OptionBuilder:AddRecipe(RangeRecipe():SetRange(0, 20):SetText("Max criteria displayed"):BindSetting("achievement-max-criteria-displayed"):SetOrder(15), "achievement/general")
     OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("achievement.frame"), "achievement/general/states")
 
     -- Header Tab
@@ -295,7 +295,7 @@ function AddAchievementRecipes(self)
     :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL), "achievement/name/states")
 
     -- Description Tab
-    OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show"):BindOption("achievement-show-description"), "achievement/description")
+    OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show"):BindSetting("achievement-show-description"), "achievement/description")
     OptionBuilder:AddRecipe(ThemePropertyRecipe()
     :SetElementID("achievement.description")
     :ClearFlags()
@@ -335,12 +335,12 @@ function AddKeystoneRecipes(self)
   OptionBuilder:AddRecipe(CheckBoxRecipe()
   :SetText("Show Timer bar")
   :SetOrder(200)
-  :BindOption("keystone-show-timer-bar"), "keystone-block-category/general")
+  :BindSetting("keystone-show-timer-bar"), "keystone-block-category/general")
 
   OptionBuilder:AddRecipe(CheckBoxRecipe()
   :SetText("Show Death count")
   :SetOrder(201)
-  :BindOption("keystone-show-death-count"), "keystone-block-category/general")
+  :BindSetting("keystone-show-death-count"), "keystone-block-category/general")
 
 
   local enemyForcesFormats = {
@@ -354,7 +354,7 @@ function AddKeystoneRecipes(self)
   :SetText("Enemy Forces format")
   :SetList(enemyForcesFormats)
   :SetOrder(202)
-  :BindOption("keystone-enemy-forces-format"), "keystone-block-category/general")
+  :BindSetting("keystone-enemy-forces-format"), "keystone-block-category/general")
 
   local percentageFormats = {
     [0] = "57%",
@@ -366,7 +366,7 @@ function AddKeystoneRecipes(self)
   :SetText("Percentage format")
   :SetList(percentageFormats)
   :SetOrder(283)
-  :BindOption("keystone-percentage-format"), "keystone-block-category/general")
+  :BindSetting("keystone-percentage-format"), "keystone-block-category/general")
 
   -- Name Tab
   OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup("keystone-block-category/name"):SetOrder(110), "keystone-block-category/tabs")
@@ -396,8 +396,8 @@ end
 --------------------------------------------------------------------------------
 function AddQuestBlockRecipes(self)
   OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("quests-block-category/general/top-options"), "quests-block-category/general")
-  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show only quests in the current zone"):SetOrder(80):SetWidth(1.0):BindOption("show-only-quests-in-zone"), "quests-block-category/general/top-options")
-  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Sort quests by distance"):SetOrder(81):SetWidth(1.0):BindOption("sort-quests-by-distance"), "quests-block-category/general/top-options")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show only quests in the current zone"):SetOrder(80):SetWidth(1.0):BindSetting("show-only-quests-in-zone"), "quests-block-category/general/top-options")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Sort quests by distance"):SetOrder(81):SetWidth(1.0):BindSetting("sort-quests-by-distance"), "quests-block-category/general/top-options")
 
 end
 --------------------------------------------------------------------------------

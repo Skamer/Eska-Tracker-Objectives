@@ -26,10 +26,10 @@ QUESTS_CACHE        = {}
 
 function OnLoad(self)
   -- Register the options
-  Options:Register("sort-quests-by-distance", true, "quests/sortingByDistance")
-  Options:Register("show-only-quests-in-zone", false, "quests/updateAll")
-  Options:Register("quest-popup-location", "TOP")
-  Options:Register("quest-idle-mode-ignore-map-frame", false, "quests/updateAll")
+  Settings:Register("sort-quests-by-distance", true, "quests/sortingByDistance")
+  Settings:Register("show-only-quests-in-zone", false, "quests/updateAll")
+  Settings:Register("quest-popup-location", "TOP")
+  Settings:Register("quest-idle-mode-ignore-map-frame", false, "quests/updateAll")
 
   CallbackHandlers:Register("quests/sortingByDistance", CallbackHandler(function(enabled) if enabled then self:UpdateDistance() end end))
   -- CallbackHandlers:Register("quests/showOnlyQuestInZone", CallbackHandler(EKT_SHOW_ONLY_QUESTS_IN_ZONE))
@@ -48,7 +48,7 @@ end
 if BFASupport.isBFA then
   __SecureHook__(WorldMapFrame, "SetMapID")
   function UpdateMapID(worldMapFrame, mapID)
-    if not Options:Get("quest-idle-mode-ignore-map-frame") then
+    if not Settings:Get("quest-idle-mode-ignore-map-frame") then
       for questID in pairs(QUESTS_CACHE) do
         local quest = _QuestBlock:GetQuest(questID)
         if quest then
@@ -127,7 +127,7 @@ if not BFASupport.isBFA then
     local needUpdate = false
 
     function RunQuestLogUpdate()
-      if Options:Get("show-only-quests-in-zone") then
+      if Settings:Get("show-only-quests-in-zone") then
         QUESTS_UPDATE()
         needUpdate = false
       end
@@ -137,7 +137,7 @@ if not BFASupport.isBFA then
     function ZONE_CHANGED()
       -- @NOTE This seems that GetQuestWorldMapAreaID() uses SetMapToCurrentZone so we
       -- need to wait the WorldMapFrame is hidden to continue
-      if Options:Get("show-only-quests-in-zone") then
+      if Settings:Get("show-only-quests-in-zone") then
         if WorldMapFrame:IsShown() then
           needUpdate = true
         else
@@ -148,7 +148,7 @@ if not BFASupport.isBFA then
 
     __SystemEvent__()
     function EKT_SHOW_ONLY_QUESTS_IN_ZONE()
-      if Options:Get("show-only-quests-in-zone") then
+      if Settings:Get("show-only-quests-in-zone") then
         if not alreadyHooked then
           WorldMapFrame:HookScript("OnHide", RunQuestLogUpdate)
           alreadyHooked = true
@@ -308,7 +308,7 @@ function UpdateQuest(self, questID)
     isLocal = (((mapID ~= 0) and mapID == currentMapID) or (mapID == 0 and isOnMap))
   end
 
-  if Options:Get("show-only-quests-in-zone") and not isLocal then
+  if Settings:Get("show-only-quests-in-zone") and not isLocal then
     if quest then
       quest:ResumeIdleCountdown()
       _QuestBlock:RemoveQuest(quest)
@@ -407,7 +407,7 @@ function UpdateQuest(self, questID)
 
   -- #######################################################################
   -- Is the player wants the quests are filered by zone ?
-  if Options:Get("show-only-quests-in-zone") then
+  if Settings:Get("show-only-quests-in-zone") then
 
     -- @NOTE This seems that GetQuestWorldMapAreaID() uses SetMapToCurrentZone so we
     -- need to wait the WorldMapFrame is hidden to continue
@@ -446,7 +446,7 @@ function UpdateQuest(self, questID)
   quest.isBounty        = isBounty
   quest.isCompleted     = isComplete
   if BFASupport.isBFA then
-    if WorldMapFrame:IsShown() and not Options:Get("quest-idle-mode-ignore-map-frame") then
+    if WorldMapFrame:IsShown() and not Settings:Get("quest-idle-mode-ignore-map-frame") then
       quest.isOnMap = BFASupport:IsQuestOnMap(questID, WorldMapFrame:GetMapID())
     else
       quest.isOnMap = BFASupport:IsQuestOnMap(questID)
@@ -522,7 +522,7 @@ do
 
   __Async__()
   function UpdateDistance()
-    while Options:Get("sort-quests-by-distance") do
+    while Settings:Get("sort-quests-by-distance") do
       for index, quest in _QuestBlock.quests:GetIterator() do
         -- If the quest is a legion assault, set it in first.
         if IsLegionAssaultQuest(quest.id) then

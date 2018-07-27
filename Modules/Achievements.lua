@@ -15,9 +15,9 @@ function OnLoad(self)
   _Enabled = self:HasAchievement()
 
   -- Register achievement options
-  Options:Register("achievement-max-criteria-displayed", 0, "achievements/updateAll")
-  Options:Register("achievement-hide-criteria-completed", false, "achievements/updateAll")
-  Options:Register("achievement-show-description", true, "achievements/updateAll")
+  Settings:Register("achievement-max-criteria-displayed", 0, "achievements/updateAll")
+  Settings:Register("achievement-hide-criteria-completed", false, "achievements/updateAll")
+  Settings:Register("achievement-show-description", true, "achievements/updateAll")
 
   -- Callback
   CallbackHandlers:Register("achievements/updateAll", CallbackHandler(function() _M:UpdateAll() end))
@@ -116,15 +116,15 @@ function UpdateAchievement(self, achievement)
   achievement.name = achievementName
   achievement.icon = icon
   achievement.desc = description
-  achievement.showDesc = Options:Get("achievement-show-description")
+  achievement.showDesc = Settings:Get("achievement-show-description")
   local numObjectives = GetAchievementNumCriteria(achievement.id)
   if numObjectives > 0 then
     local numShownCriteria = 0
-    local maxCriteriaDisplayed = Options:Get("achievement-max-criteria-displayed")
+    local maxCriteriaDisplayed = Settings:Get("achievement-max-criteria-displayed")
     for index = 1, numObjectives do
       local criteriaString, criteriaType, criteriaCompleted, quantity, totalQuantity, name, flags, assetID, quantityString, criteriaID, eligible, duration, elapsed = GetAchievementCriteriaInfo(achievement.id, index)
       local mustBeShown = true
-      if criteriaCompleted and Options:Get("achievement-hide-criteria-completed") then
+      if criteriaCompleted and Settings:Get("achievement-hide-criteria-completed") then
         mustBeShown = false
       end
       if maxCriteriaDisplayed > 0 and numShownCriteria == maxCriteriaDisplayed then
