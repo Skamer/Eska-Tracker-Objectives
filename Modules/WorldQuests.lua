@@ -18,7 +18,6 @@ GetSuperTrackedQuestID              = GetSuperTrackedQuestID
 SHOW_TRACKED_WORLD_QUESTS_OPTION    = "show-tracked-world-quests"
 --============================================================================--
 LAST_TRACKED_WORLD_QUEST            = nil
-WORLDQUEST_PROGRESS_LIST            = {}
 --============================================================================--
 __EnablingOnEvent__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
 function EnablingOn(self, event, ...)
@@ -130,8 +129,6 @@ function LoadWorldQuests(self)
   end
 end
 
--- Settings:Get
-
 -- The cache is used to avoid a useless GetTaskInfo call after LoadWorldQuests
 function UpdateWorldQuest(self, worldQuest, cache)
   local isInArea, isOnMap, numObjectives, taskName, displayAsObjective
@@ -190,16 +187,12 @@ function UpdateWorldQuest(self, worldQuest, cache)
         objective:SetMinMaxProgress(0, 100)
         objective:SetProgress(progress)
         objective:SetTextProgress(string.format("%i%%", progress))
-        WORLDQUEST_PROGRESS_LIST[worldQuest.id] = objective
       else
         objective:HideProgress()
-        WORLDQUEST_PROGRESS_LIST[worldQuest.id] = nil
       end
     end
   end
 end
-
-
 
 __SystemEvent__()
 function QUEST_REMOVED(questID, fromTracking)
@@ -224,7 +217,6 @@ function QUEST_REMOVED(questID, fromTracking)
     end
   end
 
-  WORLDQUEST_PROGRESS_LIST[worldQuest.id] = nil
   _WorldQuestBlock:RemoveWorldQuest(worldQuest)
   ActionBars:RemoveButton(questID, "quest-items")
 end
@@ -247,29 +239,10 @@ end
 
 __SystemEvent__()
 function QUEST_LOG_UPDATE()
-  for questID, objective in pairs(WORLDQUEST_PROGRESS_LIST) do
-    local progress = GetQuestProgressBarPercent(questID)
-    objective:SetProgress(progress)
-    objective:SetTextProgress(string.format("%i%%", progress))
-  end
-end
-
-__Async__()
-__SystemEvent__()
-function QUEST_WATCH_UPDATE(questIndex)
   for _, worldQuest in _WorldQuestBlock.worldQuests:GetIterator() do
-    if questIndex == GetQuestLogIndexByID(worldQuest.id) then
-      -- The objective text returned by GetQuestObjectiveInfo isn't still updated,
-      -- it's why we wait the next 'QUEST_LOG_UPDATE'.
-      Wait("QUEST_LOG_UPDATE")
-      -- At this moment, the objectve text is well updated.
-      _M:UpdateWorldQuest(worldQuest)
-      return
-    end
+    _M:UpdateWorldQuest(worldQuest)
   end
 end
-
-
 
 function HasWorldQuest(self)
   local tasks = GetTasksTable()

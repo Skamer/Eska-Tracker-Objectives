@@ -48,7 +48,6 @@ class "Quest" (function(_ENV)
     elseif prop == "distance" then
       self.OnDistanceChanged(self, new)
     elseif prop == "isOnMap" then
-
     end
   end
   ------------------------------------------------------------------------------
@@ -239,10 +238,6 @@ class "Quest" (function(_ENV)
   function PrepareContextMenu(self)
     ContextMenu():ClearAll()
     ContextMenu():AnchorTo(self.frame.header):UpdateAnchorPoint()
-    ContextMenu():AddAction("group-finder-create-group", self)
-    ContextMenu():AddAction("group-finder-join-group", self)
-    --- First seperator
-    ContextMenu():AddItem(MenuItemSeparator())
     if not QuestUtils_IsQuestWorldQuest(self.id) then
       if GetSuperTrackedQuestID() == self.id then
         ContextMenu():AddAction("stop-super-tracking-quest")
@@ -393,23 +388,6 @@ class "Quest" (function(_ENV)
   end
 end)
 
-
---__Action__ "new-action" "It a new action"
-class "NewAction" (function(_ENV)
-
-  property "id"  { STATIC = true, TYPE = String, DEFAULT = "new-action", SET = false }
-  property "text" { STATIC = true, TYPE = String, DEFAULT = "It a new action" }
-
-  __Arguments__ { Number }
-  __Static__() function Exec(num)
-    --print("Execute the new action by this number", num)
-  end
-
-end)
-
-Actions:Add(NewAction)
-
---print("Nouvelle action", NewAction.Exec(162))
 --------------------------------------------------------------------------------
 --                          Scorpio OnLoad                                    --
 --------------------------------------------------------------------------------
@@ -461,7 +439,7 @@ __Action__ "show-quest-details-with-map" "Show details with map"
 class "ShowQuestDetailsWithMapAction" (function(_ENV)
   __Arguments__ { Number }
   __Static__() function Exec(questID)
-    BFASupport:ShowQuestDetailsWithMap(questID)
+    Utils.Quest.ShowQuestDetailsWithMap(questID)
   end
 
   __Arguments__ { Quest }

@@ -10,7 +10,6 @@ namespace                        "EKT"
 __Recyclable__()
 class "QuestHeader" (function(_ENV)
   inherit "Frame"
-  _QuestHeaderCache = setmetatable({}, { __mode = "k"})
   ------------------------------------------------------------------------------
   --                              Events                                      --
   ------------------------------------------------------------------------------
@@ -19,7 +18,7 @@ class "QuestHeader" (function(_ENV)
   --                                Handlers                                  --
   ------------------------------------------------------------------------------
   local function SetName(self, new)
-    self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, self.frame.name.elementID)
+    self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, Theme:GetElementID(self.frame.name))
   end
   ------------------------------------------------------------------------------
   --                             Methods                                      --
@@ -27,8 +26,6 @@ class "QuestHeader" (function(_ENV)
   __Arguments__ { Quest }
   function AddQuest(self, quest)
     if not self.quests:Contains(quest) then
-      quest._sortIndex = nil
-      self.quests:Insert(quest)
       quest:SetParent(self.frame)
 
       quest.OnHeightChanged = function(_, new, old)
@@ -40,9 +37,8 @@ class "QuestHeader" (function(_ENV)
         self:OnQuestDistanceChanged()
       end
 
-      self:Layout()
-
-      self:AddChildObject(quest)
+      self.quests:Insert(quest)
+      self:Draw()
     end
   end
 
@@ -54,7 +50,6 @@ class "QuestHeader" (function(_ENV)
       quest.OnHeightChanged   = nil
       quest.OnDistanceChanged = nil
       self:Layout()
-      self:RemoveChildObject(quest)
     end
   end
 
@@ -64,8 +59,6 @@ class "QuestHeader" (function(_ENV)
   end
 
   function OnLayout(self)
-    local previousFrame
-
     -- Quest compare function (Priorty : Distance > ID > Name)
     local function QuestSortMethod(a, b)
       if a.distance ~= b.distance then
@@ -75,36 +68,29 @@ class "QuestHeader" (function(_ENV)
       if a.id ~= b.id then
         return a.id < b.id
       end
+
       return a.name < b.name
     end
 
-    local mustBeAnchored = false
+    local previousFrame
     for index, quest in self.quests:Sort(QuestSortMethod):GetIterator() do
-      -- if the sort index don't existant (the quest is new in the quest header )
-      -- or the quest has changed position, it need to be redrawn
       if index == 1 then
         self.nearestQuest = quest
       end
 
-      if (not quest._sortIndex) or (quest._sortIndex ~= index) then
-        mustBeAnchored = true
+      quest:Hide()
+      quest:ClearAllPoints()
+
+      if index == 1 then
+        quest:SetPoint("TOP", 0, -36)
+        quest:SetPoint("LEFT")
+        quest:SetPoint("RIGHT")
+      else
+        quest:SetPoint("TOPLEFT", previousFrame, "BOTTOMLEFT", 0, -10)
+        quest:SetPoint("TOPRIGHT", previousFrame, "BOTTOMRIGHT")
       end
-
-      if mustBeAnchored then
-        quest:Hide()
-
-        if index == 1 then
-          quest:SetPoint("TOPLEFT", 0, -36)
-          quest:SetPoint("TOPRIGHT", 0, -36)
-        else
-          quest:SetPoint("TOPLEFT", previousFrame, "BOTTOMLEFT", 0, -10)
-          quest:SetPoint("TOPRIGHT", previousFrame, "BOTTOMRIGHT")
-        end
-
-        quest:Show()
-      end
-      quest._sortIndex = index
       previousFrame = quest.frame
+      quest:Show()
     end
 
     self:CalculateHeight()
@@ -163,7 +149,6 @@ class "QuestHeader" (function(_ENV)
   --                         Properties                                       --
   ------------------------------------------------------------------------------
   property "name"     { TYPE = String, DEFAULT = "Misc", HANDLER = SetName }
-  property "isActive" { TYPE = Boolean, DEFAULT = true }
   property "nearestQuestDistance" {
     GET = function(self)
       if self.nearestQuest then
@@ -192,12 +177,7 @@ class "QuestHeader" (function(_ENV)
     self.baseHeight = self.height
     self.quests     = Array[Quest]()
 
-    -- Keep it in the cache
-    _QuestHeaderCache[self] = true
-
     -- Init things (register, skin elements)
     Init(self)
-
   end
-
 end)

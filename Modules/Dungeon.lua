@@ -26,8 +26,6 @@ function OnEnable(self)
   _Dungeon.isActive = true
   UpdateObjectives()
 
-  _Dungeon:WakeUpTracker()
-  _Dungeon:PauseIdleCountdown()
 end
 
 
@@ -75,7 +73,7 @@ end
 
 __SystemEvent__ "WORLD_MAP_UPDATE" "UPDATE_INSTANCE_INFO"
 function UPDATE_TEXTURE()
-  local currentInstance = BFASupport:GetCurrentInstance()
+  local currentInstance = Utils.Instance.GetCurrentInstance()
   if currentInstance then
     _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
   end
@@ -86,7 +84,7 @@ end
 --------------------------------------------------------------------------------
 __SystemEvent__()
 function ZONE_CHANGED_NEW_AREA()
-  local currentInstance = BFASupport:GetCurrentInstance()
+  local currentInstance = Utils.Instance.GetCurrentInstance()
   if currentInstance then
     _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
   end

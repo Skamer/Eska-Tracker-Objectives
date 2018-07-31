@@ -35,6 +35,16 @@ class "Utils" (function(_ENV)
 
       return false
     end
+
+    __Arguments__ { Number }
+    __Static__() function IsLegionAssaultQuest(questID)
+      return (questID == 45812) -- Assault on Val'sharah
+          or (questID == 45838) -- Assault on Azsuna
+          or (questID == 45840) -- Assault on Highmountain
+          or (questID == 45839) -- Assault on StormHeim
+          or (questID == 45406) -- StomHeim : The Storm's Fury
+          or (questID == 46110) -- StomHeim : Battle for Stormheim
+    end
   end)
   ------------------------------------------------------------------------------
   --                             Instance                                     --

@@ -115,7 +115,6 @@ function UpdateObjectives()
   _Keystone.name = dungeonName
   _Keystone.numObjectives = numObjectives
   _Keystone.isCompleted = completed
-  _Keystone:WakeUpTracker()
 
   for index = 1, numObjectives do
     local description, _, completed, c, totalQuantity, _, _, quantityString,
@@ -172,7 +171,6 @@ function UpdateTimer(self)
     local _, elapsedTime = GetWorldElapsedTime(1)
     _Keystone.timer = elapsedTime
     Delay(0.1)
-    _Keystone:WakeUpTracker()
   end
 
   KEYSTONE_TIMER_STARTED = false

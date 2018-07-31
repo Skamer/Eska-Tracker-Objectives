@@ -52,11 +52,10 @@ end
 
 function UpdateObjectives(self)
   local stageName, stageDescription, numObjectives,  _, _, _, numSpells, spellInfo = GetStepInfo()
-  local weightedProgress = BFASupport:GetScenarioWeightedProgress()
+  local weightedProgress = select(10, C_Scenario.GetStepInfo())
   local needRunTimer = false
 
   _Scenario.stageName = stageName
-  _Scenario:WakeUpTracker()
 
   if weightedProgress then
     -- @NOTE : Some scenario (e.g : 7.2 Broken shode indroduction, invasion scenario)
@@ -158,7 +157,6 @@ function UpdateScenario(self, isNewStage)
   _Scenario.name = title
   _Scenario.currentStage = currentStage
   _Scenario.numStages = numStages
-  _Scenario:WakeUpTracker()
 
   if isNewStage then
     LevelUpDisplay_PlayScenario()

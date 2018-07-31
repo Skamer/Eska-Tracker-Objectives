@@ -3,7 +3,7 @@
 ## Author: Skamer
 ## Notes: EskaTracker - |cffff6a00Objectives|r
 ## RequiredDeps: EskaTracker
-## Version: 1.0.16
+## Version: 1.0.17
 ## X-Stage: Beta
 
 # Localization files
@@ -11,9 +11,6 @@ Locales\locales.xml
 
 # Utils & Helper functions
 Utils.lua
-
-# Battle for Azeroth Support
-BFA.lua
 
 # Theme Files (add new properties)
 Themes\themes.xml

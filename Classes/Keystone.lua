@@ -124,7 +124,6 @@ class "BFAKeystoneBlock" (function(_ENV)
       for i = 1, new - old do
         local affix = ObjectManager:Get(Affix)
         affix:SetParent(self.frame.affixes)
-        self:AddChildObject(affix)
         self.affixes:Insert(affix)
       end
     elseif new < old then

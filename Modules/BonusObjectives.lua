@@ -24,14 +24,11 @@ function OnEnable(self)
   end
 
   _BonusObjectives.isActive = true
-  _BonusObjectives:WakeUpTracker()
-  _BonusObjectives:PauseIdleCountdown()
   self:LoadBonusQuests()
 end
 
 function OnDisable(self)
   if _BonusObjectives then
-    _BonusObjectives:ResumeIdleCountdown()
     _BonusObjectives.isActive = false
   end
 

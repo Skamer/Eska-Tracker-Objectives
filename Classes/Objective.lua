@@ -252,7 +252,7 @@ class "Objective" (function(_ENV)
   end
 
   function UpdateTextHeight(self)
-      self:CalculateHeight()
+    self:CalculateHeight()
   end
 
 

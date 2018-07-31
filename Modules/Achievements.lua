@@ -31,7 +31,6 @@ function OnEnable(self)
   end
 
   _AchievementBlock.isActive = true
-  _AchievementBlock:WakeUpTracker()
 end
 
 function OnDisable(self)
@@ -56,7 +55,6 @@ function TRACKED_ACHIEVEMENT_UPDATE(achievementID)
     _M:UpdateAchievement(achievement)
   end
 
-  _AchievementBlock:WakeUpTracker()
 end
 
 __SystemEvent__()
@@ -84,7 +82,6 @@ function TRACKED_ACHIEVEMENT_LIST_CHANGED(achievementID, isAdded)
     _M:UpdateAll()
   end
 
-  _AchievementBlock:WakeUpTracker()
 end
 
 __Async__()
