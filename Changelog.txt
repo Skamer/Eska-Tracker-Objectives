@@ -1,7 +1,8 @@
 [1.0.17]
 Updated for EskaTracker 1.0.22
 - ! Reworked the Quests module.
-- - Removed the BFA file. 
+- - Removed the BFA file.
+- ! The quest level is no longer displayed for world quests.
 
 
 [1.0.16]

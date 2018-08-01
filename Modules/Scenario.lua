@@ -30,12 +30,15 @@ function OnEnable(self)
 
   self:UpdateScenario()
   self:UpdateObjectives()
+
+  _Scenario:AddIdleCountdown(nil, nil, true)
 end
 
 function OnDisable(self)
   if _Scenario then
     _Scenario.isActive = false
     _Scenario:Reset()
+    _Scenario:ResumeIdleCountdown()
   end
 end
 

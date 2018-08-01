@@ -71,11 +71,14 @@ function OnEnable(self)
     _Keystone.isActive = true
     self:UpdateTimer()
   end
+
+  _Keystone:AddIdleCountdown(nil, nil, true)
 end
 
 function OnDisable(self)
   if _Keystone then
     _Keystone.isActive = false
+    _Keystone:ResumeIdleCountdown()
   end
 end
 --============================================================================--

@@ -25,11 +25,14 @@ function OnEnable(self)
 
   _BonusObjectives.isActive = true
   self:LoadBonusQuests()
+
+  _BonusObjectives:AddIdleCountdown(nil, nil, true)
 end
 
 function OnDisable(self)
   if _BonusObjectives then
     _BonusObjectives.isActive = false
+    _BonusObjectives:ResumeIdleCountdown()
   end
 
 end

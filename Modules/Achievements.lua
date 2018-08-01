@@ -31,11 +31,13 @@ function OnEnable(self)
   end
 
   _AchievementBlock.isActive = true
+  _AchievementBlock:AddIdleCountdown(nil, nil, true)
 end
 
 function OnDisable(self)
   if _AchievementBlock then
     _AchievementBlock.isActive = false
+    _AchievementBlock:ResumeIdleCountdown() 
   end
 end
 

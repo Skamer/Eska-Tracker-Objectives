@@ -26,6 +26,8 @@ function OnEnable(self)
   _Dungeon.isActive = true
   UpdateObjectives()
 
+  _Dungeon:AddIdleCountdown(nil, nil, true)
+
 end
 
 
@@ -33,6 +35,7 @@ function OnDisable(self)
   if _Dungeon then
     _Dungeon:ResumeIdleCountdown()
     _Dungeon.isActive = false
+    _Dungeon:ResumeIdleCountdown() 
   end
 end
 
