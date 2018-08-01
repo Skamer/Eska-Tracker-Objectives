@@ -22,5 +22,8 @@ class "WorldQuest" (function(_ENV)
     super(self)
     -- Keep it in the cache
     _WorldQuestCache[self] = true
+
+    -- Hide the level
+    self:HideLevel()
   end
 end)

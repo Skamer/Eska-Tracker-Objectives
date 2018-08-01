@@ -55,12 +55,20 @@ function OnEnable(self)
   _WorldQuestBlock.isActive = true
 
   LAST_TRACKED_WORLD_QUEST = GetSuperTrackedQuestID()
+
+  if _EnablingEvent == "EKT_WORLDQUEST_TRACKED_LIST_CHANGED" then
+    EKT_WORLDQUEST_TRACKED_LIST_CHANGED(unpack(_EnablingEventArgs))
+  end
+
+  _WorldQuestBlock:AddIdleCountdown(nil, nil, true)
 end
 
 function OnDisable(self)
   if _WorldQuestBlock then
     _WorldQuestBlock.isActive = false
     _WorldQuestBlock.worldQuests:Clear()
+
+    _WorldQuestBlock:ResumeIdleCountdown()
   end
 end
 --============================================================================--
@@ -95,6 +103,10 @@ function QUEST_ACCEPTED(_, questID, isTracked)
 
   _M:UpdateWorldQuest(worldQuest)
   _WorldQuestBlock:AddWorldQuest(worldQuest)
+
+  if not isTracked then
+    PlaySound(SOUNDKIT.UI_WORLDQUEST_START)
+  end
 end
 
 --- Load the world quests, this function is used after the loading.

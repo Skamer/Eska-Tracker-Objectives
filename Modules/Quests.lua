@@ -129,7 +129,7 @@ end
 __Async__()
 __SystemEvent__()
 function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
-  if not questID then
+  if not questID or IsWorldQuest(questID) or IsQuestBounty(questID) then
     return
   end
 

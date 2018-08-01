@@ -112,6 +112,7 @@ class "QuestBlock" (function(_ENV)
   __Arguments__ { String }
   function RemoveHeader(self, name)
     local header = self.headers[name]
+    header:Recycle()
 
     self.headers[name] = nil
   end
