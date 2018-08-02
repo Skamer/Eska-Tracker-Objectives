@@ -32,6 +32,7 @@ SHOW_ONLY_QUESTS_IN_ZONE_SETTING  = "show-only-quests-in-zone"
 QUESTS_CACHE                      = {}
 QUEST_HEADERS_CACHE               = {}
 QUESTLOG_INDEX_CACHE              = {}
+QUESTS_WITH_TIMER_CACHE           = {}
 DISTANCE_UPDATER_ENABLED          = false
 --============================================================================--
 __EnablingOnEvent__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "QUEST_WATCH_LIST_CHANGED"
@@ -147,6 +148,7 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
     QuestSuperTracking_OnQuestTracked(questID)
   else
     QUESTS_CACHE[questID] = nil
+    QUESTS_WITH_TIMER_CACHE[questID] = nil
 
     _QuestBlock:RemoveQuest(questID)
     _QuestBlock:ResumeIdleCountdown(questID)
@@ -206,6 +208,10 @@ function UpdateQuest(self, questID, cache)
   local questLogIndex   = GetQuestLogIndexByID(questID)
   local questWatchIndex = GetQuestWatchIndex(questLogIndex)
 
+  if not questWatchIndex then
+    return
+  end
+
   local _, title, questLogIndex, numObjectives, requiredMoney,
   isComplete, startEvent, isAutoComplete, failureTime, timeElapsed,
   questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI = GetQuestWatchInfo(questWatchIndex)
@@ -226,6 +232,14 @@ function UpdateQuest(self, questID, cache)
       _QuestBlock:AddIdleCountdown(questID, nil, true)
     end
   end
+
+  if failureTime then
+    QUESTS_WITH_TIMER_CACHE[questID] = true
+    self:RunAndUpdateTimers()
+  else
+    QUESTS_WITH_TIMER_CACHE[questID] = nil
+  end
+
 
   quest.isCompleted = isComplete
 
@@ -276,6 +290,15 @@ function UpdateQuest(self, questID, cache)
         objective:SetTextProgress(PERCENTAGE_STRING:format(progress))
       else
         objective:HideProgress()
+      end
+
+      if failureTime then
+        if index == numObjectives then
+          objective:ShowTimer()
+          objective:SetTimer(failureTime, timeElapsed)
+        else
+          objective:HideTimer()
+        end
       end
     end
   else
@@ -426,4 +449,30 @@ function UpdateDistance()
       quest.distance = distanceSq and math.sqrt(distanceSq) or nil
     end
   end
+end
+
+TIMER_TICKER_LAUNCHED = false
+__Async__()
+function RunAndUpdateTimers(self)
+  if TIMER_TICKER_LAUNCHED then
+    return
+  end
+
+  TIMER_TICKER_LAUNCHED = true
+
+  while true do
+    Next()
+
+    local hasQuest = false
+    for questID in pairs(QUESTS_WITH_TIMER_CACHE) do
+      hasQuest = true
+      _M:UpdateQuest(questID)
+    end
+
+    if not hasQuest then
+      break
+    end
+  end
+
+  TIMER_TICKER_LAUNCHED = false
 end

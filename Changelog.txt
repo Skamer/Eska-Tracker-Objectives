@@ -1,3 +1,8 @@
+[1.0.18]
+- ! Fixed an error when the objective has a timer.
+- + Implemented #23 - The timer will now be displayed for the quest having a time limit. 
+
+
 [1.0.17]
 Updated for EskaTracker 1.0.22
 - ! Reworked the Quests module.

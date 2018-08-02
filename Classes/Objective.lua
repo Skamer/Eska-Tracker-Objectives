@@ -85,7 +85,7 @@ class "Objective" (function(_ENV)
   ------------------------------------------------------------------------------
   --                                   Methods                                --
   ------------------------------------------------------------------------------
-  function ShowTimer()
+  function ShowTimer(self)
     if not self.frame.timer then
       local timer = self.frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
       timer:SetText("14:35")
