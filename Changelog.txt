@@ -1,7 +1,17 @@
+[1.0.19]
+  == Quests ==
+  - ! Trying to fix #25 and #10 - The quests having no valid information will now be removed from tracker, this should fix the multiple empty lines.
+  - ! Improved the function for knowing if a quest is on the map.
+
+  == World Quests ==
+  - ! Fixed a rare case where sometimes the module is enabled with no world quest displayed.
+  - ! The tracked world quests are no longer displayed by default. A new option has been added in blocks -> world quests -> general for this setting.
+  - ! Fixed #22 - The world quests are no longer drawing on top of each other.
+  - ! The tracked world quest will now be correctly removed once the module has been disabled.
+
 [1.0.18]
 - ! Fixed an error when the objective has a timer.
-- + Implemented #23 - The timer will now be displayed for the quest having a time limit. 
-
+- + Implemented #23 - The timer will now be displayed for the quest having a time limit.
 
 [1.0.17]
 Updated for EskaTracker 1.0.22

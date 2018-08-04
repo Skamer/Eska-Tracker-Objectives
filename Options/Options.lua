@@ -18,6 +18,7 @@ function OnLoad(self)
   self:AddDungeonRecipes()
   self:AddKeystoneRecipes()
   self:AddQuestBlockRecipes()
+  self:AddWorldQuestBlockRecipes()
   self:AddScenarioRecipes()
   self:AddGroupFinderRecipes()
 end
@@ -400,6 +401,14 @@ function AddQuestBlockRecipes(self)
   OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Sort quests by distance"):SetOrder(81):SetWidth(1.0):BindSetting("sort-quests-by-distance"), "quests-block-category/general/top-options")
 
 end
+--------------------------------------------------------------------------------
+--                                WorldQuestBlock                                --
+--------------------------------------------------------------------------------
+function AddWorldQuestBlockRecipes(self)
+  OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("world-quests-block-category/general/top-options"), "world-quests-block-category/general")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show tracked world quests"):BindSetting("show-tracked-world-quests"):SetWidth(1.0), "world-quests-block-category/general/top-options")
+end
+
 --------------------------------------------------------------------------------
 --                                Scenario                                    --
 --------------------------------------------------------------------------------

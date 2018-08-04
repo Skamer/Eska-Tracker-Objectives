@@ -19,8 +19,8 @@ class "Utils" (function(_ENV)
       QuestMapFrame_OpenToQuestDetails(questID)
     end
 
-    __Arguments__ { Number, Variable.Optional(Number) }
-    __Static__() function IsQuestOnMap(questID, mapID)
+    __Arguments__ { Number, Variable.Optional(Number), Variable.Optional(Boolean, false) }
+    __Static__() function IsQuestOnMap(questID, mapID, strict)
       mapID = mapID or C_Map.GetBestMapForUnit("player")
       if mapID then
         local questsOnMap = C_QuestLog.GetQuestsOnMap(mapID)
@@ -31,6 +31,16 @@ class "Utils" (function(_ENV)
             end
           end
         end
+
+        if not strict then
+          local mapInfo = C_Map.GetMapInfo(mapID)
+          if mapInfo.mapType == 5 then -- 5 -> cave
+            return IsQuestOnMap(questID, mapInfo.parentMapID, true)
+          end
+
+          -- Make something for dungeon
+        end
+
       end
 
       return false

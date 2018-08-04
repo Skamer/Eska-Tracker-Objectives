@@ -147,18 +147,22 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
 
     QuestSuperTracking_OnQuestTracked(questID)
   else
-    QUESTS_CACHE[questID] = nil
-    QUESTS_WITH_TIMER_CACHE[questID] = nil
-
-    _QuestBlock:RemoveQuest(questID)
-    _QuestBlock:ResumeIdleCountdown(questID)
-
-    ActionBars:RemoveButton(questID, "quest-items")
-
-    QuestSuperTracking_OnQuestUntracked()
+    _M:RemoveQuest(questID)
   end
 
   _M:UpdateDistance()
+end
+
+function RemoveQuest(self, questID)
+  QUESTS_CACHE[questID] = nil
+  QUESTS_WITH_TIMER_CACHE[questID] = nil
+
+  _QuestBlock:RemoveQuest(questID)
+  _QuestBlock:ResumeIdleCountdown(questID)
+
+  ActionBars:RemoveButton(questID, "quest-items")
+
+  QuestSuperTracking_OnQuestUntracked()
 end
 
 __SystemEvent__ "QUEST_LOG_UPDATE"
@@ -209,6 +213,7 @@ function UpdateQuest(self, questID, cache)
   local questWatchIndex = GetQuestWatchIndex(questLogIndex)
 
   if not questWatchIndex then
+    self:RemoveQuest(questID)
     return
   end
 

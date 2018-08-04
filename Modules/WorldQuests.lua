@@ -43,7 +43,7 @@ end
 --============================================================================--
 function OnLoad(self)
   -- Register the options
-  Settings:Register(SHOW_TRACKED_WORLD_QUESTS_OPTION, true, "worldquests/enableTracking")
+  Settings:Register(SHOW_TRACKED_WORLD_QUESTS_OPTION, false, "worldquests/enableTracking")
   CallbackHandlers:Register("worldquests/enableTracking",  CallbackHandler(function(enable) _M:EnableWorldQuestsTracking(enable) end))
 end
 
@@ -58,6 +58,9 @@ function OnEnable(self)
 
   if _EnablingEvent == "EKT_WORLDQUEST_TRACKED_LIST_CHANGED" then
     EKT_WORLDQUEST_TRACKED_LIST_CHANGED(unpack(_EnablingEventArgs))
+  elseif _EnablingEvent == "QUEST_ACCEPTED" then
+    -- HACK In rare cases, the QUEST_ACCEPTED isn't called after the module is loaded.
+    QUEST_ACCEPTED(unpack(_EnablingEventArgs))
   end
 
   _WorldQuestBlock:AddIdleCountdown(nil, nil, true)
@@ -66,9 +69,14 @@ end
 function OnDisable(self)
   if _WorldQuestBlock then
     _WorldQuestBlock.isActive = false
-    _WorldQuestBlock.worldQuests:Clear()
-
     _WorldQuestBlock:ResumeIdleCountdown()
+
+    -- NOTE: The Darkshore world quests and probably other world quests are supertrack
+    -- so we need to remove manually the supertrack if the module become disabled.
+    if LAST_TRACKED_WORLD_QUEST and IsWorldQuest(LAST_TRACKED_WORLD_QUEST) then
+      _WorldQuestBlock:RemoveWorldQuest(LAST_TRACKED_WORLD_QUEST)
+      ActionBars:RemoveButton(LAST_TRACKED_WORLD_QUEST, "quest-items")
+    end
   end
 end
 --============================================================================--
@@ -84,6 +92,21 @@ function BonusObjectiveTracker_UntrackWorldQuest(questID)
   if Settings:Get("show-tracked-world-quests") then
     Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false)
   end
+end
+
+__SystemEvent__()
+function SUPER_TRACKED_QUEST_CHANGED(questID)
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
+    if LAST_TRACKED_WORLD_QUEST then
+      QUEST_REMOVED(LAST_TRACKED_WORLD_QUEST, true)
+    end
+
+    if IsWorldQuest(questID) then
+      EKT_WORLDQUEST_TRACKED_LIST_CHANGED(questID, true)
+    end
+  end
+
+  LAST_TRACKED_WORLD_QUEST = questID
 end
 
 
