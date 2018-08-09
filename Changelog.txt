@@ -1,3 +1,20 @@
+[1.0.20]
+- ! Fixed an error lua which was triggered sometimes when you've entered in a instance.
+- - Removed the code about Group Finder addons (this is no longer relevant now).
+- + #1 - Added the TomTom support
+
+  == TomTom ==
+  - + You can now set waypoint for quests from context menu.
+
+  == Quests ==
+  - ! The quest with a name too long will no longer be on top of quest level.
+  - ! Fixed an issue where the action linked to middle button was not executed.
+  - + Added an action to join a group for a quest from context menu.
+  TIP: When using this action and if it's a elite quest, click on 'Back' button then 'Create a group' to automatically create a group for this quest.
+
+ == Keystone ==
+ - + #27 - Added a way for customizing the text font properties for timer, time limit +2 key and time limit +3 key.
+
 [1.0.19]
   == Quests ==
   - ! Trying to fix #25 and #10 - The quests having no valid information will now be removed from tracker, this should fix the multiple empty lines.

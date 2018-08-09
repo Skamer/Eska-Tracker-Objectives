@@ -314,6 +314,18 @@ class "BFAKeystoneBlock" (function(_ENV)
     if Theme:NeedSkin(self.frame.level, target) then
       Theme:SkinText(self.frame.level, flags, string.format("LEVEL %i", self.level), state)
     end
+
+    if Theme:NeedSkin(self.frame.timer, target) then
+      Theme:SkinText(self.frame.timer, Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE + Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL, nil, state)
+    end
+
+    if Theme:NeedSkin(self.frame.plus2KeyLevelTimer, target) then
+      Theme:SkinText(self.frame.plus2KeyLevelTimer, Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE, nil, state)
+    end
+
+    if Theme:NeedSkin(self.frame.plus3KeyLevelTimer, target) then
+      Theme:SkinText(self.frame.plus3KeyLevelTimer, Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE, nil, state)
+    end
   end
 
   __Arguments__ { String }
@@ -349,8 +361,17 @@ class "BFAKeystoneBlock" (function(_ENV)
     local state  = self:GetCurrentState()
 
     Theme:RegisterText(prefix..".level", self.frame.level)
+    Theme:RegisterText(prefix..".timer", self.frame.timer)
+    Theme:RegisterText(prefix..".timeLimit2Key", self.frame.plus2KeyLevelTimer)
+    Theme:RegisterText(prefix..".timeLimit3Key", self.frame.plus3KeyLevelTimer)
+
+
 
     Theme:SkinText(self.frame.level, nil, self.level, state)
+    Theme:SkinText(self.frame.timer, Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE + Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL, nil, state)
+    Theme:SkinText(self.frame.plus2KeyLevelTimer, Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE, nil, state)
+    Theme:SkinText(self.frame.plus3KeyLevelTimer, Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE, nil, state)
+
 
     -- Load options
     self:LoadSetting(SHOW_TIMER_BAR_OPTION)

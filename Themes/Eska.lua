@@ -29,6 +29,14 @@ EskaTheme:SetElementProperty("block.keystone.header.text", "text-justify-v", "TO
 EskaTheme:SetElementProperty("block.keystone.level", "text-font", "PT Sans Narrow Bold")
 EskaTheme:SetElementProperty("block.keystone.level", "text-size", 14)
 EskaTheme:SetElementProperty("block.keystone.level", "text-color", { r = 1, g = 215/255, b = 0 })
+EskaTheme:SetElementProperty("block.keystone.timer", "text-font", "PT Sans Narrow")
+EskaTheme:SetElementProperty("block.keystone.timer", "text-size", 22)
+EskaTheme:SetElementProperty("block.keystone.timer", "text-justify-h", "CENTER")
+EskaTheme:SetElementProperty("block.keystone.timeLimit2Key", "text-font", "PT Sans Narrow")
+EskaTheme:SetElementProperty("block.keystone.timeLimit2Key", "text-size", 14)
+EskaTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-font", "PT Sans Narrow")
+EskaTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-size", 14)
+
 
 -- Scenario
 EskaTheme:SetElementProperty("block.scenario.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})

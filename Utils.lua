@@ -63,7 +63,9 @@ class "Utils" (function(_ENV)
 
     __Static__() function GetCurrentInstance()
       local mapID = C_Map.GetBestMapForUnit("player")
-      return EJ_GetInstanceForMap(mapID)
+      if mapID then
+        return EJ_GetInstanceForMap(mapID)
+      end
     end
   end)
 end)

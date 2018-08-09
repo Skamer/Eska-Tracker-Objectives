@@ -20,7 +20,6 @@ function OnLoad(self)
   self:AddQuestBlockRecipes()
   self:AddWorldQuestBlockRecipes()
   self:AddScenarioRecipes()
-  self:AddGroupFinderRecipes()
 end
 
 
@@ -82,19 +81,23 @@ function AddQuestRecipes(self)
 
   -- Header tab
   local function GetQuestActions()
-        return {
+        local choices = {
         ["none"]  = "|cffff0000None|r",
         ["show-quest-details"] = "Show quest details",
         ["show-quest-details-with-map"] = "Open the map and show details",
         ["link-quest-to-chat"] = "Link quest to chat",
         ["abandon-quest"]      = "Abandon the quest",
         ["toggle-context-menu"] = "Toggle context menu",
-        ["group-finder-create-group"] = "Create a group",
-        ["group-finder-join-group"] = "Join a group",
+        ["find-group-for-quest"] = "Find a group for the quest",
         ["stop-super-tracking-quest"] = "Stop supertracking the quest",
         ["super-track-quest"] = "Supertrack the quest",
-        ["untrack-quest"] = "Untrack the quest"
+        ["untrack-quest"] = "Untrack the quest",
       }
+      if TomTomAddon.IsLoaded() then
+        choices["tomtom-addon-add-quest-waypoint"] = "|cffFFD800[TomTom]|rSet quest waypont"
+      end
+
+      return choices
   end
 
   OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.header"):SetOrder(10), "quest/header")
@@ -391,6 +394,32 @@ function AddKeystoneRecipes(self)
   :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "keystone-block-category/level")
+
+  -- Timer
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Timer"):SetID("timer"):SetBuildingGroup("keystone-block-category/timer"):SetOrder(140), "keystone-block-category/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.keystone.timer")
+  :ClearFlags()
+  :AddFlag(Theme.SkinFlags.TEXT_SIZE)
+  :AddFlag(Theme.SkinFlags.TEXT_FONT)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL), "keystone-block-category/timer")
+
+  -- Time Limit
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Time Limit"):SetID("time-limit"):SetBuildingGroup("keystone-block-category/time-limit"):SetOrder(140), "keystone-block-category/tabs")
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Time Limit - Key +2"):SetOrder(10), "keystone-block-category/time-limit")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetOrder(20)
+  :SetElementID("block.keystone.timeLimit2Key")
+  :ClearFlags()
+  :AddFlag(Theme.SkinFlags.TEXT_SIZE)
+  :AddFlag(Theme.SkinFlags.TEXT_FONT), "keystone-block-category/time-limit")
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Time Limit - Key +3"):SetOrder(30), "keystone-block-category/time-limit")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetOrder(40)
+  :SetElementID("block.keystone.timeLimit3Key")
+  :ClearFlags()
+  :AddFlag(Theme.SkinFlags.TEXT_SIZE)
+  :AddFlag(Theme.SkinFlags.TEXT_FONT), "keystone-block-category/time-limit")
 end
 --------------------------------------------------------------------------------
 --                                QuestBlock                                --
@@ -443,27 +472,4 @@ function AddScenarioRecipes(self)
   :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "scenario-block-category/stage")
-end
-
---------------------------------------------------------------------------------
---                          GroupFinder Addons                                --
---------------------------------------------------------------------------------
-function AddGroupFinderRecipes(self)
-  -- Create the quest tree item
-  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("group-finder"):SetText("Group Finder"):SetBuildingGroup("group-finder/children"):SetOrder(140), "RootTree")
-
-  local function GetGroupFinders()
-    local list = {}
-    for name in GroupFinderAddon:GetIterator() do
-      list[name] = name
-    end
-    return list
-  end
-
-  local selectGFA = SelectRecipe()
-  selectGFA:SetText("Select the groupfinder addon to use")
-  selectGFA:SetList(GetGroupFinders)
-  selectGFA:Get(function() return select(2,GroupFinderAddon:GetSelected()) end)
-  selectGFA:Set(function(_, value) GroupFinderAddon:SetSelected(value) end)
-  OptionBuilder:AddRecipe(selectGFA, "group-finder/children")
 end

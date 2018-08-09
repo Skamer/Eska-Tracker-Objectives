@@ -30,6 +30,14 @@ TransparenceTheme:SetElementProperty("block.keystone.header.text", "text-justify
 TransparenceTheme:SetElementProperty("block.keystone.level", "text-font", "PT Sans Narrow Bold")
 TransparenceTheme:SetElementProperty("block.keystone.level", "text-size", 14)
 TransparenceTheme:SetElementProperty("block.keystone.level", "text-color", { r = 1, g = 215/255, b = 0 })
+TransparenceTheme:SetElementProperty("block.keystone.timer", "text-font", "PT Sans Narrow")
+TransparenceTheme:SetElementProperty("block.keystone.timer", "text-size", 22)
+TransparenceTheme:SetElementProperty("block.keystone.timer", "text-justify-h", "CENTER")
+TransparenceTheme:SetElementProperty("block.keystone.timeLimit2Key", "text-font", "PT Sans Narrow")
+TransparenceTheme:SetElementProperty("block.keystone.timeLimit2Key", "text-size", 14)
+TransparenceTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-font", "PT Sans Narrow")
+TransparenceTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-size", 14)
+
 -- Scenario
 TransparenceTheme:SetElementProperty("block.scenario.frame", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.17})
 TransparenceTheme:SetElementProperty("block.scenario.header.text", "text-size", 14)

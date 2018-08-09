@@ -64,10 +64,13 @@ class "Quest" (function(_ENV)
 
   function ShowLevel(self)
     self.frame.level:Show()
+
+    self.frame.name:SetPoint("RIGHT", self.frame.level, "LEFT")
   end
 
   function HideLevel(self)
     self.frame.level:Hide()
+    self.frame.name:SetPoint("RIGHT")
   end
 
 
@@ -247,11 +250,22 @@ class "Quest" (function(_ENV)
     end
     ContextMenu():AddAction("show-quest-details", self)
     ContextMenu():AddAction("link-quest-to-chat", self)
-    -- Second seperator
+
+    -- Second separator
+    ContextMenu():AddItem(MenuItemSeparator())
+    ContextMenu():AddAction("find-group-for-quest", self)
+
+    -- TomTom Support
+    if TomTomAddon.IsLoaded() then
+      ContextMenu():AddAction("tomtom-addon-add-quest-waypoint", self)
+    end
+
+    -- Third separator
     ContextMenu():AddItem(MenuItemSeparator())
     ContextMenu():AddAction("untrack-quest", self)
     ContextMenu():AddAction("abandon-quest", self)
-    -- Third separator
+
+    -- Fourth separator
     -- TODO: Remove later (it's currently used for debug)
     ContextMenu():AddItem(MenuItemSeparator())
     ContextMenu():AddItem("[DEBUG] Info", nil, function() self:Print() end)
@@ -305,7 +319,7 @@ class "Quest" (function(_ENV)
     headerFrame:SetPoint("TOPRIGHT")
     headerFrame:SetPoint("TOPLEFT")
     headerFrame:SetHeight(21)
-    headerFrame:RegisterForClicks("RightButtonUp", "LeftButtonUp")
+    headerFrame:RegisterForClicks("RightButtonUp", "LeftButtonUp", "MiddleButtonUp")
     self.frame.header = headerFrame
 
     -- Script
@@ -313,7 +327,6 @@ class "Quest" (function(_ENV)
       local shiftKeyIsDown = IsShiftKeyDown()
       local altKeyIsDown = IsAltKeyDown()
       local ctrlKeyIsDown = IsControlKeyDown()
-
 
       if button == "RightButton" then
         local action
@@ -508,6 +521,19 @@ class "SuperTrackQuestAction" (function(_ENV)
   __Arguments__ { Quest }
   __Static__() function Exec(quest)
     SuperTrackQuestAction.Exec(quest.id)
+  end
+end)
+
+__Action__ "find-group-for-quest" "Find a group"
+class "FindGroupForQuestAction" (function(_ENV)
+  __Arguments__{ Number }
+  __Static__() function Exec(questID)
+    LFGListUtil_FindQuestGroup(questID)
+  end
+
+  __Arguments__ { Quest }
+  __Static__() function Exec(quest)
+    FindGroupForQuestAction.Exec(quest.id)
   end
 end)
 
