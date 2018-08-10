@@ -1,3 +1,8 @@
+[1.0.21]
+Updated for EskaTracker 1.0.26
+- ! Fixed an issue where sometimes the dungeon hasn't an icon.
+- ! Moved all modules to new module type 'Eska', and use its new system to activate the blocks. It will fix all issues relative to block loading (e.g, the WorldQuest block appears with no world quest displayed).
+
 [1.0.20]
 - ! Fixed an error lua which was triggered sometimes when you've entered in a instance.
 - - Removed the code about Group Finder addons (this is no longer relevant now).

@@ -3,30 +3,30 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker               --
 --============================================================================--
-Scorpio              "EskaTracker.Objectives.Keystone"                        ""
+Eska                 "EskaTracker.Objectives.Keystone"                        ""
 --============================================================================--
-import                           "EKT"
+import                            "EKT"
 --============================================================================--
-_Enabled                      = false
+_Active                           = false
 --============================================================================--
-GetPowerLevelDamageHealthMod  = C_ChallengeMode.GetPowerLevelDamageHealthMod
-GetActiveKeystoneInfo         = C_ChallengeMode.GetActiveKeystoneInfo
-GetAffixInfo                  = C_ChallengeMode.GetAffixInfo
-GetMapInfo                    = C_ChallengeMode.GetMapUIInfo
-GetActiveChallengeMapID       = C_ChallengeMode.GetActiveChallengeMapID
-GetDeathCount                 = C_ChallengeMode.GetDeathCount
-GetWorldElapsedTimers         = GetWorldElapsedTimers
-GetWorldElapsedTime           = GetWorldElapsedTime
-EJ_GetCurrentInstance         = EJ_GetCurrentInstance
-EJ_GetInstanceInfo            = EJ_GetInstanceInfo
-GetInfo                       = C_Scenario.GetInfo
-GetStepInfo                   = C_Scenario.GetStepInfo
-GetCriteriaInfo               = C_Scenario.GetCriteriaInfo
+GetPowerLevelDamageHealthMod      = C_ChallengeMode.GetPowerLevelDamageHealthMod
+GetActiveKeystoneInfo             = C_ChallengeMode.GetActiveKeystoneInfo
+GetAffixInfo                      = C_ChallengeMode.GetAffixInfo
+GetMapInfo                        = C_ChallengeMode.GetMapUIInfo
+GetActiveChallengeMapID           = C_ChallengeMode.GetActiveChallengeMapID
+GetDeathCount                     = C_ChallengeMode.GetDeathCount
+GetWorldElapsedTimers             = GetWorldElapsedTimers
+GetWorldElapsedTime               = GetWorldElapsedTime
+EJ_GetCurrentInstance             = EJ_GetCurrentInstance
+EJ_GetInstanceInfo                = EJ_GetInstanceInfo
+GetInfo                           = C_Scenario.GetInfo
+GetStepInfo                       = C_Scenario.GetStepInfo
+GetCriteriaInfo                   = C_Scenario.GetCriteriaInfo
 --============================================================================--
-ENEMY_FORCES_FORMAT_OPTION    = "keystone-enemy-forces-format"
-PERCENTAGE_FORMAT_OPTION      =  "keystone-percentage-format"
+ENEMY_FORCES_FORMAT_OPTION        = "keystone-enemy-forces-format"
+PERCENTAGE_FORMAT_OPTION          =  "keystone-percentage-format"
 --============================================================================--
-KEYSTONE_TIMER_STARTED        = false
+KEYSTONE_TIMER_STARTED            = false
 --============================================================================--
 enum "EnemyForcesFormat" {
   -- Displays only the percent -> 25%
@@ -47,8 +47,8 @@ enum "EnemyForcesFormat" {
   FULL_MOB_INFO_WITH_PERCENT = 4,
 }
 --============================================================================--
-__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START"
-function ActivatingOn(self)
+__ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START"
+function ActiveOn(self)
   return GetActiveKeystoneInfo() > 0
 end
 --============================================================================--
@@ -59,7 +59,7 @@ function OnLoad(self)
   CallbackHandlers:Register("keystone/updateAll", CallbackHandler(UpdateObjectives))
 end
 
-function OnEnable(self)
+function OnActive(self)
   if not _Keystone then
     _Keystone = block "keystone"
   end
@@ -75,7 +75,7 @@ function OnEnable(self)
   _Keystone:AddIdleCountdown(nil, nil, true)
 end
 
-function OnDisable(self)
+function OnInactive(self)
   if _Keystone then
     _Keystone.isActive = false
     _Keystone:ResumeIdleCountdown()
@@ -203,7 +203,7 @@ function GetKeystoneInfo(self)
 
   -- If the module has been enabled by the PLAYER_ENTERING_WORLD, we need to wait
   -- the next 'UPDATE_INSTANCE_INFO' for getting a valid dungeon texture.
-  if _EnablingEvent and _EnablingEvent == "PLAYER_ENTERING_WORLD" then
+  if self:IsActiveByEvent("PLAYER_ENTERING_WORLD") then
     Wait("UPDATE_INSTANCE_INFO")
   end
 

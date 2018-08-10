@@ -3,25 +3,23 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio                "EskaTracker.Objectives.Scenario"                      ""
+Eska                   "EskaTracker.Objectives.Scenario"                      ""
 --============================================================================--
-import                              "EKT"
+import                            "EKT"
 --============================================================================--
-IsInScenario          = C_Scenario.IsInScenario
-GetInfo               = C_Scenario.GetInfo
-GetStepInfo           = C_Scenario.GetStepInfo
-GetCriteriaInfo       = C_Scenario.GetCriteriaInfo
-GetBonusSteps         = C_Scenario.GetBonusSteps
-GetCriteriaInfoByStep = C_Scenario.GetCriteriaInfoByStep
-IsInInstance          = IsInInstance
+_Active                           = false
 --============================================================================--
-HasTimer = false
+IsInScenario                      = C_Scenario.IsInScenario
+GetInfo                           = C_Scenario.GetInfo
+GetStepInfo                       = C_Scenario.GetStepInfo
+GetCriteriaInfo                   = C_Scenario.GetCriteriaInfo
+GetBonusSteps                     = C_Scenario.GetBonusSteps
+GetCriteriaInfoByStep             = C_Scenario.GetCriteriaInfoByStep
+IsInInstance                      = IsInInstance
 --============================================================================--
-function OnLoad(self)
-  self._Enabled = false
-end
-
-function OnEnable(self)
+HasTimer                          = false
+--============================================================================--
+function OnActive(self)
   if not _Scenario then
     _Scenario = block "scenario"
   end
@@ -34,7 +32,7 @@ function OnEnable(self)
   _Scenario:AddIdleCountdown(nil, nil, true)
 end
 
-function OnDisable(self)
+function OnInactive(self)
   if _Scenario then
     _Scenario.isActive = false
     _Scenario:Reset()
@@ -42,8 +40,8 @@ function OnDisable(self)
   end
 end
 
-__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "SCENARIO_POI_UPDATE" "SCENARIO_UPDATE"
-function ActivatingOn(self)
+__ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "SCENARIO_POI_UPDATE" "SCENARIO_UPDATE"
+function ActiveOn(self)
   -- Prevent the scenario module to be loaded in dungeon
   local inInstance, type = IsInInstance()
   if inInstance and (type == "party") then

@@ -3,7 +3,7 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio                "EskaTracker.Classes.Dungeon"                          ""
+Eska                   "EskaTracker.Classes.Dungeon"                          ""
 --============================================================================--
 namespace                       "EKT"
 --============================================================================--

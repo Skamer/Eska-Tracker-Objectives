@@ -3,7 +3,7 @@
 -- @Author   : Skamer <https://mods.curse.com/members/DevSkamer>              --
 -- @Website  : https://wow.curseforge.com/projects/eska-quest-tracker         --
 --============================================================================--
-Scorpio             "EskaTracker.Interfaces.IObjectiveHolder"                 ""
+Eska                "EskaTracker.Interfaces.IObjectiveHolder"                 ""
 --============================================================================--
 namespace "EKT"
 --============================================================================--

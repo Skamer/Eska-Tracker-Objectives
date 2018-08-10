@@ -3,7 +3,7 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio           "EskaTracker.Objectives.Localization.enUS"                  ""
+Eska              "EskaTracker.Objectives.Localization.enUS"                  ""
 --============================================================================--
 local L = _Locale("enUS", true)
 

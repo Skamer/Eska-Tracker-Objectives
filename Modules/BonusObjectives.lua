@@ -3,22 +3,18 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio              "EskaTracker.Objectives.BonusObjectives"                 ""
+Eska                 "EskaTracker.Objectives.BonusObjectives"                 ""
 --============================================================================--
-import                            "EKT"
+import                              "EKT"
 --============================================================================--
-IsWorldQuest  = QuestUtils_IsQuestWorldQuest
-IsQuestTask   = IsQuestTask
-GetTaskInfo   = GetTaskInfo
-GetTasksTable = GetTasksTable
+_Active                             = false
 --============================================================================--
-
-function OnLoad(self)
-  -- Check if the player is in a bonus quest
-  self._Enabled = self:HasBonusQuest()
-end
-
-function OnEnable(self)
+IsWorldQuest                        = QuestUtils_IsQuestWorldQuest
+IsQuestTask                         = IsQuestTask
+GetTaskInfo                         = GetTaskInfo
+GetTasksTable                       = GetTasksTable
+--============================================================================--
+function OnActive(self)
   if not _BonusObjectives then
     _BonusObjectives = block "bonus-objectives"
   end
@@ -29,16 +25,15 @@ function OnEnable(self)
   _BonusObjectives:AddIdleCountdown(nil, nil, true)
 end
 
-function OnDisable(self)
+function OnInactive(self)
   if _BonusObjectives then
     _BonusObjectives.isActive = false
     _BonusObjectives:ResumeIdleCountdown()
   end
-
 end
 
-__EnablingOnEvent__ "QUEST_ACCEPTED" "PLAYER_ENTERING_WORLD"
-function EnablingOn(self, event, ...)
+__ActiveOnEvents__ "QUEST_ACCEPTED" "PLAYER_ENTERING_WORLD"
+function ActiveOn(self, event, ...)
   if event == "QUEST_ACCEPTED" then
     local _, questID = ...
     return IsQuestTask(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID)
@@ -49,8 +44,8 @@ function EnablingOn(self, event, ...)
   return false
 end
 
-__DisablingOnEvent__ "EKT_BONUSQUEST_REMOVED" "PLAYER_ENTERING_WORLD"
-function DisablingOn(self, event, ...)
+__InactiveOnEvents__ "EKT_BONUSQUEST_REMOVED" "PLAYER_ENTERING_WORLD"
+function InactiveOn(self, event, ...)
   if event == "EKT_BONUSQUEST_REMOVED" then
     if _BonusObjectives then
       return _BonusObjectives.bonusQuests.Count == 0

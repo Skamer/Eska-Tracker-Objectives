@@ -3,22 +3,20 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio              "EskaTracker.Objectives.Dungeon"                         ""
+Eska                 "EskaTracker.Objectives.Dungeon"                         ""
 --============================================================================--
-import                             "EKT"
+import                              "EKT"
 --============================================================================--
-IsInInstance          = IsInInstance
-IsInScenario          = C_Scenario.IsInScenario
-GetInfo               = C_Scenario.GetInfo
-GetStepInfo           = C_Scenario.GetStepInfo
-GetCriteriaInfo       = C_Scenario.GetCriteriaInfo
-GetActiveKeystoneInfo = C_ChallengeMode.GetActiveKeystoneInfo
+_Active                             = false
 --============================================================================--
-function OnLoad(self)
-  self._Enabled = false
-end
-
-function OnEnable(self)
+IsInInstance                        = IsInInstance
+IsInScenario                        = C_Scenario.IsInScenario
+GetInfo                             = C_Scenario.GetInfo
+GetStepInfo                         = C_Scenario.GetStepInfo
+GetCriteriaInfo                     = C_Scenario.GetCriteriaInfo
+GetActiveKeystoneInfo               = C_ChallengeMode.GetActiveKeystoneInfo
+--============================================================================--
+function OnActive(self)
   if not _Dungeon then
     _Dungeon = block "dungeon"
   end
@@ -28,18 +26,19 @@ function OnEnable(self)
 
   _Dungeon:AddIdleCountdown(nil, nil, true)
 
+  self:UpdateDungeonIcon()
 end
 
 
-function OnDisable(self)
+function OnInactive(self)
   if _Dungeon then
     _Dungeon:ResumeIdleCountdown()
     _Dungeon.isActive = false
-    _Dungeon:ResumeIdleCountdown() 
+    _Dungeon:ResumeIdleCountdown()
   end
 end
 
-__ActivatingOnEvent__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START" "SCENARIO_UPDATE" "ZONE_CHANGED"
+__ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "CHALLENGE_MODE_START" "SCENARIO_UPDATE" "ZONE_CHANGED"
 function ActivatingOn(self, ...)
   local inInstance, type = IsInInstance()
   return inInstance and (type == "party") and IsInScenario() and GetActiveKeystoneInfo() == 0
@@ -74,21 +73,13 @@ function UpdateObjectives()
   end
 end
 
-__SystemEvent__ "WORLD_MAP_UPDATE" "UPDATE_INSTANCE_INFO"
-function UPDATE_TEXTURE()
-  local currentInstance = Utils.Instance.GetCurrentInstance()
-  if currentInstance then
-    _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
-  end
-end
+__Async__()
+function UpdateDungeonIcon(self)
+  -- We need to wait the next UPDATE_INSTANCE_INFO for getting a valid dungeon texture
+  Wait("UPDATE_INSTANCE_INFO")
 
---------------------------------------------------------------------------------
---                          BFA Events only
---------------------------------------------------------------------------------
-__SystemEvent__()
-function ZONE_CHANGED_NEW_AREA()
   local currentInstance = Utils.Instance.GetCurrentInstance()
   if currentInstance then
-    _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
+    _Dungeon.texture  = select(6, EJ_GetInstanceInfo(currentInstance))
   end
 end

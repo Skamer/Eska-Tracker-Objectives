@@ -3,11 +3,11 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio                   "EskaTracker.Objectives.WorldQuests"                ""
+Eska                      "EskaTracker.Objectives.WorldQuests"                ""
 --============================================================================--
 import                              "EKT"
 --============================================================================--
-_Enabled                            = false
+_Active                             = false
 --============================================================================--
 IsWorldQuest                        = QuestUtils_IsQuestWorldQuest
 GetTasksTable                       = GetTasksTable
@@ -19,8 +19,8 @@ SHOW_TRACKED_WORLD_QUESTS_OPTION    = "show-tracked-world-quests"
 --============================================================================--
 LAST_TRACKED_WORLD_QUEST            = nil
 --============================================================================--
-__EnablingOnEvent__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
-function EnablingOn(self, event, ...)
+__ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
+function ActiveOn(self, event, ...)
   if event == "PLAYER_ENTERING_WORLD" then
     return self:HasWorldQuest()
   elseif event == "QUEST_ACCEPTED" then
@@ -36,8 +36,8 @@ function EnablingOn(self, event, ...)
   return false
 end
 
-__SafeDisablingOnEvent__  "QUEST_REMOVED" "PLAYER_ENTERING_WORLD" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
-function DisablingOn(self, event, ...)
+__InactiveOnEvents__  "QUEST_REMOVED" "PLAYER_ENTERING_WORLD" "EKT_WORLDQUEST_TRACKED_LIST_CHANGED"
+function InactiveOn(self, event, ...)
   return not self:HasWorldQuest()
 end
 --============================================================================--
@@ -47,7 +47,7 @@ function OnLoad(self)
   CallbackHandlers:Register("worldquests/enableTracking",  CallbackHandler(function(enable) _M:EnableWorldQuestsTracking(enable) end))
 end
 
-function OnEnable(self)
+function OnActive(self)
   if not _WorldQuestBlock then
     _WorldQuestBlock = block "world-quests"
   end
@@ -56,17 +56,17 @@ function OnEnable(self)
 
   LAST_TRACKED_WORLD_QUEST = GetSuperTrackedQuestID()
 
-  if _EnablingEvent == "EKT_WORLDQUEST_TRACKED_LIST_CHANGED" then
+  --[[if _EnablingEvent == "EKT_WORLDQUEST_TRACKED_LIST_CHANGED" then
     EKT_WORLDQUEST_TRACKED_LIST_CHANGED(unpack(_EnablingEventArgs))
   elseif _EnablingEvent == "QUEST_ACCEPTED" then
     -- HACK In rare cases, the QUEST_ACCEPTED isn't called after the module is loaded.
     QUEST_ACCEPTED(unpack(_EnablingEventArgs))
-  end
+  end--]]
 
   _WorldQuestBlock:AddIdleCountdown(nil, nil, true)
 end
 
-function OnDisable(self)
+function OnInactive(self)
   if _WorldQuestBlock then
     _WorldQuestBlock.isActive = false
     _WorldQuestBlock:ResumeIdleCountdown()
@@ -89,7 +89,7 @@ end
 
 __SecureHook__()
 function BonusObjectiveTracker_UntrackWorldQuest(questID)
-  if Settings:Get("show-tracked-world-quests") then
+  if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     Scorpio.FireSystemEvent("EKT_WORLDQUEST_TRACKED_LIST_CHANGED", questID, false)
   end
 end

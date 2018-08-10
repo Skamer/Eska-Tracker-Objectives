@@ -2,18 +2,18 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker-objectives    --
 --============================================================================--
-Scorpio              "EskaTracker.Objectives.Achievements"                    ""
+Eska                 "EskaTracker.Objectives.Achievements"                    ""
 --============================================================================--
-import                             "EKT"
+import                              "EKT"
 --============================================================================--
-GetTrackedAchievements    = GetTrackedAchievements
-GetAchievementInfo        = GetAchievementInfo
-GetAchievementNumCriteria = GetAchievementNumCriteria
-IsAchievementEligible     = IsAchievementEligible
+_Active                             = false
+--============================================================================--
+GetTrackedAchievements              = GetTrackedAchievements
+GetAchievementInfo                  = GetAchievementInfo
+GetAchievementNumCriteria           = GetAchievementNumCriteria
+IsAchievementEligible               = IsAchievementEligible
 -- ========================================================================== --
 function OnLoad(self)
-  _Enabled = self:HasAchievement()
-
   -- Register achievement options
   Settings:Register("achievement-max-criteria-displayed", 0, "achievements/updateAll")
   Settings:Register("achievement-hide-criteria-completed", false, "achievements/updateAll")
@@ -24,7 +24,7 @@ function OnLoad(self)
 end
 
 
-function OnEnable(self)
+function OnActive(self)
   if not _AchievementBlock then
     _AchievementBlock = block "achievements"
     self:LoadAchievements()
@@ -34,15 +34,15 @@ function OnEnable(self)
   _AchievementBlock:AddIdleCountdown(nil, nil, true)
 end
 
-function OnDisable(self)
+function OnInactive(self)
   if _AchievementBlock then
     _AchievementBlock.isActive = false
-    _AchievementBlock:ResumeIdleCountdown() 
+    _AchievementBlock:ResumeIdleCountdown()
   end
 end
 
-__SafeActivatingOnEvent__ "TRACKED_ACHIEVEMENT_LIST_CHANGED"
-function EnablingOn(self, event, ...)
+__ActiveOnEvents__  "PLAYER_ENTERING_WORLD" "TRACKED_ACHIEVEMENT_LIST_CHANGED"
+function ActiveOn(self, event, ...)
   return self:HasAchievement()
 end
 

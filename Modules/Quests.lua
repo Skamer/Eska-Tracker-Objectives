@@ -3,11 +3,11 @@
 -- Author     : Skamer <https://mods.curse.com/members/DevSkamer>             --
 -- Website    : https://wow.curseforge.com/projects/eskatracker               --
 --============================================================================--
-Scorpio             "EskaTracker.Objectives.Quests"                           ""
+Eska                "EskaTracker.Objectives.Quests"                           ""
 --============================================================================--
-import                          "EKT"
+import                            "EKT"
 --============================================================================--
-_Enabled                          = false
+_Active                           = false
 --============================================================================--
 GetNumQuestLogEntries             = GetNumQuestLogEntries
 GetQuestLogTitle                  = GetQuestLogTitle
@@ -35,8 +35,8 @@ QUESTLOG_INDEX_CACHE              = {}
 QUESTS_WITH_TIMER_CACHE           = {}
 DISTANCE_UPDATER_ENABLED          = false
 --============================================================================--
-__EnablingOnEvent__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "QUEST_WATCH_LIST_CHANGED"
-function EnablingOn(self, event, ...)
+__ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "QUEST_WATCH_LIST_CHANGED"
+function ActiveOn(self, event, ...)
   if event == "PLAYER_ENTERING_WORLD" or "QUEST_WATCH_LIST_CHANGED"  then
     return GetNumQuestWatches() > 0
   elseif event == "QUEST_ACCEPTED" then
@@ -51,8 +51,8 @@ function EnablingOn(self, event, ...)
   return false
 end
 
-__DisablingOnEvent__ "PLAYER_ENTERING_WORLD" "QUEST_WATCH_LIST_CHANGED"
-function DisablingOn(self, event, ...)
+__InactiveOnEvents__ "PLAYER_ENTERING_WORLD" "QUEST_WATCH_LIST_CHANGED"
+function InactiveOn(self, event, ...)
   return GetNumQuestWatches() == 0
 end
 --============================================================================--
@@ -68,7 +68,7 @@ function OnLoad(self)
   end))
 end
 
-function OnEnable(self)
+function OnActive(self)
   if not _QuestBlock then
     _QuestBlock = block "quests"
   end
@@ -79,7 +79,7 @@ function OnEnable(self)
   QuestSuperTracking_ChooseClosestQuest()
 end
 
-function OnDisable(self)
+function OnInactive(self)
   if _QuestBlock then
     _QuestBlock.isActive = false
   end
