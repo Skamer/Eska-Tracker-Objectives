@@ -1,3 +1,16 @@
+[1.0.22]
+  == TomTom ==
+  - ! Fixed an error when setting a waypoint for worldquests.
+
+  == Quests ==
+  - ! Trying a fix for #25.
+  - ! Fixed an issue where the quest wasn't sorted by distance after the loading.
+  - + Implemented the tag icon (e.g, dungeon and raid icon) alongside of quest name. It can be disabled from options in Quest > Header > Show Tag Icon.
+  - + There is now possible to customize the raid quests, dungeon quests and legendary quests from options (Quest > Raid Quest/Dungeon Quest/Legendary Quest tree item).
+
+  == Themes ==
+  - + They will now color the quest background color in green if it's a raid quest, in blue if it's a dungeon quest and in orange if it's legendary quest.
+
 [1.0.21]
 Updated for EskaTracker 1.0.26
 - ! Fixed an issue where sometimes the dungeon hasn't an icon.

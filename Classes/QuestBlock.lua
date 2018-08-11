@@ -29,9 +29,10 @@ class "QuestBlock" (function(_ENV)
         quest.OnHeightChanged = function(_, new, old)
           self.height = self.height + (new - old)
         end
+
+        quest.OnDistanceChanged = function() self:Layout() end
       end
 
-      quest.OnDistanceChanged = function() self:Layout() end
 
       self.quests:Insert(quest)
       Scorpio.FireSystemEvent("EKT_QUESTBLOCK_QUEST_ADDED", quest)
@@ -135,7 +136,7 @@ class "QuestBlock" (function(_ENV)
     end
 
     -- Request a layout
-    self:ForceLayout()
+    self:Layout()
   end
 
   function DisableCategories(self)

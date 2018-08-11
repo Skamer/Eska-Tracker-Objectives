@@ -18,6 +18,9 @@ function OnLoad(self)
   self:AddDungeonRecipes()
   self:AddKeystoneRecipes()
   self:AddQuestBlockRecipes()
+  self:AddSubQuestTypeRecipes("raid-quest", "Raid Quest")
+  self:AddSubQuestTypeRecipes("dungeon-quest", "Dungeon Quest")
+  self:AddSubQuestTypeRecipes("legendary-quest", "Legendary Quest")
   self:AddWorldQuestBlockRecipes()
   self:AddScenarioRecipes()
 end
@@ -100,10 +103,16 @@ function AddQuestRecipes(self)
       return choices
   end
 
-  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.header"):SetOrder(10), "quest/header")
+  local showTagIconRecipe = CheckBoxRecipe()
+  showTagIconRecipe:SetText("Show Tag Icon")
+  showTagIconRecipe:BindSetting("show-quest-tag-icon")
+  showTagIconRecipe:SetOrder(10)
+  OptionBuilder:AddRecipe(showTagIconRecipe, "quest/header")
+
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("quest.header"):SetOrder(20), "quest/header")
 
   OptionBuilder:AddRecipe(RadioGroupRecipe()
-    :SetOrder(20)
+    :SetOrder(30)
     :SetWidth(1.0)
     :SetText("Modifier used:")
     :AddChoice("no-modifier", "None")
@@ -190,6 +199,35 @@ function AddQuestRecipes(self)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "quest/category")
 end
+
+function AddSubQuestTypeRecipes(self, id, name)
+  -- Create Tree
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID(id):SetText(name):SetPath("quest"):SetBuildingGroup(string.format("%s/children", id)), "RootTree")
+  -- Create Tab
+  local tabID = string.format("%s/tabs", id)
+  OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup(tabID), string.format("%s/children", id))
+  -- Create the differents tabs
+
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("General"):SetID("general"):SetBuildingGroup(string.format("%s/general", id)), tabID)
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Header"):SetID("header"):SetBuildingGroup(string.format("%s/header", id)), tabID)
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Name"):SetID("name"):SetBuildingGroup(string.format("%s/name", id)), tabID)
+
+  -- General Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID(string.format("%s.frame", id)):SetElementParentID("quest.frame"), string.format("%s/general", id))
+
+  -- Header Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID(string.format("%s.header", id)):SetElementParentID("quest.header"), string.format("%s/header", id))
+
+  -- Name Tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID(string.format("%s.name", id))
+  :SetElementParentID("quest.name")
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), string.format("%s/name", id))
+end
+
 --------------------------------------------------------------------------------
 --                             World Quest                                    --
 --------------------------------------------------------------------------------

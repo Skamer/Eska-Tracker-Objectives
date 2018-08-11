@@ -35,8 +35,8 @@ interface "TomTomAddon" (function(_ENV)
     local map, title, completed, x, y
     if IsWorldQuest(questID) then
       title = C_TaskQuest.GetQuestInfoByQuestID(questID)
-      x, y = C_TaskQuest.GetQuestLocation(questID)
-      map = select(2, C_TaskQuest.GetQuestZoneID(questID))
+      map = C_TaskQuest.GetQuestZoneID(questID)
+      x, y = C_TaskQuest.GetQuestLocation(questID, map)
       completed = false
     else
       title =  C_QuestLog.GetQuestInfo(questID)

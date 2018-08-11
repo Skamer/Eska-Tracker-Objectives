@@ -20,6 +20,19 @@ class "QuestHeader" (function(_ENV)
   local function SetName(self, new)
     self:Skin(Theme.SkinFlags.TEXT_TRANSFORM, Theme:GetElementID(self.frame.name))
   end
+
+  -- Quest compare function (Priorty : Distance > ID > Name)
+  local function QuestSortMethod(a, b)
+    if a.distance ~= b.distance then
+      return a.distance < b.distance
+    end
+
+    if a.id ~= b.id then
+      return a.id < b.id
+    end
+
+    return a.name < b.name
+  end
   ------------------------------------------------------------------------------
   --                             Methods                                      --
   ------------------------------------------------------------------------------
@@ -59,19 +72,6 @@ class "QuestHeader" (function(_ENV)
   end
 
   function OnLayout(self)
-    -- Quest compare function (Priorty : Distance > ID > Name)
-    local function QuestSortMethod(a, b)
-      if a.distance ~= b.distance then
-        return a.distance < b.distance
-      end
-
-      if a.id ~= b.id then
-        return a.id < b.id
-      end
-
-      return a.name < b.name
-    end
-
     local previousFrame
     for index, quest in self.quests:Sort(QuestSortMethod):GetIterator() do
       if index == 1 then
@@ -143,7 +143,8 @@ class "QuestHeader" (function(_ENV)
     super.OnReset(self)
 
     -- Reset properties
-    self.name = nil
+    self.name         = nil
+    self.nearestQuest = nil
   end
   ------------------------------------------------------------------------------
   --                         Properties                                       --
@@ -154,7 +155,7 @@ class "QuestHeader" (function(_ENV)
       if self.nearestQuest then
         return self.nearestQuest.distance
       else
-        return 99999
+        return self.quests:Sort(QuestSortMethod):ToList()[1].distance
       end
     end
   }

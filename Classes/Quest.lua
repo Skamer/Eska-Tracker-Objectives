@@ -8,6 +8,7 @@ Eska              "EskaTracker.Classes.Quest"                                 ""
 namespace "EKT"
 --============================================================================--
 SHOW_QUEST_LEVEL_OPTION                         = "show-quest-level"
+SHOW_QUEST_TAG_ICON_SETTING                     = "show-quest-tag-icon"
 COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION          = "color-quest-level-by-difficulty"
 QUEST_HEADER_LEFT_CLICK_ACTION_OPTION           = "quest-left-click-action"
 QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION         = "quest-middle-click-action"
@@ -24,6 +25,8 @@ QUEST_HEADER_ALT_RIGHT_CLICK_ACTION_OPTION      = "quest-alt-right-click-action"
 --============================================================================--
 __Recyclable__()
 class "Quest" (function(_ENV)
+  EnumQuestTag = _G.Enum.QuestTag
+
   inherit "Frame" extend "IObjectiveHolder"
   _QuestCache = setmetatable({}, { __mode = "k"})
   ------------------------------------------------------------------------------
@@ -47,7 +50,26 @@ class "Quest" (function(_ENV)
       self:ForceSkin()
     elseif prop == "distance" then
       self.OnDistanceChanged(self, new)
-    elseif prop == "isOnMap" then
+    elseif prop == "tag" then
+      if new == EnumQuestTag.Raid or new == EnumQuestTag.Dungeon or new == EnumQuestTag.Legendary then
+        if not self.tagElementIDsCache then
+          self.tagElementIDsCache = {}
+        else
+          wipe(self.tagElementIDsCache)
+        end
+      end
+
+      local coords = QUEST_TAG_TCOORDS[new]
+      if coords then
+        self.frame.tagIcon:SetTexCoord(unpack(coords))
+        if Settings:Get(SHOW_QUEST_TAG_ICON_SETTING) then
+          self:ShowTagIcon()
+        end
+      else
+        self:HideTagIcon()
+      end
+
+      self:Skin()
     end
   end
   ------------------------------------------------------------------------------
@@ -62,16 +84,69 @@ class "Quest" (function(_ENV)
     return self.questItem
   end
 
+  function ShowTagIcon(self)
+    self.frame.tagIcon:Show()
+    self.frame.name:SetPoint("LEFT", self.frame.tagIcon, "RIGHT")
+  end
+
+  function HideTagIcon(self)
+    self.frame.tagIcon:Hide()
+    self.frame.name:SetPoint("LEFT")
+  end
+
   function ShowLevel(self)
     self.frame.level:Show()
-
     self.frame.name:SetPoint("RIGHT", self.frame.level, "LEFT")
   end
 
   function HideLevel(self)
     self.frame.level:Hide()
     self.frame.name:SetPoint("RIGHT")
+
   end
+
+  __Arguments__ { Number }
+  function TagHasCustomBehavior(self, tag)
+    if tag == EnumQuestTag.Raid or tag == EnumQuestTag.Dungeon or tag == EnumQuestTag.Legendary then
+      return true
+    end
+
+    return false
+  end
+
+  __Arguments__ { Table }
+  function GetTagElementID(self, frame)
+    local elementID = Theme:GetElementID(frame)
+    if self:TagHasCustomBehavior(self.tag) then
+      local tagElementID = self.tagElementIDsCache[frame]
+      if not tagElementID then
+        if self.tag == EnumQuestTag.Raid then
+          tagElementID = elementID:gsub("(quest)", "raid-quest")
+        elseif self.tag == EnumQuestTag.Dungeon then
+          tagElementID = elementID:gsub("(quest)", "dungeon-quest")
+        elseif self.tag == EnumQuestTag.Legendary then
+          tagElementID = elementID:gsub("(quest)", "legendary-quest")
+        end
+        self.tagElementIDsCache[frame] = tagElementID
+      end
+      return tagElementID
+    end
+  end
+
+  __Arguments__ { Table, Variable.Optional(String) }
+  function NeedSkin(self, frame, target)
+    if self:TagHasCustomBehavior(self.tag) then
+      if target then
+        local elementID = self:GetTagElementID(frame)
+        if elementID and elementID == target then
+          return true
+        end
+      end
+    end
+
+    return Theme:NeedSkin(frame, target)
+  end
+
 
 
   __Arguments__ { Variable.Optional(Theme.SkinFlags, Theme.DefaultSkinFlags), Variable.Optional(String) }
@@ -80,25 +155,25 @@ class "Quest" (function(_ENV)
 
     local state = self:GetCurrentState()
 
-    if Theme:NeedSkin(self.frame, target) then
-      Theme:SkinFrame(self.frame, flags, state)
+    if self:NeedSkin(self.frame, target) then
+      Theme:SkinFrame(self.frame, flags, state, self:GetTagElementID(self.frame), Theme:GetElementID(self.frame))
     end
 
-    if Theme:NeedSkin(self.frame.header, target) then
-      Theme:SkinFrame(self.frame.header, flags, state)
+    if self:NeedSkin(self.frame.header, target) then
+      Theme:SkinFrame(self.frame.header, flags, state, self:GetTagElementID(self.frame.header), Theme:GetElementID(self.frame.header))
     end
 
-    if Theme:NeedSkin(self.frame.name, target) then
-      Theme:SkinText(self.frame.name, flags, self.name, state)
+    if self:NeedSkin(self.frame.name, target) then
+      Theme:SkinText(self.frame.name, flags, self.name, state, self:GetTagElementID(self.frame.name), Theme:GetElementID(self.frame.name))
     end
 
-    if Theme:NeedSkin(self.frame.level, target) then
+    if self:NeedSkin(self.frame.level, target) then
       if Settings:Get(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION) then
         local color = GetQuestDifficultyColor(self.level)
         self.frame.level:SetTextColor(color.r, color.g, color.b)
-        Theme:SkinText(self.frame.level, API:RemoveFlag(flags, Theme.SkinFlags.TEXT_COLOR), self.level, state)
+        Theme:SkinText(self.frame.level, API:RemoveFlag(flags, Theme.SkinFlags.TEXT_COLOR), self.level, state, self:GetTagElementID(self.frame.level), Theme:GetElementID(self.frame.level))
       else
-        Theme:SkinText(self.frame.level, flags, self.level, state)
+        Theme:SkinText(self.frame.level, flags, self.level, state, self:GetTagElementID(self.frame.level), Theme:GetElementID(self.frame.level))
       end
     end
   end
@@ -169,6 +244,7 @@ class "Quest" (function(_ENV)
     self.id             = nil
     self.level          = nil
     self.header         = nil
+    self.tag            = nil
     self.distance       = nil
     self.isTask         = nil
     self.isHidden       = nil
@@ -196,7 +272,7 @@ class "Quest" (function(_ENV)
 
   __Arguments__ { String }
   function IsRegisteredSetting(self, option)
-    if option == SHOW_QUEST_LEVEL_OPTION or option == COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION then
+    if option == SHOW_QUEST_LEVEL_OPTION or option == COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION or option == SHOW_QUEST_TAG_ICON_SETTING then
       return true
     end
 
@@ -213,6 +289,12 @@ class "Quest" (function(_ENV)
       end
     elseif option == COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION then
         self:ForceSkin(Theme.SkinFlags.TEXT_COLOR, Theme:GetElementID(self.frame.level))
+    elseif option == SHOW_QUEST_TAG_ICON_SETTING then
+      if new and QUEST_TAG_TCOORDS[self.tag] then
+        self:ShowTagIcon()
+      else
+        self:HideTagIcon()
+      end
     end
   end
 
@@ -228,10 +310,10 @@ class "Quest" (function(_ENV)
     Theme:RegisterText(prefix..".level", self.frame.level, "quest.level")
 
     -- Then skin them
-    Theme:SkinFrame(self.frame, nil, state)
-    Theme:SkinFrame(self.frame.header, nil, state)
-    Theme:SkinText(self.frame.name, nil, self.name, state)
-    Theme:SkinText(self.frame.level, API:RemoveFlag(Theme.DefaultSkinFlags, Theme.SkinFlags.TEXT_COLOR), self.level, state)
+    Theme:SkinFrame(self.frame, nil, state, self:GetTagElementID(self.frame))
+    Theme:SkinFrame(self.frame.header, nil, state, self:GetTagElementID(self.frame.header))
+    Theme:SkinText(self.frame.name, nil, self.name, state, self:GetTagElementID(self.frame.name))
+    Theme:SkinText(self.frame.level, API:RemoveFlag(Theme.DefaultSkinFlags, Theme.SkinFlags.TEXT_COLOR), self.level, state, self:GetTagElementID(self.frame.level))
 
     -- Load options
     self:LoadSetting(SHOW_QUEST_LEVEL_OPTION)
@@ -278,6 +360,7 @@ class "Quest" (function(_ENV)
     print("Name:", self.name)
     print("Level:", self.level)
     print("Header:", self.header)
+    print("Tag:", self.tag)
     print("Distance:", self.distance)
     print("isBounty:", self.isBounty)
     print("isTask:", self.isTask)
@@ -295,6 +378,8 @@ class "Quest" (function(_ENV)
   property "name"       { TYPE = String, HANDLER = UpdateProps, DEFAULT =  "" }
   property "level"      { TYPE = Number, DEFAULT = 0, HANDLER = UpdateProps }
   property "header"     { TYPE = String, DEFAULT = "Misc" }
+  property "tag"        { TYPE = Number, DEFAULT = 0, HANDLER = UpdateProps }
+  property "tagIcon"    { TYPE = Number, DEFAULT = 0, HANDLER = UpdateProps }
   property "distance"   { TYPE = Number, DEFAULT = -1, HANDLER = UpdateProps }
   property "isBounty"   { TYPE = Boolean, DEFAULT = false }
   property "isTask"     { TYPE = Boolean, DEFAULT = false }
@@ -391,6 +476,14 @@ class "Quest" (function(_ENV)
     level:SetPoint("RIGHT", -2)
     self.frame.level = level
 
+    local tagIcon = headerFrame:CreateTexture()
+    tagIcon:SetPoint("LEFT")
+    tagIcon:SetHeight(16)
+    tagIcon:SetWidth(16)
+    tagIcon:SetTexture(QUEST_ICONS_FILE)
+    tagIcon:Hide()
+    self.frame.tagIcon = tagIcon
+
     self.baseHeight = 21
     self.height = self.baseHeight
 
@@ -408,6 +501,7 @@ function OnLoad(self)
   -- Register the options
   Settings:Register(SHOW_QUEST_LEVEL_OPTION, true)
   Settings:Register(COLOR_QUEST_LEVEL_BY_DIFFICULTY_OPTION, true)
+  Settings:Register(SHOW_QUEST_TAG_ICON_SETTING, true)
   Settings:Register(QUEST_HEADER_LEFT_CLICK_ACTION_OPTION, "show-quest-details-with-map")
   Settings:Register(QUEST_HEADER_MIDDLE_CLICK_ACTION_OPTION, "none")
   Settings:Register(QUEST_HEADER_RIGHT_CLICK_ACTION_OPTION, "toggle-context-menu")

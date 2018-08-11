@@ -97,6 +97,7 @@ function PLAYER_ENTERING_WORLD(initialLogin, reloadingUI)
   end
 
   _M:LoadQuests()
+
   UPDATE_BLOCK_VISIBILITY()
   _M:UpdateDistance()
 end
@@ -130,7 +131,13 @@ end
 __Async__()
 __SystemEvent__()
 function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
-  if not questID or IsWorldQuest(questID) or IsQuestBounty(questID) then
+
+  if not questID then
+    _M:LoadQuests()
+    return
+  end
+
+  if IsWorldQuest(questID) or IsQuestBounty(questID) then
     return
   end
 
@@ -151,6 +158,15 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
   end
 
   _M:UpdateDistance()
+end
+
+__SystemEvent__()
+function QUEST_REMOVED(questID)
+  if IsWorldQuest(questID) or IsQuestBounty(questID) then
+    return
+  end
+
+  _M:RemoveQuest(questID)
 end
 
 function RemoveQuest(self, questID)
@@ -175,11 +191,15 @@ end
 __SystemEvent__()
 function QUEST_POI_UPDATE()
   QuestSuperTracking_OnPOIUpdate()
+
+  _M:UpdateDistance()
 end
 
 __SystemEvent__ "ZONE_CHANGED" "ZONE_CHANGED_NEW_ARED" "AREA_POIS_UPDATED"
 function QUESTS_ON_MAP_UPDATE()
     QUESTS_UPDATE()
+
+  _M:UpdateDistance()
 end
 
 __SystemEvent__ "EKT_QUESTBLOCK_QUEST_ADDED" "EKT_QUESTBLOCK_QUEST_REMOVED"
@@ -213,9 +233,9 @@ function UpdateQuest(self, questID, cache)
   local questWatchIndex = GetQuestWatchIndex(questLogIndex)
 
   if not questWatchIndex then
-    self:RemoveQuest(questID)
     return
   end
+
 
   local _, title, questLogIndex, numObjectives, requiredMoney,
   isComplete, startEvent, isAutoComplete, failureTime, timeElapsed,
@@ -226,6 +246,7 @@ function UpdateQuest(self, questID, cache)
     local level  = cache and cache.level or select(2, GetQuestLogTitle(questLogIndex))
 
     quest.id          = questID
+    quest.tag         = questType
     quest.header      = header
     quest.level       = level
     quest.name        = title
@@ -326,7 +347,6 @@ function LoadQuests(self)
   local currentHeader = "Misc"
 
   local cache = {}
-
   for i = 1, numEntries do
     local title, level, suggestedGroup, isHeader, isCollapsed, isComplete,
     frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI,
@@ -452,6 +472,7 @@ function UpdateDistance()
       local questLogIndex = GetQuestLogIndexByID(quest.id)
       local distanceSq = GetDistanceSqToQuest(questLogIndex)
       quest.distance = distanceSq and math.sqrt(distanceSq) or nil
+      --print("Quest", quest.name, quest.distance)
     end
   end
 end

@@ -72,6 +72,12 @@ EskaTheme:SetElementProperty("quest.frame", "background-color", { r = 0, g = 0, 
 EskaTheme:SetElementProperty("quest.header", "background-color", { r = 0, g = 0, b = 0, a = 0.4 })
 EskaTheme:SetElementProperty("quest.header[hover]", "background-color", { r = 0, g = 148/255, b = 1, a = 0.4 })
 EskaTheme:SetElementProperty("quest.name", "text-justify-h", "CENTER")
+-- Legendary Quest
+EskaTheme:SetElementProperty("legendary-quest.frame", "background-color", { r = 1, g = 128/255, b = 0, a = 0.5})
+-- Dungeon Quest
+EskaTheme:SetElementProperty("dungeon-quest.frame", "background-color", { r = 14/255, g = 130/255, b = 197/255, a = 0.5})
+-- Raid Quest
+EskaTheme:SetElementProperty("raid-quest.frame", "background-color", { r = 0, g = 121/255, b = 6/255, a = 0.5})
 -- ========================================================================== --
 -- == World Quest properties
 -- ========================================================================== --
