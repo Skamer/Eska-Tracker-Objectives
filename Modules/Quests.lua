@@ -472,7 +472,6 @@ function UpdateDistance()
       local questLogIndex = GetQuestLogIndexByID(quest.id)
       local distanceSq = GetDistanceSqToQuest(questLogIndex)
       quest.distance = distanceSq and math.sqrt(distanceSq) or nil
-      --print("Quest", quest.name, quest.distance)
     end
   end
 end
