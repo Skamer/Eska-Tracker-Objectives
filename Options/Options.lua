@@ -466,6 +466,7 @@ function AddQuestBlockRecipes(self)
   OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("quests-block-category/general/top-options"), "quests-block-category/general")
   OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show only quests in the current zone"):SetOrder(80):SetWidth(1.0):BindSetting("show-only-quests-in-zone"), "quests-block-category/general/top-options")
   OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Sort quests by distance"):SetOrder(81):SetWidth(1.0):BindSetting("sort-quests-by-distance"), "quests-block-category/general/top-options")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show instance quests in the Instance Quests block"):SetOrder(82):SetWidth(1.0):BindSetting("show-instance-quests-in-instance-quests-block"), "quests-block-category/general/top-options")
 
 end
 --------------------------------------------------------------------------------
@@ -473,7 +474,7 @@ end
 --------------------------------------------------------------------------------
 function AddWorldQuestBlockRecipes(self)
   OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("world-quests-block-category/general/top-options"), "world-quests-block-category/general")
-  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show tracked world quests"):BindSetting("show-tracked-world-quests"):SetWidth(1.0), "world-quests-block-category/general/top-options")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show tracked world quests"):BindSetting("show-instance-quests-in-instance-quests-block"):SetWidth(1.0), "world-quests-block-category/general/top-options")
 end
 
 --------------------------------------------------------------------------------

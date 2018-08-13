@@ -321,6 +321,20 @@ class "QuestBlock" (function(_ENV)
   end
 end)
 
+__Block__ "instance-quests-basic" "instance-quests"
+class "InstanceQuestBlock" (function(_ENV)
+  inherit "QuestBlock"
+  ------------------------------------------------------------------------------
+  --                            Constructors                                  --
+  ------------------------------------------------------------------------------
+  function InstanceQuestBlock(self)
+    super(self)
+
+    self.text = "Instance Quests"
+  end
+
+end)
+
 function OnLoad(self)
   Settings:Register("quest-categories-enabled", true)
 end

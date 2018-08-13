@@ -46,6 +46,20 @@ class "Utils" (function(_ENV)
       return false
     end
 
+    EnumQuestTag = _G.Enum.QuestTag
+    __Arguments__ { Number, Variable.Optional(Number) }
+    __Static__() function IsInstanceQuest(questID, questTag)
+      if not questTag then
+        questTag = GetQuestTag()
+      end
+
+      if questTag == EnumQuestTag.Raid or questTag == EnumQuestTag.Dungeon then
+        return true
+      end
+
+      return false
+    end
+
     __Arguments__ { Number }
     __Static__() function IsLegionAssaultQuest(questID)
       return (questID == 45812) -- Assault on Val'sharah
@@ -66,6 +80,14 @@ class "Utils" (function(_ENV)
       if mapID then
         return EJ_GetInstanceForMap(mapID)
       end
+    end
+
+    __Static__() function IsInstanceMap(mapID)
+      if mapID then
+        return EJ_GetInstanceForMap(mapID) ~= 0
+      end
+
+      return false
     end
   end)
 end)

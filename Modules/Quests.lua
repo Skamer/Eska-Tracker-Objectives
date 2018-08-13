@@ -25,9 +25,11 @@ IsQuestBounty                     = IsQuestBounty
 GetQuestName                      = C_QuestLog.GetQuestInfo
 IsQuestOnMap                      = Utils.Quest.IsQuestOnMap
 IsLegionAssaultQuest              = Utils.Quest.IsLegionAssaultQuest
+IsInstanceQuest                   = Utils.Quest.IsInstanceQuest
 --============================================================================--
 SORT_QUESTS_BY_DISTANCE_SETTING   = "sort-quests-by-distance"
 SHOW_ONLY_QUESTS_IN_ZONE_SETTING  = "show-only-quests-in-zone"
+SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING = "show-instance-quests-in-instance-quests-block"
 --============================================================================--
 QUESTS_CACHE                      = {}
 QUEST_HEADERS_CACHE               = {}
@@ -60,6 +62,7 @@ function OnLoad(self)
   -- Register the settings
   Settings:Register(SORT_QUESTS_BY_DISTANCE_SETTING, true)
   Settings:Register(SHOW_ONLY_QUESTS_IN_ZONE_SETTING, false, "quests/updateAll")
+  Settings:Register(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING, false)
 
   CallbackHandlers:Register("quests/updateAll", CallbackHandler(function()
     for questID in pairs(QUESTS_CACHE) do
@@ -70,7 +73,9 @@ end
 
 function OnActive(self)
   if not _QuestBlock then
-    _QuestBlock = block "quests"
+    _QuestBlock         = block "quests"
+    _InstanceQuestBlock = block "instance-quests"
+    _InstanceQuestBlock.isActive  = false
   end
 
   _QuestBlock.isActive = true
@@ -81,7 +86,8 @@ end
 
 function OnInactive(self)
   if _QuestBlock then
-    _QuestBlock.isActive = false
+    _QuestBlock.isActive          = false
+    _InstanceQuestBlock.isActive  = false
   end
 
   DISTANCE_UPDATER_LAUNCHED = false
@@ -175,6 +181,11 @@ function RemoveQuest(self, questID)
 
   _QuestBlock:RemoveQuest(questID)
   _QuestBlock:ResumeIdleCountdown(questID)
+
+  _InstanceQuestBlock:RemoveQuest(questID)
+  if _InstanceQuestBlock.quests.Count == 0 then
+    _InstanceQuestBlock.isActive = false
+  end
 
   ActionBars:RemoveButton(questID, "quest-items")
 
@@ -337,7 +348,14 @@ function UpdateQuest(self, questID, cache)
   end
 
   if isNew then
-    _QuestBlock:AddQuest(quest)
+    if Settings:Get(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING) and IsInstanceQuest(questID, questType) then
+      if not _InstanceQuestBlock:GetQuest(questID) then
+        _InstanceQuestBlock:AddQuest(quest)
+        _InstanceQuestBlock.isActive = true
+      end
+    else
+      _QuestBlock:AddQuest(quest)
+    end
     quest.IsCompletedChanged = function() QuestSuperTracking_OnQuestCompleted() end
   end
 end
