@@ -349,8 +349,8 @@ class "Quest" (function(_ENV)
 
     -- Fourth separator
     -- TODO: Remove later (it's currently used for debug)
-    ContextMenu():AddItem(MenuItemSeparator())
-    ContextMenu():AddItem("[DEBUG] Info", nil, function() self:Print() end)
+    -- ContextMenu():AddItem(MenuItemSeparator())
+    -- ContextMenu():AddItem("[DEBUG] Info", nil, function() self:Print() end)
     ContextMenu():Finish()
   end
 

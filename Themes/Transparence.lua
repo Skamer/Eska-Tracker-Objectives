@@ -44,7 +44,7 @@ TransparenceTheme:SetElementProperty("block.scenario.header.text", "text-size", 
 TransparenceTheme:SetElementProperty("block.scenario.header.text", "text-justify-v", "TOP")
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-size", 12)
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-font", "PT Sans Caption Bold")
-TransparenceTheme:SetElementProperty("block.scenario.name", "text-offsetY", -13)
+TransparenceTheme:SetElementProperty("block.scenario.name", "text-justify-h", "CENTER")
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-color", { r = 1, g = 0.42, b = 0})
 TransparenceTheme:SetElementProperty("block.scenario.name", "text-transform", "uppercase")
   -- Stage frame

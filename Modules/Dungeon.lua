@@ -80,6 +80,12 @@ function UpdateDungeonIcon(self)
 
   local currentInstance = Utils.Instance.GetCurrentInstance()
   if currentInstance then
-    _Dungeon.texture  = select(6, EJ_GetInstanceInfo(currentInstance))
+    local texture  = select(6, EJ_GetInstanceInfo(currentInstance))
+    if texture then
+      _Dungeon.texture = texture
+    else
+      Wait(1)
+      _Dungeon.texture = select(6, EJ_GetInstanceInfo(currentInstance))
+    end
   end
 end

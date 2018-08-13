@@ -71,12 +71,7 @@ function OnInactive(self)
     _WorldQuestBlock.isActive = false
     _WorldQuestBlock:ResumeIdleCountdown()
 
-    -- NOTE: The Darkshore world quests and probably other world quests are supertrack
-    -- so we need to remove manually the supertrack if the module become disabled.
-    if LAST_TRACKED_WORLD_QUEST and IsWorldQuest(LAST_TRACKED_WORLD_QUEST) then
-      _WorldQuestBlock:RemoveWorldQuest(LAST_TRACKED_WORLD_QUEST)
-      ActionBars:RemoveButton(LAST_TRACKED_WORLD_QUEST, "quest-items")
-    end
+    self:ClearWorldQuests()
   end
 end
 --============================================================================--
@@ -110,8 +105,18 @@ function SUPER_TRACKED_QUEST_CHANGED(questID)
 end
 
 
+function ClearWorldQuests(self)
+  for _, worldQuest in _WorldQuestBlock.worldQuests:GetIterator() do
+    ActionBars:RemoveButton(worldQuest.id, "quest-items")
+    worldQuest:Recycle()
+  end
+  _WorldQuestBlock.worldQuests:Clear()
+end
+
+
 __SystemEvent__()
 function PLAYER_ENTERING_WORLD()
+  _M:ClearWorldQuests()
   _M:LoadWorldQuests()
 end
 
