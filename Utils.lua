@@ -50,7 +50,7 @@ class "Utils" (function(_ENV)
     __Arguments__ { Number, Variable.Optional(Number) }
     __Static__() function IsInstanceQuest(questID, questTag)
       if not questTag then
-        questTag = GetQuestTag()
+        questTag = GetQuestTagInfo(questID)
       end
 
       if questTag == EnumQuestTag.Raid or questTag == EnumQuestTag.Dungeon then

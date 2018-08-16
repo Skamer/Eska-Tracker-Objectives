@@ -36,6 +36,7 @@ QUEST_HEADERS_CACHE               = {}
 QUESTLOG_INDEX_CACHE              = {}
 QUESTS_WITH_TIMER_CACHE           = {}
 DISTANCE_UPDATER_ENABLED          = false
+SEPARATE_INSTANCE_QUESTS          = false
 --============================================================================--
 __ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "QUEST_WATCH_LIST_CHANGED"
 function ActiveOn(self, event, ...)
@@ -62,18 +63,23 @@ function OnLoad(self)
   -- Register the settings
   Settings:Register(SORT_QUESTS_BY_DISTANCE_SETTING, true)
   Settings:Register(SHOW_ONLY_QUESTS_IN_ZONE_SETTING, false, "quests/updateAll")
-  Settings:Register(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING, false)
+  Settings:Register(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING, false, "quests/separateInstanceQuests")
 
   CallbackHandlers:Register("quests/updateAll", CallbackHandler(function()
     for questID in pairs(QUESTS_CACHE) do
       _M:UpdateQuest(questID)
     end
   end))
+  CallbackHandlers:Register("quests/separateInstanceQuests", CallbackHandler(function()
+    _M:MoveQuestsToRightBlock()
+  end))
+
+  SEPARATE_INSTANCE_QUESTS = Settings:Get(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING)
 end
 
 function OnActive(self)
   if not _QuestBlock then
-    _QuestBlock         = block "quests"
+    _QuestBlock = block "quests"
     _InstanceQuestBlock = block "instance-quests"
     _InstanceQuestBlock.isActive  = false
   end
@@ -86,11 +92,17 @@ end
 
 function OnInactive(self)
   if _QuestBlock then
-    _QuestBlock.isActive          = false
-    _InstanceQuestBlock.isActive  = false
+    _QuestBlock.isActive = false
   end
 
   DISTANCE_UPDATER_LAUNCHED = false
+end
+
+__SystemEvent__()
+function EKT_SETTING_CHANGED(setting, newValue)
+  if setting == SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING then
+    SEPARATE_INSTANCE_QUESTS = newValue
+  end
 end
 
 __Async__()
@@ -182,15 +194,60 @@ function RemoveQuest(self, questID)
   _QuestBlock:RemoveQuest(questID)
   _QuestBlock:ResumeIdleCountdown(questID)
 
-  _InstanceQuestBlock:RemoveQuest(questID)
-  if _InstanceQuestBlock.quests.Count == 0 then
-    _InstanceQuestBlock.isActive = false
+  if SEPARATE_INSTANCE_QUESTS then
+    _InstanceQuestBlock:RemoveQuest(questID)
   end
 
   ActionBars:RemoveButton(questID, "quest-items")
 
   QuestSuperTracking_OnQuestUntracked()
 end
+
+function GetQuest(self, questID)
+  local quest = _QuestBlock:GetQuest(questID)
+  local instanceBlock = false
+  if not quest and SEPARATE_INSTANCE_QUESTS then
+    quest         = _InstanceQuestBlock:GetQuest(questID)
+    if quest then
+      instanceBlock = true
+    end
+  end
+
+  return quest, instanceBlock
+end
+
+function MoveQuest(self, quest, fromBlock, toBlock)
+  if fromBlock == toBlock then
+    return
+  end
+
+  if type(quest) == "number" then
+    quest = fromBlock:GetQuest(quest)
+    if not quest then
+      return
+    end
+  end
+
+  fromBlock:RemoveQuest(quest, false)
+  toBlock:AddQuest(quest)
+end
+
+function MoveQuestsToRightBlock(self)
+  for questID in pairs(QUESTS_CACHE) do
+    if IsInstanceQuest(questID) then
+      if SEPARATE_INSTANCE_QUESTS then
+        self:MoveQuest(questID, _QuestBlock, _InstanceQuestBlock)
+      else
+        self:MoveQuest(questID, _InstanceQuestBlock, _QuestBlock)
+      end
+    end
+  end
+
+  _InstanceQuestBlock.isActive = _InstanceQuestBlock.quests.Count > 0
+end
+
+
+
 
 __SystemEvent__ "QUEST_LOG_UPDATE"
 function QUESTS_UPDATE()
@@ -223,9 +280,9 @@ end
 
 function UpdateQuest(self, questID, cache)
   local isLocal = IsQuestOnMap(questID)
-  local quest   = _QuestBlock:GetQuest(questID)
+  local quest, instanceBlock  = self:GetQuest(questID)
 
-  if Settings:Get(SHOW_ONLY_QUESTS_IN_ZONE_SETTING) and not isLocal then
+  if Settings:Get(SHOW_ONLY_QUESTS_IN_ZONE_SETTING) and not isLocal and not instanceBlock then
     if quest then
       _QuestBlock:ResumeIdleCountdown(questID)
 
@@ -265,7 +322,7 @@ function UpdateQuest(self, questID, cache)
     quest.isStory     = isStory
     quest.isTask      = isTask
 
-    if isLocal then
+    if isLocal and not instanceBlock then
       _QuestBlock:AddIdleCountdown(questID, nil, true)
     end
   end
@@ -281,8 +338,8 @@ function UpdateQuest(self, questID, cache)
   quest.isCompleted = isComplete
 
   -- The quest are on map will wake up permanently the tracker.
-  if quest.isOnMap ~= isLocal then
-    if isLocal then
+  if quest.isOnMap ~= isLocal and not SEPARATE_INSTANCE_QUESTS then
+    if isLocal and not instanceBlock then
       _QuestBlock:AddIdleCountdown(questID, nil, true)
     else
       _QuestBlock:ResumeIdleCountdown(questID)
@@ -348,7 +405,7 @@ function UpdateQuest(self, questID, cache)
   end
 
   if isNew then
-    if Settings:Get(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING) and IsInstanceQuest(questID, questType) then
+    if SEPARATE_INSTANCE_QUESTS and IsInstanceQuest(questID, questType) then
       if not _InstanceQuestBlock:GetQuest(questID) then
         _InstanceQuestBlock:AddQuest(quest)
         _InstanceQuestBlock.isActive = true
@@ -356,6 +413,7 @@ function UpdateQuest(self, questID, cache)
     else
       _QuestBlock:AddQuest(quest)
     end
+
     quest.IsCompletedChanged = function() QuestSuperTracking_OnQuestCompleted() end
   end
 end

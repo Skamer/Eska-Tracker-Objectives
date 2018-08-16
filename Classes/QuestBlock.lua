@@ -61,16 +61,24 @@ class "QuestBlock" (function(_ENV)
     end
   end
 
-  __Arguments__ { Quest }
-  function RemoveQuest(self, quest)
-    self.quests:Remove(quest)
+  __Arguments__ { Quest, Variable.Optional(Boolean, true) }
+  function RemoveQuest(self, quest, recycle)
+    quest = self.quests:Remove(quest)
+
+    if not quest then
+      return
+    end
 
     if Settings:Get("quest-categories-enabled") then
       self:RemoveQuestFromHeader(quest)
     end
 
     Scorpio.FireSystemEvent("EKT_QUESTBLOCK_QUEST_REMOVED", quest)
-    quest:Recycle()
+
+    if recycle then
+      quest:Recycle()
+    end
+
     self:Layout()
   end
 

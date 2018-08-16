@@ -1,8 +1,2 @@
-[1.0.23]
-tagged as release.
-- - Removed 'Debug Info' for quests.
-- ! Trying to fix again the issue where the dungeon texture isn't dispplayed.
-- ! Fixed an issue where the world quests wasn't correctly removed after a hearthstone or a teleportation.
-- ! The scenario name will now be centered for Transparence theme.
-
-I wish you a 'Good leveling !'. If you encounter issues, thank to let me know on the issues page.
+[1.1.1]
+- + The instance quests can now be separated from Quest Block, and moved into Instance Quest Block : see the Quest Block options to enable it.
