@@ -25,18 +25,22 @@ IsQuestBounty                     = IsQuestBounty
 GetQuestName                      = C_QuestLog.GetQuestInfo
 IsQuestOnMap                      = Utils.Quest.IsQuestOnMap
 IsLegionAssaultQuest              = Utils.Quest.IsLegionAssaultQuest
-IsInstanceQuest                   = Utils.Quest.IsInstanceQuest
+IsDungeonQuest                    = Utils.Quest.IsDungeonQuest
+IsRaidQuest                       = Utils.Quest.IsRaidQuest
 --============================================================================--
 SORT_QUESTS_BY_DISTANCE_SETTING   = "sort-quests-by-distance"
 SHOW_ONLY_QUESTS_IN_ZONE_SETTING  = "show-only-quests-in-zone"
-SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING = "show-instance-quests-in-instance-quests-block"
+DISPLAY_RAID_QUESTS_IN_SETTING    = "display-raid-quests-in"
+DISPLAY_DUNGEON_QUESTS_IN_SETTING = "display-dungeon-quests-in"
+QUESTS_LOADING_DELAY_SETTING      = "quests-loading-delay"
 --============================================================================--
 QUESTS_CACHE                      = {}
 QUEST_HEADERS_CACHE               = {}
 QUESTLOG_INDEX_CACHE              = {}
 QUESTS_WITH_TIMER_CACHE           = {}
 DISTANCE_UPDATER_ENABLED          = false
-SEPARATE_INSTANCE_QUESTS          = false
+RAID_QUEST_BLOCK_USED             = "quest-block"
+DUNGEON_QUEST_BLOCK_USED          = "quest-block"
 --============================================================================--
 __ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "QUEST_WATCH_LIST_CHANGED"
 function ActiveOn(self, event, ...)
@@ -63,18 +67,18 @@ function OnLoad(self)
   -- Register the settings
   Settings:Register(SORT_QUESTS_BY_DISTANCE_SETTING, true)
   Settings:Register(SHOW_ONLY_QUESTS_IN_ZONE_SETTING, false, "quests/updateAll")
-  Settings:Register(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING, false, "quests/separateInstanceQuests")
+  Settings:Register(QUESTS_LOADING_DELAY_SETTING, 5)
+  Settings:Register(DISPLAY_RAID_QUESTS_IN_SETTING, "quest-block")
+  Settings:Register(DISPLAY_DUNGEON_QUESTS_IN_SETTING, "quest-block")
 
   CallbackHandlers:Register("quests/updateAll", CallbackHandler(function()
     for questID in pairs(QUESTS_CACHE) do
       _M:UpdateQuest(questID)
     end
   end))
-  CallbackHandlers:Register("quests/separateInstanceQuests", CallbackHandler(function()
-    _M:MoveQuestsToRightBlock()
-  end))
 
-  SEPARATE_INSTANCE_QUESTS = Settings:Get(SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING)
+  RAID_QUEST_BLOCK_USED     = Settings:Get(DISPLAY_RAID_QUESTS_IN_SETTING)
+  DUNGEON_QUEST_BLOCK_USED  = Settings:Get(DISPLAY_DUNGEON_QUESTS_IN_SETTING)
 end
 
 function OnActive(self)
@@ -95,13 +99,45 @@ function OnInactive(self)
     _QuestBlock.isActive = false
   end
 
+  if _InstanceQuestBlock then
+    _InstanceQuestBlock.isActive = false
+  end
+
   DISTANCE_UPDATER_LAUNCHED = false
 end
 
+function GetBlockByID(self, id)
+  if id == "quest-block" then
+    return _QuestBlock
+  elseif id == "instance-quest-block" then
+    return _InstanceQuestBlock
+  end
+end
+
 __SystemEvent__()
-function EKT_SETTING_CHANGED(setting, newValue)
-  if setting == SHOW_INSTANCE_QUESTS_IN_INSTANCE_QUEST_BLOCK_SETTING then
-    SEPARATE_INSTANCE_QUESTS = newValue
+function EKT_SETTING_CHANGED(setting, newValue, oldValue)
+  if setting == DISPLAY_RAID_QUESTS_IN_SETTING then
+    local previousBlock = _M:GetBlockByID(oldValue)
+    local newBlock = _M:GetBlockByID(newValue)
+
+    for questID in pairs(QUESTS_CACHE) do
+      if IsRaidQuest(questID) then
+        _M:MoveQuest(questID, previousBlock, newBlock)
+      end
+    end
+
+    RAID_QUEST_BLOCK_USED = newValue
+  elseif setting == DISPLAY_DUNGEON_QUESTS_IN_SETTING then
+    local previousBlock = _M:GetBlockByID(oldValue)
+    local newBlock = _M:GetBlockByID(newValue)
+
+    for questID in pairs(QUESTS_CACHE) do
+      if IsDungeonQuest(questID) then
+        _M:MoveQuest(questID, previousBlock, newBlock)
+      end
+    end
+
+    DUNGEON_QUEST_BLOCK_USED = newValue
   end
 end
 
@@ -112,6 +148,9 @@ function PLAYER_ENTERING_WORLD(initialLogin, reloadingUI)
     -- If it's the first login, we need to wait 'QUEST_LOG_UPDATE' is fired to
     -- get valid informations about quests.
     Wait("QUEST_LOG_UPDATE")
+
+    -- Add a delay in the first loading.
+    Delay(Settings:Get(QUESTS_LOADING_DELAY_SETTING))
   end
 
   _M:LoadQuests()
@@ -187,15 +226,28 @@ function QUEST_REMOVED(questID)
   _M:RemoveQuest(questID)
 end
 
+function GetBlockUsedForQuest(self, questID)
+  local blockUsed = "quest-block"
+  if IsDungeonQuest(questID) then
+    blockUsed = DUNGEON_QUEST_BLOCK_USED
+  elseif IsRaidQuest(questID) then
+    blockUsed = RAID_QUEST_BLOCK_USED
+  end
+
+  return blockUsed
+end
+
 function RemoveQuest(self, questID)
   QUESTS_CACHE[questID] = nil
   QUESTS_WITH_TIMER_CACHE[questID] = nil
 
-  _QuestBlock:RemoveQuest(questID)
-  _QuestBlock:ResumeIdleCountdown(questID)
-
-  if SEPARATE_INSTANCE_QUESTS then
+  if self:GetBlockUsedForQuest(questID) == "instance-quest-block" then
     _InstanceQuestBlock:RemoveQuest(questID)
+    _InstanceQuestBlock.isActive = _InstanceQuestBlock.quests.Count > 0
+  else
+    _QuestBlock:RemoveQuest(questID)
+    _QuestBlock:ResumeIdleCountdown(questID)
+    _QuestBlock.isActive = _QuestBlock.quests.Count > 0
   end
 
   ActionBars:RemoveButton(questID, "quest-items")
@@ -204,16 +256,15 @@ function RemoveQuest(self, questID)
 end
 
 function GetQuest(self, questID)
-  local quest = _QuestBlock:GetQuest(questID)
-  local instanceBlock = false
-  if not quest and SEPARATE_INSTANCE_QUESTS then
-    quest         = _InstanceQuestBlock:GetQuest(questID)
-    if quest then
-      instanceBlock = true
-    end
+  local blockUsed = self:GetBlockUsedForQuest(questID)
+  local quest
+  if blockUsed == "quest-block" then
+    quest = _QuestBlock:GetQuest(questID)
+  elseif blockUsed == "instance-quest-block" then
+    quest = _InstanceQuestBlock:GetQuest(questID)
   end
 
-  return quest, instanceBlock
+  return quest, blockUsed
 end
 
 function MoveQuest(self, quest, fromBlock, toBlock)
@@ -231,22 +282,6 @@ function MoveQuest(self, quest, fromBlock, toBlock)
   fromBlock:RemoveQuest(quest, false)
   toBlock:AddQuest(quest)
 end
-
-function MoveQuestsToRightBlock(self)
-  for questID in pairs(QUESTS_CACHE) do
-    if IsInstanceQuest(questID) then
-      if SEPARATE_INSTANCE_QUESTS then
-        self:MoveQuest(questID, _QuestBlock, _InstanceQuestBlock)
-      else
-        self:MoveQuest(questID, _InstanceQuestBlock, _QuestBlock)
-      end
-    end
-  end
-
-  _InstanceQuestBlock.isActive = _InstanceQuestBlock.quests.Count > 0
-end
-
-
 
 
 __SystemEvent__ "QUEST_LOG_UPDATE"
@@ -275,14 +310,18 @@ function UPDATE_BLOCK_VISIBILITY(questID)
   if _QuestBlock then
     _QuestBlock.isActive = _QuestBlock.quests.Count > 0
   end
+
+  if _InstanceQuestBlock then
+    _InstanceQuestBlock.isActive = _InstanceQuestBlock.quests.Count > 0
+  end
 end
 
 
 function UpdateQuest(self, questID, cache)
   local isLocal = IsQuestOnMap(questID)
-  local quest, instanceBlock  = self:GetQuest(questID)
+  local quest, blockUsed = self:GetQuest(questID)
 
-  if Settings:Get(SHOW_ONLY_QUESTS_IN_ZONE_SETTING) and not isLocal and not instanceBlock then
+  if Settings:Get(SHOW_ONLY_QUESTS_IN_ZONE_SETTING) and not isLocal and not blockUsed == "instance-quest-block" then
     if quest then
       _QuestBlock:ResumeIdleCountdown(questID)
 
@@ -338,8 +377,8 @@ function UpdateQuest(self, questID, cache)
   quest.isCompleted = isComplete
 
   -- The quest are on map will wake up permanently the tracker.
-  if quest.isOnMap ~= isLocal and not SEPARATE_INSTANCE_QUESTS then
-    if isLocal and not instanceBlock then
+  if quest.isOnMap ~= isLocal then
+    if isLocal and not blockUsed == "instance-quest-block" then
       _QuestBlock:AddIdleCountdown(questID, nil, true)
     else
       _QuestBlock:ResumeIdleCountdown(questID)
@@ -405,10 +444,9 @@ function UpdateQuest(self, questID, cache)
   end
 
   if isNew then
-    if SEPARATE_INSTANCE_QUESTS and IsInstanceQuest(questID, questType) then
+    if blockUsed == "instance-quest-block"then
       if not _InstanceQuestBlock:GetQuest(questID) then
         _InstanceQuestBlock:AddQuest(quest)
-        _InstanceQuestBlock.isActive = true
       end
     else
       _QuestBlock:AddQuest(quest)

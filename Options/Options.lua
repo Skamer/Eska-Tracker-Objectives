@@ -14,12 +14,12 @@ function OnLoad(self)
   self:AddQuestRecipes()
   self:AddWorldQuestRecipes()
   self:AddBonusQuestRecipes()
+  self:AddRaidQuestRecipes()
+  self:AddDungeonQuestRecipes()
   self:AddAchievementRecipes()
   self:AddDungeonRecipes()
   self:AddKeystoneRecipes()
   self:AddQuestBlockRecipes()
-  self:AddSubQuestTypeRecipes("raid-quest", "Raid Quest")
-  self:AddSubQuestTypeRecipes("dungeon-quest", "Dungeon Quest")
   self:AddSubQuestTypeRecipes("legendary-quest", "Legendary Quest")
   self:AddWorldQuestBlockRecipes()
   self:AddScenarioRecipes()
@@ -293,6 +293,38 @@ function AddBonusQuestRecipes(self)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "bonus-quest/name")
 end
+
+QUEST_BLOCKS_LIST = {
+  ["quest-block"] = "Quest Block",
+  ["instance-quest-block"] = "Instance Quest Block"
+}
+
+--------------------------------------------------------------------------------
+--                             Raid Quest                                    --
+--------------------------------------------------------------------------------
+function AddRaidQuestRecipes(self)
+  self:AddSubQuestTypeRecipes("raid-quest", "Raid Quest")
+
+  local displayInRecipe = SelectRecipe()
+  displayInRecipe:SetText("Display in")
+  displayInRecipe:SetOrder(10)
+  displayInRecipe:SetList(QUEST_BLOCKS_LIST)
+  displayInRecipe:BindSetting("display-raid-quests-in")
+  OptionBuilder:AddRecipe(displayInRecipe, "raid-quest/general")
+end
+--------------------------------------------------------------------------------
+--                             Dungeon Quest                                  --
+--------------------------------------------------------------------------------
+function AddDungeonQuestRecipes(self)
+  self:AddSubQuestTypeRecipes("dungeon-quest", "Dungeon Quest")
+
+  local displayInRecipe = SelectRecipe()
+  displayInRecipe:SetText("Display in")
+  displayInRecipe:SetOrder(10)
+  displayInRecipe:SetList(QUEST_BLOCKS_LIST)
+  displayInRecipe:BindSetting("display-dungeon-quests-in")
+  OptionBuilder:AddRecipe(displayInRecipe, "dungeon-quest/general")
+end
 --------------------------------------------------------------------------------
 --                                 Achievement                                --
 --------------------------------------------------------------------------------
@@ -466,8 +498,6 @@ function AddQuestBlockRecipes(self)
   OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("quests-block-category/general/top-options"), "quests-block-category/general")
   OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show only quests in the current zone"):SetOrder(80):SetWidth(1.0):BindSetting("show-only-quests-in-zone"), "quests-block-category/general/top-options")
   OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Sort quests by distance"):SetOrder(81):SetWidth(1.0):BindSetting("sort-quests-by-distance"), "quests-block-category/general/top-options")
-  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show instance quests in the Instance Quests block"):SetOrder(82):SetWidth(1.0):BindSetting("show-instance-quests-in-instance-quests-block"), "quests-block-category/general/top-options")
-
 end
 --------------------------------------------------------------------------------
 --                                WorldQuestBlock                                --

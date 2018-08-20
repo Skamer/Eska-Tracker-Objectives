@@ -48,12 +48,38 @@ class "Utils" (function(_ENV)
 
     EnumQuestTag = _G.Enum.QuestTag
     __Arguments__ { Number, Variable.Optional(Number) }
+    __Static__() function IsDungeonQuest(questID, questTag)
+      if not questTag then
+        questTag = GetQuestTagInfo(questID)
+      end
+
+      if questTag == EnumQuestTag.Dungeon then
+        return true
+      end
+
+      return false
+    end
+
+    __Arguments__ { Number, Variable.Optional(Number) }
+    __Static__() function IsRaidQuest(questID, questTag)
+      if not questTag then
+        questTag = GetQuestTagInfo(questID)
+      end
+
+      if questTag == EnumQuestTag.Raid then
+        return  true
+      end
+
+      return false
+    end
+
+    __Arguments__ { Number, Variable.Optional(Number) }
     __Static__() function IsInstanceQuest(questID, questTag)
       if not questTag then
         questTag = GetQuestTagInfo(questID)
       end
 
-      if questTag == EnumQuestTag.Raid or questTag == EnumQuestTag.Dungeon then
+      if IsDungeonQuest(questID, questTag) or IsRaidQuest(questID, questTag) then
         return true
       end
 
