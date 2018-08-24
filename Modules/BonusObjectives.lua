@@ -29,6 +29,9 @@ function OnInactive(self)
   if _BonusObjectives then
     _BonusObjectives.isActive = false
     _BonusObjectives:ResumeIdleCountdown()
+
+    -- In some case, some bonus objectives are not removed, so we meed remove them.
+    _BonusObjectives:ClearBonusQuests()
   end
 end
 

@@ -15,6 +15,7 @@ GetInfo                             = C_Scenario.GetInfo
 GetStepInfo                         = C_Scenario.GetStepInfo
 GetCriteriaInfo                     = C_Scenario.GetCriteriaInfo
 GetActiveKeystoneInfo               = C_ChallengeMode.GetActiveKeystoneInfo
+GetCurrentInstance                  = Utils.Instance.GetCurrentInstance
 --============================================================================--
 function OnActive(self)
   if not _Dungeon then
@@ -78,9 +79,14 @@ function UpdateDungeonIcon(self)
   -- We need to wait the next UPDATE_INSTANCE_INFO for getting a valid dungeon texture
   Wait("UPDATE_INSTANCE_INFO")
 
-  local currentInstance = Utils.Instance.GetCurrentInstance()
+  local currentInstance = GetCurrentInstance()
+  if not currentInstance or currentInstance == 0 then
+    Wait(1)
+    currentInstance = GetCurrentInstance()
+  end
+
   if currentInstance then
-    local texture  = select(6, EJ_GetInstanceInfo(currentInstance))
+    local texture = select(6, EJ_GetInstanceInfo(currentInstance))
     if texture then
       _Dungeon.texture = texture
     else

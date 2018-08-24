@@ -44,7 +44,7 @@ DUNGEON_QUEST_BLOCK_USED          = "quest-block"
 --============================================================================--
 __ActiveOnEvents__ "PLAYER_ENTERING_WORLD" "QUEST_ACCEPTED" "QUEST_WATCH_LIST_CHANGED"
 function ActiveOn(self, event, ...)
-  if event == "PLAYER_ENTERING_WORLD" or "QUEST_WATCH_LIST_CHANGED"  then
+  if event == "PLAYER_ENTERING_WORLD" or event == "QUEST_WATCH_LIST_CHANGED"  then
     return GetNumQuestWatches() > 0
   elseif event == "QUEST_ACCEPTED" then
     local _, questID = ...
@@ -178,10 +178,13 @@ end
 __SystemEvent__()
 function QUEST_ACCEPTED(questLogIndex, questID)
   -- Don't continue if the quest is a world quest or a emissary
-  if IsWorldQuest(questID) or IsQuestBounty(questID) then return end
+  if IsWorldQuest(questID) or IsQuestTask(questID) or IsQuestBounty(questID) then return end
 
   -- Add it in the quest watched
-  AddQuestWatch(questLogIndex)
+  if AUTO_QUEST_WATCH == "1" and GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
+    AddQuestWatch(questLogIndex)
+    QuestSuperTracking_OnQuestTracked(questID)
+  end
 end
 
 

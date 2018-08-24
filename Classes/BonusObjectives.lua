@@ -73,6 +73,15 @@ class "BonusObjectivesBlock" (function(_ENV)
     end
   end
 
+  function ClearBonusQuests(self)
+    for _, bonusQuest in self.bonusQuests:GetIterator() do
+      bonusQuest:Recycle()
+    end
+
+    self.bonusQuests:Clear()
+    self:Layout()
+  end
+
   function OnLayout(self)
     local previousFrame
     for index, bonusQuest in self.bonusQuests:GetIterator() do
