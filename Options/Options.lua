@@ -504,7 +504,7 @@ end
 --------------------------------------------------------------------------------
 function AddWorldQuestBlockRecipes(self)
   OptionBuilder:AddRecipe(InlineGroupRecipe():SetText(""):SetOrder(80):SetBuildingGroup("world-quests-block-category/general/top-options"), "world-quests-block-category/general")
-  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show tracked world quests"):BindSetting("show-instance-quests-in-instance-quests-block"):SetWidth(1.0), "world-quests-block-category/general/top-options")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show tracked world quests"):BindSetting("show-tracked-world-quests"):SetWidth(1.0), "world-quests-block-category/general/top-options")
 end
 
 --------------------------------------------------------------------------------
