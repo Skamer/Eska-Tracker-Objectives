@@ -186,6 +186,9 @@ function GetKeystoneInfo(self)
   _Keystone.wasEnergized  = wasEnergized
   _Keystone.numAffixes    = #affixes
 
+  -- Fetch the death count
+  CHALLENGE_MODE_DEATH_COUNT_UPDATED()
+
   for i = 1, _Keystone.numAffixes do
     local affix = _Keystone:GetAffix(i)
 
