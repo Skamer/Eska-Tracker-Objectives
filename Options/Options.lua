@@ -23,6 +23,7 @@ function OnLoad(self)
   self:AddSubQuestTypeRecipes("legendary-quest", "Legendary Quest")
   self:AddWorldQuestBlockRecipes()
   self:AddScenarioRecipes()
+  -- self:AddRewardRecipes() NOT READY
 end
 
 
@@ -541,4 +542,45 @@ function AddScenarioRecipes(self)
   :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "scenario-block-category/stage")
+end
+
+--------------------------------------------------------------------------------
+--                                Reward                                    --
+--------------------------------------------------------------------------------
+function AddRewardRecipes(self)
+  -- Create the reward tree item
+  OptionBuilder:AddRecipe(TreeItemRecipe():SetID("reward"):SetText("Reward"):SetBuildingGroup("reward/children"):SetOrder(130), "RootTree")
+
+  -- Create the reward tabs
+  OptionBuilder:AddRecipe(TabRecipe():SetBuildingGroup("reward/tabs"):SetSaveChoiceVariable("reward_tab_selected"), "reward/children")
+  -- Create the differents tabs
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("General"):SetID("general"):SetBuildingGroup("reward/general"):SetOrder(10), "reward/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Text"):SetID("text"):SetBuildingGroup("reward/text"):SetOrder(20), "reward/tabs")
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Icon"):SetID("icon"):SetBuildingGroup("reward/icon"):SetOrder(30), "reward/tabs")
+
+  -- General tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("reward.frame"):SetOrder(10), "reward/general")
+
+  -- Text tab
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("reward.text")
+  :SetOrder(10)
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "reward/text")
+
+  -- Icon tab
+  local showIconRecipe = CheckBoxRecipe()
+  showIconRecipe:SetText("Show")
+  showIconRecipe:SetOrder(10)
+  showIconRecipe:BindSetting("reward-show-icon")
+  OptionBuilder:AddRecipe(showIconRecipe, "reward/icon")
+
+  local iconSizeRecipe = RangeRecipe()
+  iconSizeRecipe:SetRange(5, 40)
+  iconSizeRecipe:SetText("Size")
+  iconSizeRecipe:SetOrder(20)
+  iconSizeRecipe:BindSetting("reward-icon-size")
+  OptionBuilder:AddRecipe(iconSizeRecipe, "reward/icon")
 end

@@ -95,6 +95,71 @@ class "Utils" (function(_ENV)
           or (questID == 45406) -- StomHeim : The Storm's Fury
           or (questID == 46110) -- StomHeim : Battle for Stormheim
     end
+
+
+    __Arguments__ { Number }
+    __Static__() function GetRewardsData(questID)
+      local data = {}
+
+      -- Experience
+      local xp = GetQuestLogRewardXP(questID)
+      if xp > 0 and UnitLevel("player") < MAX_PLAYER_LEVEL then
+        local t = {}
+        t.type    = RewardType.EXP_REWARD
+        t.label   = xp
+        t.icon    = "Interface\\Icons\\XP_Icon"
+        t.count   = 0
+        tinsert(data, t)
+      end
+      -- Artifact Experience
+      local artifactXP, artifactCategory = GetQuestLogRewardArtifactXP(questID)
+      if artifactXP > 0 then
+        local name, icon = C_ArtifactUI.GetArtifactXPRewardTargetInfo(artifactCategory)
+        local t = {}
+        t.type  = RewardType.ARTIFACT_EXP_REWARD
+        t.label = artifactXP
+        t.icon  = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+        t.count = 0
+        tinsert(data, t)
+      end
+      -- Currencies
+      local numCurrencies = GetNumQuestLogRewardCurrencies(questID)
+      for i = 1, numCurrencies do
+        local name, icon, count = GetQuestLogRewardCurrencyInfo(i, questID)
+        local t = {}
+        t.type  = RewardType.CURRENCY_REWARD
+        t.label = name
+        t.icon  = icon
+        t.count = count
+        tinsert(data, t)
+      end
+      -- Items
+      local numItems = GetNumQuestLogRewards(questID);
+      for i = 1, numItems do
+        local name, icon, count, quality, isUsable = GetQuestLogRewardInfo(i, questID);
+        local t = {}
+        t.type      = RewardType.ITEM_REWARD
+        t.label     = name
+        t.icon      = icon
+        t.count     = count
+        t.questID   = questID
+        t.itemIndex = i
+        t.quality   = quality
+        tinsert(data, t)
+      end
+      -- Money
+      local money = GetQuestLogRewardMoney(questID)
+      if money > 0 then
+        local t = {}
+        t.type    = RewardType.MONEY_REWARD
+        t.label   = GetMoneyString(money)
+        t.texture = "Interface\\Icons\\inv_misc_coin_01"
+        t.count   = 0
+        tinsert(data, t)
+      end
+
+      return data
+    end
   end)
   ------------------------------------------------------------------------------
   --                             Instance                                     --

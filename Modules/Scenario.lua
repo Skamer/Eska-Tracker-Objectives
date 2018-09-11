@@ -18,6 +18,9 @@ GetCriteriaInfoByStep             = C_Scenario.GetCriteriaInfoByStep
 IsInInstance                      = IsInInstance
 --============================================================================--
 HasTimer                          = false
+CURRENCY_WARFRONT_WOOD            = 1540
+CURRENCY_WARFRONT_IRON            = 1541
+CURRENCY_WARFRONT_IRON_IN_CHEST   = 1705 -- the iron you get passively from chest
 --============================================================================--
 function OnActive(self)
   if not _Scenario then
@@ -154,10 +157,11 @@ end
 function UpdateScenario(self, isNewStage)
   if not IsInScenario() then return end
 
-  local title, currentStage, numStages, flags, _, _, _, xp, money = GetInfo();
-  _Scenario.name = title
-  _Scenario.currentStage = currentStage
-  _Scenario.numStages = numStages
+  local title, currentStage, numStages, flags, _, _, _, xp, money, scenarioType = GetInfo();
+  _Scenario.name          = title
+  _Scenario.currentStage  = currentStage
+  _Scenario.numStages     = numStages
+  _Scenario.isWarfront    = (scenarioType == LE_SCENARIO_TYPE_WARFRONT)
 
   if isNewStage then
     LevelUpDisplay_PlayScenario()
@@ -176,4 +180,17 @@ __SystemEvent__()
 function SCENARIO_UPDATE(...)
   _M:UpdateScenario(...)
   _M:UpdateObjectives()
+end
+
+__SystemEvent__()
+function CURRENCY_DISPLAY_UPDATE(currency, amount)
+  if _Scenario.isWarfront then
+    if currency == CURRENCY_WARFRONT_WOOD then
+      _Scenario.wood = amount
+    elseif currency == CURRENCY_WARFRONT_IRON then
+      _Scenario.iron = amount
+    elseif currency == CURRENCY_WARFRONT_IRON_IN_CHEST then
+      _Scenario.ironInChest = amount
+    end
+  end
 end
