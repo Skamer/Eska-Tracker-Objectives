@@ -191,12 +191,7 @@ function GetKeystoneInfo(self)
 
   for i = 1, _Keystone.numAffixes do
     local affix = _Keystone:GetAffix(i)
-
-    if i == 4 then
-      affix.id = affixes[3]
-    else
-      affix.id = affixes[i]
-    end
+    affix.id = affixes[i]
 
     local name, desc, texture = GetAffixInfo(affix.id)
     affix.name    = name

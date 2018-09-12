@@ -1,10 +1,14 @@
-[1.1.5]
-** Warfront **
-- + Implemented the warfront resources (wood, iron and the iron in chest).
-Take note the warfront is considered as scenario.
+[1.1.6]
+  ** Mythic + **
+    - ! Fixed an issue where the 4th affix had not the right information.
 
-** Mythic + **
-- ! The death count should now be correctly reset between two runs.
+[1.1.5]
+  ** Warfront **
+    - + Implemented the warfront resources (wood, iron and the iron in chest).
+    Take note the warfront is considered as scenario.
+
+  ** Mythic + **
+    - ! The death count should now be correctly reset between two runs.
 
 [1.1.4]
 - ! Fix the 'show tracked world quests' option.
