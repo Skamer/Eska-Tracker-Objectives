@@ -455,6 +455,7 @@ function AddKeystoneRecipes(self)
 
   -- Icon Tab
   OptionBuilder:AddRecipe(TabItemRecipe():SetText("Icon"):SetID("icon"):SetBuildingGroup("keystone-block-category/icon"):SetOrder(120), "keystone-block-category/tabs")
+  OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Show instance texture"):BindSetting("keystone-show-instance-texture"):SetOrder(10), "keystone-block-category/icon")
   OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("block.keystone.icon"), "keystone-block-category/icon")
 
   -- Level tab

@@ -1,3 +1,8 @@
+[1.1.7]
+  ** Mythic + **
+    - ! Fixed an issue where the timer doesn't appear when you leave then re-enter in the dungeon during the run.
+    - ! Added an option for hiding the dungeon texture (in Blocks -> Keystone -> Icon -> Show instance texture)
+
 [1.1.6]
   ** Mythic + **
     - ! Fixed an issue where the 4th affix had not the right information.

@@ -67,10 +67,8 @@ function OnActive(self)
   UpdateObjectives()
   self:GetKeystoneInfo()
 
-  if _EnablingEvent and _EnablingEvent == "PLAYER_ENTERING_WORLD" then
-    _Keystone.isActive = true
-    self:UpdateTimer()
-  end
+  _Keystone.isActive = true
+  self:UpdateTimer()
 
   _Keystone:AddIdleCountdown(nil, nil, true)
 end

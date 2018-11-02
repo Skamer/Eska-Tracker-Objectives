@@ -9,6 +9,7 @@ namespace                       "EKT"
 --============================================================================--
 SHOW_DEATH_COUNT_OPTION     = "keystone-show-death-count"
 SHOW_TIMER_BAR_OPTION       = "keystone-show-timer-bar"
+SHOW_INSTANCE_TEXTURE       = "keystone-show-instance-texture"
 --------------------------------------------------------------------------------
 --                                Helpers                                     --
 --------------------------------------------------------------------------------
@@ -199,18 +200,28 @@ class "BFAKeystoneBlock" (function(_ENV)
       fbar:SetParent(self.frame.content)
       fbar:SetHeight(12)
       fbar:SetPoint("TOP", self.frame.timer, "BOTTOM", 0, -6)
-      fbar:SetPoint("LEFT", self.frame.ftex, "RIGHT", 8, 0)
+
+      if self.frame.ftex:IsShown() then
+        fbar:SetPoint("LEFT", self.frame.ftex, "RIGHT", 8, 0)
+      else
+        fbar:SetPoint("LEFT", 8, 0)
+      end
+
       fbar:SetPoint("RIGHT", -8, 0)
       self.frame.fbar = fbar
     end
 
     self.frame.fbar:Show()
+
+    self:Layout()
   end
 
   function HideTimerBar(self)
     if self.frame.fbar then
       self.frame.fbar:Hide()
     end
+
+    self:Layout()
   end
 
   function HideProgress(self)
@@ -249,6 +260,38 @@ class "BFAKeystoneBlock" (function(_ENV)
     self.frame.death:Hide()
   end
 
+  function ShowInstanceTexture(self)
+    -- Show the instance texture
+    self.frame.ftex:Show()
+
+    -- Re-anchor the frames related to instance texture
+    -- 1. Timer
+    self.frame.timer:SetPoint("LEFT", self.frame.ftex, "RIGHT")
+    -- 2. Timer bar if exists
+    if self.frame.fbar then
+      self.frame.fbar:SetPoint("LEFT", self.frame.ftex, "RIGHT", 8, 0)
+    end
+
+    self:Layout()
+  end
+
+  function HideInstanceTexture(self)
+    -- Hide the instance texture
+    self.frame.ftex:Hide()
+
+    -- Re-anchor the frames related to instance texture
+    -- 1. Timer
+    self.frame.timer:SetPoint("LEFT")
+    self.frame.timer:SetPoint("TOP", self.frame.plus2KeyLevelTimer, "BOTTOM", 0, -8)
+    self.frame.timer:SetPoint("RIGHT")
+    -- 2. Timer bar if exists
+    if self.frame.fbar then
+      self.frame.fbar:SetPoint("LEFT", 8, 0)
+    end
+
+    self:Layout()
+  end
+
 
   function OnLayout(self)
 
@@ -275,7 +318,13 @@ class "BFAKeystoneBlock" (function(_ENV)
         obj:Hide()
         obj:ClearAllPoints()
         if index == 1 then
-          obj:SetPoint("TOP", self.frame.ftex, "BOTTOM")
+          if self.frame.ftex:IsShown() then
+            obj:SetPoint("TOP", self.frame.ftex, "BOTTOM")
+          elseif self:HasTimerBar() then
+            obj:SetPoint("TOP", self.frame.fbar, "BOTTOM", 0, -4)
+          else
+            obj:SetPoint("TOP", self.frame.timer, "BOTTOM")
+          end
           obj:SetPoint("LEFT")
           obj:SetPoint("RIGHT")
         else
@@ -294,7 +343,15 @@ class "BFAKeystoneBlock" (function(_ENV)
     local height = self.baseHeight
 
     -- Get the icon height
-    local iconHeight = self.frame.ftex:GetHeight()
+    local iconHeight = 0
+    if self.frame.ftex:IsShown() then
+      iconHeight = self.frame.ftex:GetHeight()
+    elseif self:HasTimerBar() then
+      iconHeight = 60
+    else
+      iconHeight = 48
+    end
+
     -- Get the objectivesHeight
     local objectivesHeight = self:GetObjectivesHeight()
     -- Get the top info height (level/ chest)
@@ -330,7 +387,7 @@ class "BFAKeystoneBlock" (function(_ENV)
 
   __Arguments__ { String }
   function IsRegisteredSetting(self, option)
-    if option == SHOW_DEATH_COUNT_OPTION or option == SHOW_TIMER_BAR_OPTION then
+    if option == SHOW_DEATH_COUNT_OPTION or option == SHOW_TIMER_BAR_OPTION or option == SHOW_INSTANCE_TEXTURE then
       return true
     end
 
@@ -350,6 +407,12 @@ class "BFAKeystoneBlock" (function(_ENV)
         self:ShowDeathCount()
       else
         self:HideDeathCount()
+      end
+    elseif option == SHOW_INSTANCE_TEXTURE then
+      if new then
+        self:ShowInstanceTexture()
+      else
+        self:HideInstanceTexture()
       end
     end
   end
@@ -376,6 +439,7 @@ class "BFAKeystoneBlock" (function(_ENV)
     -- Load options
     self:LoadSetting(SHOW_TIMER_BAR_OPTION)
     self:LoadSetting(SHOW_DEATH_COUNT_OPTION)
+    self:LoadSetting(SHOW_INSTANCE_TEXTURE)
   end
 
   ------------------------------------------------------------------------------
@@ -734,4 +798,5 @@ function OnLoad(self)
   -- Register the options
   Settings:Register(SHOW_DEATH_COUNT_OPTION, true)
   Settings:Register(SHOW_TIMER_BAR_OPTION, true)
+  Settings:Register(SHOW_INSTANCE_TEXTURE, false)
 end
