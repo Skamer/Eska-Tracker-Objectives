@@ -79,8 +79,9 @@ class "Objective" (function(_ENV)
   end
 
   local function SetText(self, new, old)
-    Theme:SkinText(self.frame.text, Theme.SkinFlags.TEXT_TRANSFORM, new, self:GetCurrentState())
-    self:CalculateHeight()
+    Theme:SkinText(self.frame.text, Theme.SkinFlags.TEXT_TRANSFORM, new, self:GetCurrentState(), nil, nil, function(...)
+      self:CalculateHeight()
+    end)
   end
   ------------------------------------------------------------------------------
   --                                   Methods                                --
@@ -215,18 +216,23 @@ class "Objective" (function(_ENV)
     end
 
     if Theme:NeedSkin(self.frame.text, target) then
-      Theme:SkinText(self.frame.text, flags, self.text, state)
-      self:CalculateHeight()
+      Theme:SkinText(self.frame.text, flags, self.text, state, nil, nil, function(...)
+        self:CalculateHeight()
+      end)
     end
   end
 
   function CalculateHeight(self)
     local height = self.baseHeight
+    local textFrame = self.frame.text
 
-    -- Important ! This is needed to update the text box height
-    self.frame.text:SetHeight(0)
+    textFrame:SetWidth(0)
+    -- @NOTE The below code is the way for getting a reliable text height.
+    textFrame:SetHeight(1000)
+    textFrame:SetText(textFrame:GetText())
+    textFrame:SetHeight(textFrame:GetStringHeight())
 
-    local textHeight = self.frame.text:GetHeight()
+    local textHeight = textFrame:GetStringHeight()
 
     local diff = (textHeight + 4) - self.baseHeight
     if diff < 0 then diff = 0 end
@@ -329,6 +335,9 @@ class "Objective" (function(_ENV)
 
     self.baseHeight = 20
     self.height = self.baseHeight
+
+    -- HACK This fix the issues relative to text size, but needs to find a better solution in the future.
+    self.frame:SetScript("OnShow", function() self:CalculateHeight() end)
 
     -- Keep it in the cache for later
     _ObjectiveCache[self] = true

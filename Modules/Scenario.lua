@@ -55,7 +55,7 @@ function ActiveOn(self)
 end
 
 function UpdateObjectives(self)
-  local stageName, stageDescription, numObjectives,  _, _, _, numSpells, spellInfo = GetStepInfo()
+  local stageName, stageDescription, numObjectives, _, _, _, _, numSpells, spellInfo, weightedProgress, _, widgetSetID = GetStepInfo()
   local weightedProgress = select(10, C_Scenario.GetStepInfo())
   local needRunTimer = false
 
@@ -144,6 +144,17 @@ function UpdateObjectives(self)
     HasTimer = false
   end
 
+  -- TODO Works the scenario spell
+  --[[for index, spellData in pairs(spellInfo) do
+    if not ActionBars:HasButton(spellData.spellID, "quest-items") then
+      local spellButton = ObjectManager:Get(SpellButton)
+      spellButton.spellID     = spellData.spellID
+      spellButton.texture     = spellData.spellIcon
+      spellButton.spellName   = spellData.spellName
+      spellButton.category    = "quest-items"
+      ActionBars:AddButton(spellButton)
+    end
+  end--]]
 end
 
 __Async__()

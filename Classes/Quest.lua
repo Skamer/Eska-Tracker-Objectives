@@ -84,6 +84,19 @@ class "Quest" (function(_ENV)
     return self.questItem
   end
 
+  function GetQuestRewards(self)
+    if not self.questRewards then
+      self.questRewards = ObjectManager:Get(Rewards)
+      self.questRewards:SetParent(self.frame)
+
+      self.questRewards.OnHeightChanged = function(_, new, old)
+        self.height = self.height + (new - old)
+      end
+    end
+
+    return self.questRewards
+  end
+
   function ShowTagIcon(self)
     self.frame.tagIcon:Show()
     self.frame.name:SetPoint("LEFT", self.frame.tagIcon, "RIGHT")
@@ -204,6 +217,16 @@ class "Quest" (function(_ENV)
         obj:Show()
         previousFrame = obj.frame
       end
+
+      if self.questRewards then
+        if not self.questRewards:IsShown() then
+          self.questRewards:Show()
+        end
+        self.questRewards:SetPoint("TOP", previousFrame, "BOTTOM")
+        self.questRewards:SetPoint("LEFT")
+        self.questRewards:SetPoint("RIGHT")
+      end
+
 
       self:CalculateHeight()
   end

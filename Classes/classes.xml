@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
   <Script file="Objective.lua"/>
   <Script file="QuestItem.lua"/>
+  <Script file="Reward.lua"/>
   <Script file="Quest.lua"/>
   <Script file="QuestHeader.lua"/>
   <Script file="QuestBlock.lua"/>

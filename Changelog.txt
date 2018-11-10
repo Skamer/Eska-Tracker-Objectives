@@ -1,3 +1,6 @@
+[1.1.8]
+- ! Fixed #57 - an issue where sometimes the objective had an incorrect size. 
+
 [1.1.7]
   ** Mythic + **
     - ! Fixed an issue where the timer doesn't appear when you leave then re-enter in the dungeon during the run.

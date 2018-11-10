@@ -14,6 +14,7 @@ GetTasksTable                       = GetTasksTable
 IsWorldQuestHardWatched             = IsWorldQuestHardWatched
 IsWorldQuestWatched                 = IsWorldQuestWatched
 GetSuperTrackedQuestID              = GetSuperTrackedQuestID
+GetRewardsData                      = Utils.Quest.GetRewardsData
 --============================================================================--
 SHOW_TRACKED_WORLD_QUESTS_OPTION    = "show-tracked-world-quests"
 --============================================================================--
@@ -232,7 +233,26 @@ function UpdateWorldQuest(self, worldQuest, cache)
       end
     end
   end
+
+
+  -- TODO Finished the rewards part for later.
+  --[[
+  -- Fetch Rewards
+  local rewardsData = GetRewardsData(worldQuest.id)
+  if #rewardsData > 0 then
+    local rewards = worldQuest:GetQuestRewards()
+    for index, rewardData in pairs(rewardsData) do
+      local reward = ObjectManager:Get(Reward)
+      reward.type = rewardData.type
+      reward.text = rewardData.label
+      reward.count = rewardData.count
+
+      rewards:AddReward(reward)
+    end
+  end--]]
 end
+
+
 
 __SystemEvent__()
 function QUEST_REMOVED(questID, fromTracking)
