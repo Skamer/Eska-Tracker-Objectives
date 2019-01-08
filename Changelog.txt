@@ -1,5 +1,5 @@
-[1.1.9]
-- ! Fixed an issue where sometimes the objectives are not displayed in dungeon. 
+[1.1.10]
+- ! Fixed an issue where sometimes the objectives are not displayed in dungeon.
 
 [1.1.8]
 - ! Fixed #57 - an issue where sometimes the objective had an incorrect size.
