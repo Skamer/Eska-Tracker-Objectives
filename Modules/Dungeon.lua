@@ -49,7 +49,10 @@ end
 __Async__()
 __SystemEvent__ "SCENARIO_CRITERIA_UPDATE" "CRITERIA_COMPLETE" "SCENARIO_UPDATE"
 function UpdateObjectives()
-  local dungeonName, _, numObjectives = GetStepInfo()
+  -- NOTE: Need to delay a little to gather valid informations, and to avoid a dungeon with nothing displayed.
+  Delay(0.4)
+
+  local dungeonName, _, numObjectives = C_Scenario.GetStepInfo()
   _Dungeon.name          = dungeonName
   _Dungeon.numObjectives = numObjectives
 
