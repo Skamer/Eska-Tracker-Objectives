@@ -49,6 +49,22 @@ class "ScenarioBlock" (function(_ENV)
   ------------------------------------------------------------------------------
   --                             Methods                                      --
   ------------------------------------------------------------------------------
+  function GetFormattedIronResourceText(self, iron, ironInChest)
+    if iron >= 200 then 
+      return string.format("|cffff0000%i|r |cffffffff(+%i)|r", iron, ironInChest)
+    end 
+
+    return string.format("%i |cffffffff(+%i)|r", iron, ironInChest)
+  end
+
+  function GetFormattedWoodResourceText(self, wood)
+    if wood >= 100 then 
+      return string.format("|cffff0000%i|r", wood, ironInChest)
+    end
+
+    return string.format("%i", wood)
+  end 
+
   __Arguments__ { Variable.Optional(Theme.SkinFlags, Theme.DefaultSkinFlags), Variable.Optional(String) }
   function OnSkin(self, flags, target)
     super.OnSkin(self, flags, target)
@@ -71,6 +87,16 @@ class "ScenarioBlock" (function(_ENV)
     if Theme:NeedSkin(self.frame.stageCounter, target) then
       Theme:SkinText(self.frame.stageCounter, flags, string.format("%i/%i", self.currentStage, self.numStages), state)
     end
+
+    if self.frame.warfrontResources then 
+      if Theme:NeedSkin(self.frame.warfrontResources, target) then 
+        Theme:SkinFrame(self.frame.warfrontResources, flags, state)
+      end
+
+      -- if Theme:NeedSkin(self.frame.warfrontResources.iron.text, target) then
+      --   Theme:SkinText(self.frame.warfrontResources.iron.text, flags, self:GetFormattedIronResourceText(self.iron, self.ironInChest), state)
+      -- end
+    end 
   end
 
   function OnLayout(self)
@@ -155,7 +181,6 @@ class "ScenarioBlock" (function(_ENV)
     if not self.frame.warfrontResources then
       local warfrontResources = CreateFrame("Frame", nil, self.frame.content)
       warfrontResources:SetBackdrop(_Backdrops.Common)
-      warfrontResources:SetBackdropColor(0.2, 0.2, 0.2, 0.5)
       warfrontResources:SetHeight(22)
       self.frame.warfrontResources = warfrontResources
 
@@ -200,6 +225,14 @@ class "ScenarioBlock" (function(_ENV)
       woodText:SetPoint("TOP")
       woodText:SetPoint("BOTTOM")
       wood.text = woodText
+
+      -- Register warfront frames in the theme system
+      local prefix = self:GetClassPrefix()
+      local state  = self:GetCurrentState()
+      Theme:RegisterFrame(prefix..".warfront.resources", warfrontResources)
+      -- Theme:RegisterText(prefix..".warfront.resources.iron", ironText)
+      -- Theme:RegisterText(prefix..".warfront.resources.wood", woodText)
+      Theme:SkinFrame(warfrontResources, nil, state)
 
       UpdateProps(self, self.iron, nil, "iron")
       UpdateProps(self, self.wood, nil, "wood")

@@ -61,6 +61,11 @@ EskaTheme:SetElementProperty("block.scenario.name", "text-justify-h", "CENTER")
    EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-size", 12)
    EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-font", "PT Sans Narrow Bold")
    EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-color", { r = 1, g = 1, b = 1 })
+   -- Warfront Resources
+   EskaTheme:SetElementProperty("block.scenario.warfront.resources", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.5})
+   -- Warfront Resources Iron Text
+  --  EskaTheme:SetElementProperty("block.scenario.warfront.resources.iron", "text-color", { r = 1, g = 208/255, b = 5 /255})
+  --  EskaTheme:SetElementProperty("block.scenario.warfront.resources.wood", "text-color", { r = 1, g = 208/255, b = 5 /255})
 -- ========================================================================== --
 -- == Quest properties
 -- ========================================================================== --

@@ -57,6 +57,11 @@ TransparenceTheme:SetElementProperty("block.scenario.name", "text-transform", "u
   TransparenceTheme:SetElementProperty("block.scenario.stage-counter", "text-size", 12)
   TransparenceTheme:SetElementProperty("block.scenario.stage-counter", "text-font", "PT Sans Narrow Bold")
   TransparenceTheme:SetElementProperty("block.scenario.stage-counter", "text-color", { r = 1, g = 1, b = 1 })
+   -- Warfront Resources
+   TransparenceTheme:SetElementProperty("block.scenario.warfront.resources", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.5})
+   -- Warfront Resources Iron Text
+  --  TransparenceTheme:SetElementProperty("block.scenario.warfront.resources.iron", "text-color", { r = 1, g = 208/255, b = 5 /255})
+  --  TransparenceTheme:SetElementProperty("block.scenario.warfront.resources.wood", "text-color", { r = 1, g = 208/255, b = 5 /255})  
 -- ========================================================================== --
 -- == Quest properties
 -- ========================================================================== --

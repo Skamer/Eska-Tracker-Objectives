@@ -1,3 +1,7 @@
+[1.1.11]
+ ** Warfront **
+ - + Added the options for warfront.
+
 [1.1.10]
 - ! Fixed an issue where sometimes the objectives are not displayed in dungeon.
 

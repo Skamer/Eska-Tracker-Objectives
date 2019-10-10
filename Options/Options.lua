@@ -543,6 +543,38 @@ function AddScenarioRecipes(self)
   :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "scenario-block-category/stage")
+
+
+  -- Warfront Tab
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Warfront"):SetID("warfront"):SetBuildingGroup("scenario-block-category/warfront"):SetOrder(120), "scenario-block-category/tabs")
+  -- Resources 
+  OptionBuilder:AddRecipe(HeadingRecipe():SetText("Resources"):SetOrder(110), "scenario-block-category/warfront")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.scenario.warfront.resources")
+  :SetOrder(120), "scenario-block-category/warfront")
+
+  -- Resources Tab
+  -- OptionBuilder:AddRecipe(TabRecipe():SetOrder(130):SetBuildingGroup("warfont-resources/tabs"):SetSaveChoiceVariable("warfront_resources_tab_selected"), "scenario-block-category/warfront")
+  -- Create the differents tabs for iron and wood
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Iron"):SetID("iron"):SetBuildingGroup("warfont-resources/iron"):SetOrder(10), "warfont-resources/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.scenario.warfront.resources.iron")
+  :SetOrder(10)
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "warfont-resources/iron")
+
+
+  OptionBuilder:AddRecipe(TabItemRecipe():SetText("Wood"):SetID("wood"):SetBuildingGroup("warfont-resources/wood"):SetOrder(20), "warfont-resources/tabs")
+  OptionBuilder:AddRecipe(ThemePropertyRecipe()
+  :SetElementID("block.scenario.warfront.resources.wood")
+  :SetOrder(10)
+  :ClearFlags()
+  :SetFlags(_DEFAULT_SKIN_TEXT_FLAGS)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "warfont-resources/wood")
+
 end
 
 --------------------------------------------------------------------------------
