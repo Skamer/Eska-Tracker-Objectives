@@ -91,7 +91,8 @@ function BonusObjectiveTracker_UntrackWorldQuest(questID)
 end
 
 __SystemEvent__()
-function SUPER_TRACKED_QUEST_CHANGED(questID)
+function SUPER_TRACKED_QUEST_CHANGED()
+  local questID = GetSuperTrackedQuestID()
   if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     if LAST_TRACKED_WORLD_QUEST then
       QUEST_REMOVED(LAST_TRACKED_WORLD_QUEST, true)
