@@ -15,12 +15,17 @@ GetStepInfo                       = C_Scenario.GetStepInfo
 GetCriteriaInfo                   = C_Scenario.GetCriteriaInfo
 GetBonusSteps                     = C_Scenario.GetBonusSteps
 GetCriteriaInfoByStep             = C_Scenario.GetCriteriaInfoByStep
+GetBasicCurrencyInfo              = C_CurrencyInfo.GetBasicCurrencyInfo
+IsHorrificVisionInstance          = Utils.Instance.IsHorrificVisionInstance
 IsInInstance                      = IsInInstance
 --============================================================================--
 HasTimer                          = false
 CURRENCY_WARFRONT_WOOD            = 1540
 CURRENCY_WARFRONT_IRON            = 1541
 CURRENCY_WARFRONT_IRON_IN_CHEST   = 1705 -- the iron you get passively from chest
+
+CURRENCY_CORRUPTED_MEMENTO = 1744
+CURRENCY_CORRUPTED_MEMENTO_PERMANENT = 1719 -- This is not the corrupted memento used in the scenario
 --============================================================================--
 function OnActive(self)
   if not _Scenario then
@@ -174,6 +179,7 @@ function UpdateScenario(self, isNewStage)
   _Scenario.numStages     = numStages
   _Scenario.isWarfront    = (scenarioType == LE_SCENARIO_TYPE_WARFRONT)
 
+
   if isNewStage then
     LevelUpDisplay_PlayScenario()
     if currentStage > 1 and currentStage <= numStages then
@@ -203,5 +209,33 @@ function CURRENCY_DISPLAY_UPDATE(currency, amount)
     elseif currency == CURRENCY_WARFRONT_IRON_IN_CHEST then
       _Scenario.ironInChest = amount
     end
-  end
+  else 
+    if currency and currency ~= CURRENCY_CORRUPTED_MEMENTO_PERMANENT then 
+        _Scenario.hasCurrencies = true
+        local currencyFrame, isNew = _Scenario.currencies:GetCurrency(currency)
+        if isNew then 
+          local currencyInfo = GetBasicCurrencyInfo(currency)
+          currencyFrame.name = currencyInfo.name
+          currencyFrame.desc = currencyInfo.description
+          currencyFrame.icon = currencyInfo.icon
+          currencyFrame.quality = currencyInfo.quality
+        end 
+          
+        currencyFrame.displayAmount = amount
+        currencyFrame.actualAmount = amount
+    end 
+  end 
 end
+
+__SystemEvent__()
+function EKT_HARD_RELOAD_MODULES()
+  _Active = false 
+
+  local inInstance, type = IsInInstance()
+  local isActive = (IsInScenario() and not (inInstance and (type == "party")))
+  if isActive then 
+    _Active = true
+  end
+end 
+
+

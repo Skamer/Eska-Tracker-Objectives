@@ -20,6 +20,13 @@ class "ScenarioBlock" (function(_ENV)
       self:ForceSkin(nil, self.frame.stageCounter.elementID)
     elseif prop == "stageName" then
       self:ForceSkin(nil, self.frame.stageName.elementID)
+    elseif prop == "hasCurrencies" then 
+      print("HasCurrencies", new)
+      if new then 
+        self:ShowCurrencies() 
+      else 
+        self:HideCurrencies()
+      end 
     elseif prop == "isWarfront" then
       if new then
         self:ShowWarfrontResources()
@@ -100,9 +107,19 @@ class "ScenarioBlock" (function(_ENV)
   end
 
   function OnLayout(self)
+    if self.hasCurrencies then
+      self.currencies:SetPoint("TOP", self.frame.stage, "BOTTOM")
+      self.currencies:SetPoint("LEFT")
+      self.currencies:SetPoint("RIGHT")
+    end
+
     -- Warfront resources
     if self.isWarfront then
-      self.frame.warfrontResources:SetPoint("TOP", self.frame.stage, "BOTTOM")
+      if self.hasCurrencies then 
+        self.frame.warfrontResources:SetPoint("TOP", self.currencies:GetFrameContainer(), "BOTTOM")
+      else 
+        self.frame.warfrontResources:SetPoint("TOP", self.frame.stage, "BOTTOM")
+      end 
       self.frame.warfrontResources:SetPoint("LEFT")
       self.frame.warfrontResources:SetPoint("RIGHT")
     end
@@ -115,7 +132,9 @@ class "ScenarioBlock" (function(_ENV)
       if index == 1 then
         if self.isWarfront then
           obj:SetPoint("TOP", self.frame.warfrontResources, "BOTTOM")
-        else
+        elseif self.hasCurrencies then
+          obj:SetPoint("TOP", self.currencies:GetFrameContainer(), "BOTTOM")
+        else 
           obj:SetPoint("TOP", self.frame.stage, "BOTTOM")
         end
         obj:SetPoint("LEFT")
@@ -134,6 +153,10 @@ class "ScenarioBlock" (function(_ENV)
 
   function CalculateHeight(self)
     local height = self.baseHeight
+
+    if self.hasCurrencies then 
+      height = height + self.currencies.height
+    end
 
     if self.isWarfront then
       height = height + 22
@@ -175,7 +198,31 @@ class "ScenarioBlock" (function(_ENV)
     self.wood           = nil
     self.iron           = nil
     self.ironInChest    = nil
+    self.hasCurrencies  = nil
   end
+
+  function ShowCurrencies(self)
+    if not self.currencies then 
+      self.currencies = ObjectManager:Get(Currencies)
+      self.currencies:SetParent(self.frame.content)
+      self.currencies.OnHeightChanged = function(_, new, old)
+          self.height = self.height + (new - old)
+      end 
+    end
+
+    self.currencies:Show()
+
+    self:Layout()
+  end
+
+  function HideCurrencies(self)
+    if self.currencies then
+      self.currencies:Recycle()
+      self.currencies = nil
+    end
+
+    self:Layout()
+  end 
 
   function ShowWarfrontResources(self)
     if not self.frame.warfrontResources then
@@ -259,6 +306,7 @@ class "ScenarioBlock" (function(_ENV)
   property "stageName"          { TYPE = String, DEFAULT = "", HANDLER = UpdateProps }
   property "numBonusObjectives" { TYPE = Number, DEFAULT = 0 }
   property "isWarfront"         { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
+  property "hasCurrencies"      { TYPE = Boolean, DEFAULT = false, HANDLER = UpdateProps }
   -- Warfront specific properties
   property "wood"               { TYPE = NaturalNumber, DEFAULT = 0, HANDLER = UpdateProps }
   property "iron"               { TYPE = NaturalNumber, DEFAULT = 0, HANDLER = UpdateProps }

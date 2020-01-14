@@ -38,6 +38,9 @@ TransparenceTheme:SetElementProperty("block.keystone.timeLimit2Key", "text-size"
 TransparenceTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-font", "PT Sans Narrow")
 TransparenceTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-size", 14)
 
+-- Currencies
+TransparenceTheme:SetElementProperty("currencies.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
+
 -- Scenario
 TransparenceTheme:SetElementProperty("block.scenario.frame", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.17})
 TransparenceTheme:SetElementProperty("block.scenario.header.text", "text-size", 14)
@@ -58,7 +61,7 @@ TransparenceTheme:SetElementProperty("block.scenario.name", "text-transform", "u
   TransparenceTheme:SetElementProperty("block.scenario.stage-counter", "text-font", "PT Sans Narrow Bold")
   TransparenceTheme:SetElementProperty("block.scenario.stage-counter", "text-color", { r = 1, g = 1, b = 1 })
    -- Warfront Resources
-   TransparenceTheme:SetElementProperty("block.scenario.warfront.resources", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.5})
+   TransparenceTheme:SetElementProperty("block.scenario.warfront.resources", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.7})
    -- Warfront Resources Iron Text
   --  TransparenceTheme:SetElementProperty("block.scenario.warfront.resources.iron", "text-color", { r = 1, g = 208/255, b = 5 /255})
   --  TransparenceTheme:SetElementProperty("block.scenario.warfront.resources.wood", "text-color", { r = 1, g = 208/255, b = 5 /255})  

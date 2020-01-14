@@ -1,3 +1,7 @@
+[1.2.0]
+- Ready for patch 8.3
+- Added the support for Horrific Visions.
+
 [1.1.12]
 - ! Fixed: #73 - the GetQuestTagInfo error.
 

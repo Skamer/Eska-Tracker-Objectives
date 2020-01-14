@@ -37,6 +37,8 @@ EskaTheme:SetElementProperty("block.keystone.timeLimit2Key", "text-size", 14)
 EskaTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-font", "PT Sans Narrow")
 EskaTheme:SetElementProperty("block.keystone.timeLimit3Key", "text-size", 14)
 
+-- Currencies
+EskaTheme:SetElementProperty("currencies.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
 
 -- Scenario
 EskaTheme:SetElementProperty("block.scenario.frame", "background-color", { r = 0, g = 0, b = 0, a = 0.3})
@@ -62,7 +64,7 @@ EskaTheme:SetElementProperty("block.scenario.name", "text-justify-h", "CENTER")
    EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-font", "PT Sans Narrow Bold")
    EskaTheme:SetElementProperty("block.scenario.stage-counter", "text-color", { r = 1, g = 1, b = 1 })
    -- Warfront Resources
-   EskaTheme:SetElementProperty("block.scenario.warfront.resources", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.5})
+   EskaTheme:SetElementProperty("block.scenario.warfront.resources", "background-color", { r = 0.2, g = 0.2, b = 0.2, a = 0.7})
    -- Warfront Resources Iron Text
   --  EskaTheme:SetElementProperty("block.scenario.warfront.resources.iron", "text-color", { r = 1, g = 208/255, b = 5 /255})
   --  EskaTheme:SetElementProperty("block.scenario.warfront.resources.wood", "text-color", { r = 1, g = 208/255, b = 5 /255})

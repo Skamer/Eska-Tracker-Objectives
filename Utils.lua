@@ -180,5 +180,48 @@ class "Utils" (function(_ENV)
 
       return false
     end
+
+    __Static__() function IsHorrificVisionInstance()
+      local mapID = C_Map.GetBestMapForUnit("player")
+      local orgrimmarVisionMap = 1469
+
+      if mapID == orgrimmarVisionMap then 
+        return true 
+      end 
+
+      return false
+    end 
+  end)
+
+  ------------------------------------------------------------------------------
+  --                             Blackist                                    --
+  ------------------------------------------------------------------------------
+  class "Blacklist" (function(_ENV)
+    __Static__() function IsBlacklistedForBonusObjectives(questID)
+      return List{
+        58881 -- Patch 9.3 - Pandaria - Nzoth Assault - Tracking Quest
+      }:Contains(questID)
+    end
+
+    __Static__() function IsBlacklistedForWorldQuests(questID)
+      return List{
+        57272,  -- Patch 9.3 - Pandaria - Nzoth Assault "La Guerre des clans" - Objective Minor
+        57087,  -- Patch 9.3 - Pandaria - Nzoth Assault "La Guerre des clans" - Objective Minor
+        57272,  -- Patch 9.3 - Pandaria - Nzoth Assault "La Guerre des clans" - Objective Minor
+        57023,  -- Patch 9.3 - Pandaria - Nzoth Assault "La Guerre des clans" - Objective Minor
+		57484,	-- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57445,	-- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57384,	-- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57508,	-- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57519,   -- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57540,   -- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57085,   -- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57404,   -- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+		57542   -- Patch 9.3 - Pandaria - Nzoth Assault "Mantid" - Objective Minor
+
+      }:Contains(questID)
+    end
+
   end)
 end)
+

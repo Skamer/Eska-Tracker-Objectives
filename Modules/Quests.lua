@@ -618,3 +618,21 @@ function RunAndUpdateTimers(self)
 
   TIMER_TICKER_LAUNCHED = false
 end
+
+__SystemEvent__()
+function EKT_HARD_RELOAD_MODULES()
+  -- Force the module to be inactive
+  _M._Active = false 
+
+  for questID in pairs(QUESTS_CACHE) do 
+    _M:RemoveQuest(questID)
+    QUESTS_CACHE[questID] = nil
+  end 
+
+  local isActive = GetNumQuestWatches() > 0
+  if isActive then 
+    _M._Active = true 
+    _M:LoadQuests() 
+    _M:UpdateDistance()
+  end
+end

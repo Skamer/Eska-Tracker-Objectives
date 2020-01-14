@@ -13,6 +13,10 @@ IsWorldQuest                        = QuestUtils_IsQuestWorldQuest
 IsQuestTask                         = IsQuestTask
 GetTaskInfo                         = GetTaskInfo
 GetTasksTable                       = GetTasksTable
+GetQuestLogIndexByID                = GetQuestLogIndexByID
+SelectQuestLogEntry                 = SelectQuestLogEntry 
+GetQuestLogCompletionText           = GetQuestLogCompletionText
+IsBlacklisted                       = Utils.Blacklist.IsBlacklistedForBonusObjectives
 --============================================================================--
 function OnActive(self)
   if not _BonusObjectives then
@@ -39,7 +43,7 @@ __ActiveOnEvents__ "QUEST_ACCEPTED" "PLAYER_ENTERING_WORLD"
 function ActiveOn(self, event, ...)
   if event == "QUEST_ACCEPTED" then
     local _, questID = ...
-    return IsQuestTask(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID)
+    return not IsBlacklisted(questID) and IsQuestTask(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID)
   elseif event == "PLAYER_ENTERING_WORLD" then
     return self:HasBonusQuest()
   end
@@ -61,7 +65,7 @@ end
 
 __SystemEvent__()
 function QUEST_ACCEPTED(_, questID)
-  if not IsQuestTask(questID) or IsWorldQuest(questID) or IsWorldQuestWatched(questID) or _BonusObjectives:GetBonusQuest(questID) then
+  if IsBlacklisted(questID) and not IsQuestTask(questID) or IsWorldQuest(questID) or IsWorldQuestWatched(questID) or _BonusObjectives:GetBonusQuest(questID) then
     return
   end
 
@@ -84,7 +88,7 @@ function LoadBonusQuests(self)
   local tasksTable = GetTasksTable()
   for i = 1, #tasksTable do
     local questID = tasksTable[i]
-    if not IsWorldQuest(questID) and not IsWorldQuestWatched(questID) and not _BonusObjectives:GetBonusQuest(questID) then
+    if not IsBlacklisted(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID) and not _BonusObjectives:GetBonusQuest(questID) then
       local bonusQuest = ObjectManager:Get(BonusQuest)
       bonusQuest.id     = questID
 
@@ -101,14 +105,21 @@ function UpdateBonusQuest(self, bonusQuest)
   bonusQuest.isOnMap = true
   bonusQuest.name = taskName
 
-  if numObjectives then
+
+  if numObjectives > 0 then
     bonusQuest.numObjectives = numObjectives
+    
+    local numObjectivesCompleted = 0
     for index = 1, numObjectives do
       local text, type, finished = GetQuestObjectiveInfo(bonusQuest.id, index, false)
       local objective = bonusQuest:GetObjective(index)
 
       objective.isCompleted = finished
       objective.text = text
+
+      if finished then 
+        numObjectivesCompleted = numObjectivesCompleted + 1 
+      end
 
       if type == "progressbar" then
         local progress = GetQuestProgressBarPercent(bonusQuest.id)
@@ -120,7 +131,27 @@ function UpdateBonusQuest(self, bonusQuest)
         objective:HideProgress()
       end
     end
+
+    
+     -- If all the objective has been completed, show the completed message as last objective
+    if numObjectivesCompleted == numObjectives then 
+      bonusQuest.numObjectives = bonusQuest.numObjectives + 1
+      local objective = bonusQuest:GetObjective(bonusQuest.numObjectives)
+      SelectQuestLogEntry(GetQuestLogIndexByID(bonusQuest.id))
+      objective.text        = GetQuestLogCompletionText()
+      objective.isCompleted = false
+    end
+
+
+  else 
+      bonusQuest.numObjectives = 1
+      local objective = bonusQuest:GetObjective(1)
+
+      SelectQuestLogEntry(GetQuestLogIndexByID(bonusQuest.id))
+      objective.text        = GetQuestLogCompletionText()
+      objective.isCompleted = false
   end
+
 end
 
 __SystemEvent__()
@@ -134,7 +165,7 @@ function HasBonusQuest(self)
   local tasks = GetTasksTable()
   for i = 1, #tasks do
     local questID = tasks[i]
-    if not IsWorldQuest(questID) and not IsWorldQuestWatched(questID) then
+    if not IsBlacklisted(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID) then
       local isInArea = GetTaskInfo(questID)
       if isInArea then
         return true
