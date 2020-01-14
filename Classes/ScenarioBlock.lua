@@ -21,7 +21,6 @@ class "ScenarioBlock" (function(_ENV)
     elseif prop == "stageName" then
       self:ForceSkin(nil, self.frame.stageName.elementID)
     elseif prop == "hasCurrencies" then 
-      print("HasCurrencies", new)
       if new then 
         self:ShowCurrencies() 
       else 
