@@ -190,6 +190,14 @@ function UpdateWorldQuest(self, worldQuest, cache)
   worldQuest.isInArea = isInArea
   worldQuest.isOnMap  = isOnMap
 
+  if not taskName then 
+    Wait(function()
+      if worldQuest._isUsed then 
+        worldQuest.name = C_QuestLog.GetQuestInfo(worldQuest.id)
+      end
+    end, 0.35)
+  end
+
   if Settings:Get(SHOW_TRACKED_WORLD_QUESTS_OPTION) then
     local isTracked = IsWorldQuestWatched(worldQuest.id) or IsWorldQuestHardWatched(worldQuest.id) or GetSuperTrackedQuestID() == worldQuest.id
     if isInArea and worldQuest.isTracked then

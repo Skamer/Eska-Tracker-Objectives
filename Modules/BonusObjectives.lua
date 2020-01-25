@@ -106,7 +106,7 @@ function UpdateBonusQuest(self, bonusQuest)
   bonusQuest.name = taskName
 
 
-  if numObjectives > 0 then
+  if numObjectives and numObjectives > 0 then
     bonusQuest.numObjectives = numObjectives
     
     local numObjectivesCompleted = 0

@@ -1,3 +1,9 @@
+[1.2.1]
+- Fixed: #76 -  Picking up a quest gives an error #76
+- All the micro-objectives of assault will now be displayed as world quests.
+- Fixed an issue where the title of micro-objectives wasn't shown.
+- Bump toc version for 8.3
+
 [1.2.0]
 - Ready for patch 8.3
 - Added the support for Horrific Visions.
