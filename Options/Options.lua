@@ -6,7 +6,7 @@ Eska              "EskaTracker.Objectives.Options"                            ""
 --============================================================================--
 import                    "EKT"
 --============================================================================--
-_DEFAULT_SKIN_TEXT_FLAGS = Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE + Theme.SkinFlags.TEXT_COLOR + Theme.SkinFlags.TEXT_TRANSFORM
+_DEFAULT_SKIN_TEXT_FLAGS = Theme.SkinFlags.TEXT_FONT + Theme.SkinFlags.TEXT_SIZE + Theme.SkinFlags.TEXT_COLOR + Theme.SkinFlags.TEXT_TRANSFORM + Theme.SkinFlags.TEXT_FONT_FLAGS
 
 
 function OnLoad(self)
@@ -61,7 +61,8 @@ function AddObjectiveRecipes(self)
   :AddFlag(Theme.SkinFlags.TEXT_FONT)
   :AddFlag(Theme.SkinFlags.TEXT_TRANSFORM)
   :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_HORIZONTAL)
-  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL), "objective/general/states")
+  :AddFlag(Theme.SkinFlags.TEXT_JUSTIFY_VERTICAL)
+  :AddFlag(Theme.SkinFlags.TEXT_FONT_FLAGS), "objective/general/states")
 
   OptionBuilder:AddRecipe(ThemePropertyRecipe():SetElementID("objective.square"), "objective/square/states")
 end
@@ -188,7 +189,8 @@ function AddQuestRecipes(self)
   :ClearFlags()
   :AddFlag(Theme.SkinFlags.TEXT_FONT)
   :AddFlag(Theme.SkinFlags.TEXT_COLOR)
-  :AddFlag(Theme.SkinFlags.TEXT_SIZE), "quest/level")
+  :AddFlag(Theme.SkinFlags.TEXT_SIZE)
+  :AddFlag(Theme.SkinFlags.TEXT_FONT_FLAGS), "quest/level")
 
   -- Category tab
   OptionBuilder:AddRecipe(CheckBoxRecipe():SetText("Enable"):BindSetting("quest-categories-enabled"), "quest/category")
