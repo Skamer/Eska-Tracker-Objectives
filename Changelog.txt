@@ -1,3 +1,6 @@
+[1.3.0]
+- Support for EskaTracker version 1.3.0-release, adding a way to change the text font flags.
+
 [1.2.1]
 - Fixed: #76 -  Picking up a quest gives an error #76
 - All the micro-objectives of assault will now be displayed as world quests.
