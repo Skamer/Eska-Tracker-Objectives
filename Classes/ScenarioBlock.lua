@@ -151,7 +151,7 @@ class "ScenarioBlock" (function(_ENV)
   end
 
   function CalculateHeight(self)
-    local height = self.baseHeight
+    local height = self.baseHeight + self.contentMarginTop
 
     if self.hasCurrencies then 
       height = height + self.currencies.height

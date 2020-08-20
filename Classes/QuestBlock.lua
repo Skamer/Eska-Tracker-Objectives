@@ -215,7 +215,7 @@ class "QuestBlock" (function(_ENV)
         quest:ClearAllPoints()
 
         if index == 1 then
-          quest:SetPoint("TOP", 0, -5)
+          quest:SetPoint("TOP")
           quest:SetPoint("LEFT")
           quest:SetPoint("RIGHT")
         else
@@ -279,7 +279,7 @@ class "QuestBlock" (function(_ENV)
 
   function CalculateHeight(self)
     local enableCategories = Settings:Get(QUEST_CATEGORIES_ENABLED_OPTION)
-    local height = self.baseHeight
+    local height = self.baseHeight + self.contentMarginTop
 
     if enableCategories then
       local offset = 2
@@ -316,15 +316,20 @@ class "QuestBlock" (function(_ENV)
       end
     end
   ------------------------------------------------------------------------------
-  --                            Constructors                                  --
+  --                         Properties                                       --
   ------------------------------------------------------------------------------
+  property "quests" { DEFAULT = function() return Array[Quest]() end }
+  property "headers" { DEFAULT = function() return Dictionary() end }
+  ------------------------------------------------------------------------------
+  --                            Constructors                                  --
+  -----------------------------------------------------------------------------
   function QuestBlock(self)
     super(self)
 
     self.text = "Quests"
 
-    self.quests = Array[Quest]()
-    self.headers = Dictionary()
+    -- self.quests = Array[Quest]()
+    -- self.headers = Dictionary()
 
   end
 end)

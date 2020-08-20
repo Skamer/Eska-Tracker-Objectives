@@ -74,7 +74,7 @@ class "WorldQuestBlock" (function(_ENV)
   end
 
   function CalculateHeight(self)
-    local height =  self.baseHeight
+    local height =  self.baseHeight + self.contentMarginTop
     local offset = 5
     for index, worldQuest in self.worldQuests:GetIterator() do
       height = height + worldQuest.height + offset
@@ -85,6 +85,7 @@ class "WorldQuestBlock" (function(_ENV)
   ------------------------------------------------------------------------------
   --                         Properties                                       --
   ------------------------------------------------------------------------------
+  property "worldQuests" { DEFAULT = function() return Array[WorldQuest]() end }
   __Static__() property "_prefix" { DEFAULT = "block.world-quests" }
   ------------------------------------------------------------------------------
   --                            Constructors                                  --

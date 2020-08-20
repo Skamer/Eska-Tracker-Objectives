@@ -340,7 +340,7 @@ class "BFAKeystoneBlock" (function(_ENV)
   end
 
   function CalculateHeight(self)
-    local height = self.baseHeight
+    local height = self.baseHeight + self.contentMarginTop
 
     -- Get the icon height
     local iconHeight = 0

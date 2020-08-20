@@ -104,7 +104,7 @@ class "BonusObjectivesBlock" (function(_ENV)
   end
 
   function CalculateHeight(self)
-    local height = self.baseHeight
+    local height = self.baseHeight + self.contentMarginTop
     local offset = 5
     for index, bonusQuest in self.bonusQuests:GetIterator() do
       height = height + bonusQuest.height + offset
@@ -115,6 +115,7 @@ class "BonusObjectivesBlock" (function(_ENV)
   ------------------------------------------------------------------------------
   --                         Properties                                       --
   ------------------------------------------------------------------------------
+  property "bonusQuests" { DEFAULT = function() return Array[BonusQuest]() end }
   __Static__() property "_prefix" { DEFAULT = "block.bonus-objectives" }
   ------------------------------------------------------------------------------
   --                            Constructors                                  --
@@ -123,6 +124,6 @@ class "BonusObjectivesBlock" (function(_ENV)
     super(self)
 
     self.text = "Bonus Objectives"
-    self.bonusQuests = Array[BonusQuest]()
+    -- self.bonusQuests = Array[BonusQuest]()
   end
 end)
