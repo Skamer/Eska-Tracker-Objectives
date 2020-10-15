@@ -50,10 +50,10 @@ class "Utils" (function(_ENV)
     __Arguments__ { Number, Variable.Optional(Number) }
     __Static__() function IsDungeonQuest(questID, questTag)
       if not questTag then
-        questTag = GetQuestTagInfo(questID)
+        questTag = C_QuestLog.GetQuestTagInfo(questID)
       end
 
-      if questTag == EnumQuestTag.Dungeon then
+      if questTag and questTag.tagID == EnumQuestTag.Dungeon then
         return true
       end
 
@@ -62,12 +62,12 @@ class "Utils" (function(_ENV)
 
     __Arguments__ { Number, Variable.Optional(Number) }
     __Static__() function IsRaidQuest(questID, questTag)
-      if not questTag then
-        questTag = GetQuestTagInfo(questID)
+      if not questTag then 
+        questTag = C_QuestLog.GetQuestTagInfo(questID)
       end
-
-      if questTag == EnumQuestTag.Raid then
-        return  true
+      
+      if questTag and questTag.tagID == EnumQuestTag.Raid then 
+        return true 
       end
 
       return false
@@ -76,7 +76,7 @@ class "Utils" (function(_ENV)
     __Arguments__ { Number, Variable.Optional(Number) }
     __Static__() function IsInstanceQuest(questID, questTag)
       if not questTag then
-        questTag = GetQuestTagInfo(questID)
+        questTag = C_QuestLog.GetQuestTagInfo(questID)
       end
 
       if IsDungeonQuest(questID, questTag) or IsRaidQuest(questID, questTag) then
@@ -94,6 +94,12 @@ class "Utils" (function(_ENV)
           or (questID == 45839) -- Assault on StormHeim
           or (questID == 45406) -- StomHeim : The Storm's Fury
           or (questID == 46110) -- StomHeim : Battle for Stormheim
+    end
+
+    EnumQuestWatchType = _G.Enum.QuestWatchType
+    __Arguments__ { Number }
+    __Static__() function IsWorldQuestHardWatched(questID)
+      return C_QuestLog.GetQuestWatchType(questID) ~= EnumQuestWatchType.Manual
     end
 
 

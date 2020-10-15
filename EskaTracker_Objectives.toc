@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: EskaTracker - |cffff6a00Objectives|r
 ## Author: Skamer
 ## Notes: EskaTracker - |cffff6a00Objectives|r

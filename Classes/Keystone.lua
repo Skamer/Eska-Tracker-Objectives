@@ -14,7 +14,7 @@ SHOW_INSTANCE_TEXTURE       = "keystone-show-instance-texture"
 --                                Helpers                                     --
 --------------------------------------------------------------------------------
 local function CreateStatusBar(self)
-  local bar = CreateFrame("StatusBar", nil, self.frame)
+  local bar = CreateFrame("StatusBar", nil, self.frame, "BackdropTemplate")
   bar:SetStatusBarTexture(_Backdrops.Common.bgFile)
   bar:SetStatusBarColor(0, 148/255, 1, 0.6)
   bar:SetMinMaxValues(0, 1)
@@ -31,7 +31,7 @@ local function CreateStatusBar(self)
   text:SetJustifyV("MIDDLE")
   bar.text = text
 
-  local bgFrame = CreateFrame("Frame", nil, bar)
+  local bgFrame = CreateFrame("Frame", nil, bar, "BackdropTemplate")
   bgFrame:SetPoint("TOPLEFT", -2, 2)
   bgFrame:SetPoint("BOTTOMRIGHT", 2, -2)
   bgFrame:SetFrameLevel(bgFrame:GetFrameLevel() - 1)
@@ -100,7 +100,7 @@ class "Affix" (function(_ENV)
   function Affix(self)
 
 
-    self.frame = CreateFrame("Frame")
+    self.frame = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 
     local texture = self.frame:CreateTexture()
     texture:SetAllPoints()
@@ -484,7 +484,7 @@ class "BFAKeystoneBlock" (function(_ENV)
     super(self)
     self.text = "Mythic +"
 
-    local topInfoFrame = CreateFrame("Frame", nil, self.frame.content)
+    local topInfoFrame = CreateFrame("Frame", nil, self.frame.content, "BackdropTemplate")
     topInfoFrame:SetHeight(31)
     topInfoFrame:SetBackdrop(_Backdrops.Common)
     topInfoFrame:SetBackdropColor(0, 0, 0, 0.25)
@@ -522,7 +522,7 @@ class "BFAKeystoneBlock" (function(_ENV)
     self.frame.timer = timer
 
     -- affixes anchor
-    local affixes = CreateFrame("Frame", nil, self.frame.topInfoFrame)
+    local affixes = CreateFrame("Frame", nil, self.frame.topInfoFrame, "BackdropTemplate")
     affixes:SetHeight(24)
     affixes:SetPoint("CENTER", topInfoFrame, "CENTER")
     self.frame.affixes = affixes
@@ -769,7 +769,7 @@ class "KeystoneBlock" (function(_ENV)
     self.frame.threeChestTimer = threeChestTimer
 
     -- affixes anchor
-    local affixes = CreateFrame("Frame", nil, self.frame.content)
+    local affixes = CreateFrame("Frame", nil, self.frame.content, "BackdropTemplate")
     affixes:SetHeight(29)
     affixes:SetWidth(29 * 3)
     affixes:SetPoint("TOPLEFT", self.frame.header, "BOTTOMLEFT", 4, -26)

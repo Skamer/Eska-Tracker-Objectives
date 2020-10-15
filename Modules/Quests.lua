@@ -9,24 +9,35 @@ import                            "EKT"
 --============================================================================--
 _Active                           = false
 --============================================================================--
-GetNumQuestLogEntries             = GetNumQuestLogEntries
-GetQuestLogTitle                  = GetQuestLogTitle
-GetNumQuestLogEntries             = GetNumQuestLogEntries
-GetQuestLogTitle                  = GetQuestLogTitle
-GetQuestLogIndexByID              = GetQuestLogIndexByID
+GetNumQuestLogEntries             = C_QuestLog.GetNumQuestLogEntries
+GetQuestName                      = QuestUtils_GetQuestName
+GetQuestLogTitle                  = C_QuestLog.GetQuestLogTitle
+GetInfo                           = C_QuestLog.GetInfo
+GetQuestLogIndexByID              = C_QuestLog.GetLogIndexForQuestID
 GetQuestWatchIndex                = GetQuestWatchIndex
 GetQuestLogSpecialItemInfo        = GetQuestLogSpecialItemInfo
 GetQuestObjectiveInfo             = GetQuestObjectiveInfo
-GetDistanceSqToQuest              = GetDistanceSqToQuest
-AddQuestWatch                     = AddQuestWatch
-SelectQuestLogEntry               = SelectQuestLogEntry
+GetDistanceSqToQuest              = C_QuestLog.GetDistanceSqToQuest
+AddQuestWatch                     = C_QuestLog.AddQuestWatch
 IsWorldQuest                      = QuestUtils_IsQuestWorldQuest
 IsQuestBounty                     = IsQuestBounty
-GetQuestName                      = C_QuestLog.GetQuestInfo
 IsQuestOnMap                      = Utils.Quest.IsQuestOnMap
 IsLegionAssaultQuest              = Utils.Quest.IsLegionAssaultQuest
 IsDungeonQuest                    = Utils.Quest.IsDungeonQuest
 IsRaidQuest                       = Utils.Quest.IsRaidQuest
+GetNumQuestWatches                = C_QuestLog.GetNumQuestWatches
+IsQuestWatched                    = QuestUtils_IsQuestWatched
+GetQuestDifficultyLevel           = C_QuestLog.GetQuestDifficultyLevel
+GetNumQuestObjectives             = C_QuestLog.GetNumQuestObjectives
+IsQuestBounty                     = C_QuestLog.IsQuestBounty
+IsQuestTask                       = C_QuestLog.IsQuestTask
+IsQuestComplete                   = C_QuestLog.IsComplete
+SetSelectedQuest                  = C_QuestLog.SetSelectedQuest
+GetQuestTagInfo                   = C_QuestLog.GetQuestTagInfo
+GetRequiredMoney                  = C_QuestLog.GetRequiredMoney
+GetSuggestedGroupSize             = C_QuestLog.GetSuggestedGroupSize
+GetTimeAllowed                    = C_QuestLog.GetTimeAllowed
+IsOnMap                           = C_QuestLog.IsOnMap
 --============================================================================--
 SORT_QUESTS_BY_DISTANCE_SETTING   = "sort-quests-by-distance"
 SHOW_ONLY_QUESTS_IN_ZONE_SETTING  = "show-only-quests-in-zone"
@@ -47,7 +58,7 @@ function ActiveOn(self, event, ...)
   if event == "PLAYER_ENTERING_WORLD" or event == "QUEST_WATCH_LIST_CHANGED"  then
     return GetNumQuestWatches() > 0
   elseif event == "QUEST_ACCEPTED" then
-    local _, questID = ...
+    local questID = ...
     if IsWorldQuest(questID) or IsQuestBounty(questID) then
       return false
     end
@@ -176,13 +187,13 @@ end
 
 
 __SystemEvent__()
-function QUEST_ACCEPTED(questLogIndex, questID)
+function QUEST_ACCEPTED(questID)
   -- Don't continue if the quest is a world quest or a emissary
   if IsWorldQuest(questID) or IsQuestTask(questID) or IsQuestBounty(questID) then return end
 
   -- Add it in the quest watched
   if AUTO_QUEST_WATCH == "1" and GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
-    AddQuestWatch(questLogIndex)
+    AddQuestWatch(questID, Enum.QuestWatchType.Automatic)
     QuestSuperTracking_OnQuestTracked(questID)
   end
 end
@@ -339,29 +350,36 @@ function UpdateQuest(self, questID, cache)
     isNew = true
   end
 
-  local questLogIndex   = GetQuestLogIndexByID(questID)
-  local questWatchIndex = GetQuestWatchIndex(questLogIndex)
+  local title             = GetQuestName(questID)
+  local level             = GetQuestDifficultyLevel(questID)
+  local header            = self:GetQuestHeader(questID)
+  local questLogIndex     = GetQuestLogIndexByID(questID)
+  local numObjectives     = GetNumQuestObjectives(questID)
+  local isComplete        = IsQuestComplete(questID)
+  local isTask            = IsQuestTask(questID)
+  local isBounty          = IsQuestBounty(questID)
+  local distance          = GetDistanceSqToQuest(questID) or 99999
+  local isDungeon         = IsDungeonQuest(questID)
+  local isRaid            = IsRaidQuest(questID)
+  local requiredMoney     = GetRequiredMoney(questID)
+  local suggestedGroup    = GetSuggestedGroupSize(questID)
+  local tag               = GetQuestTagInfo(questID)
 
-  if not questWatchIndex then
-    return
-  end
-
-
-  local _, title, questLogIndex, numObjectives, requiredMoney,
-  isComplete, startEvent, isAutoComplete, failureTime, timeElapsed,
-  questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI = GetQuestWatchInfo(questWatchIndex)
+  local failureTime, timeElapsed = GetTimeAllowed(questID)
+  local isOnMap, hasLocalPOI      = IsOnMap(questID)
 
   if isNew then
     local header = cache and cache.header or self:GetQuestHeader(questID)
-    local level  = cache and cache.level or select(2, GetQuestLogTitle(questLogIndex))
+    local level  = cache and cache.level or level
 
     quest.id          = questID
-    quest.tag         = questType
+    if tag then 
+      quest.tag = tag.tagID 
+    end
     quest.header      = header
     quest.level       = level
     quest.name        = title
     quest.isBounty    = isBounty
-    quest.isStory     = isStory
     quest.isTask      = isTask
 
     if isLocal and not instanceBlock then
@@ -440,7 +458,7 @@ function UpdateQuest(self, questID, cache)
   else
     quest.numObjectives = 1
     local objective = quest:GetObjective(1)
-    SelectQuestLogEntry(questLogIndex)
+    SetSelectedQuest(questID)
 
     objective.text        = GetQuestLogCompletionText()
     objective.isCompleted = false
@@ -463,28 +481,34 @@ function LoadQuests(self)
   local numEntries, numQuests = GetNumQuestLogEntries()
   local currentHeader = "Misc"
 
+
+
   local cache = {}
+
   for i = 1, numEntries do
-    local title, level, suggestedGroup, isHeader, isCollapsed, isComplete,
-    frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI,
-    isTask, isBounty, isStory, isHidden = GetQuestLogTitle(i)
+    local questInfo = GetInfo(i)
+
+    local questID   = questInfo.questID
+    local isHeader  = questInfo.isHeader
+    local isHidden  = questInfo.isHidden
+    local isBounty  = questInfo.isBounty
+    local isTask    = questInfo.isTask
 
     if not isTask and not _QuestBlock:GetQuest(questID) then
       if isHeader then
-        currentHeader = title
-      elseif not isHeader and not isHidden and IsQuestWatched(i) then
+        currentHeader = questInfo.title
+      elseif not isHeader and not isHidden and IsQuestWatched(questID) then
         QUESTS_CACHE[questID] = true
         QUEST_HEADERS_CACHE[questID] = currentHeader
 
-        cache.level = level
+        cache.level = questInfo.level
         cache.header = currentHeader
-        cache.questLogIndex = questLogIndex
+        cache.questLogIndex = questInfo.questLogIndex
 
         self:UpdateQuest(questID, cache)
       end
     end
-  end
-
+  end 
   self:RefreshPopups()
 end
 
@@ -528,9 +552,9 @@ function GetQuestHeader(self, qID)
     local numEntries, numQuests = GetNumQuestLogEntries()
 
     for i = 1, numEntries do
-      local title, _, _, isHeader, _, _, _, questID = GetQuestLogTitle(i)
-      if isHeader then
-        currentHeader = title
+      local data = GetInfo(i)
+      if data.isHeader then
+        currentHeader = data.title
       elseif questID == qID then
         QUEST_HEADERS_CACHE[qID] = currentHeader
         return currentHeader

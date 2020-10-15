@@ -11,12 +11,14 @@ _Active                             = false
 --============================================================================--
 IsWorldQuest                        = QuestUtils_IsQuestWorldQuest
 GetTasksTable                       = GetTasksTable
-IsWorldQuestHardWatched             = IsWorldQuestHardWatched
-IsWorldQuestWatched                 = IsWorldQuestWatched
-GetSuperTrackedQuestID              = GetSuperTrackedQuestID
+IsWorldQuestHardWatched             = Utils.Quest.IsWorldQuestHardWatched
+IsWorldQuestWatched                 = QuestUtils_IsQuestWatched
+GetSuperTrackedQuestID              = C_SuperTrack.GetSuperTrackedQuestID
 GetRewardsData                      = Utils.Quest.GetRewardsData
 GetQuestInfoByQuestID               = C_TaskQuest.GetQuestInfoByQuestID
 IsBlacklisted                       = Utils.Blacklist.IsBlacklistedForWorldQuests
+GetNumWorldQuestWatches             = C_QuestLog.GetNumWorldQuestWatches
+GetLogIndexForQuestID               = C_QuestLog.GetLogIndexForQuestID
 --============================================================================--
 SHOW_TRACKED_WORLD_QUESTS_OPTION    = "show-tracked-world-quests"
 --============================================================================--
@@ -27,7 +29,7 @@ function ActiveOn(self, event, ...)
   if event == "PLAYER_ENTERING_WORLD" or event == "EKT_RELOAD" then
     return self:HasWorldQuest()
   elseif event == "QUEST_ACCEPTED" then
-    local _, questID = ...
+    local questID = ...
     return not IsBlacklisted(questID) and IsWorldQuest(questID)
   elseif event == "EKT_WORLDQUEST_TRACKED_LIST_CHANGED" then
     local _, isAdded = ...
@@ -125,7 +127,7 @@ function PLAYER_ENTERING_WORLD()
 end
 
 __SystemEvent__()
-function QUEST_ACCEPTED(_, questID, isTracked)
+function QUEST_ACCEPTED(questID, isTracked)
   if IsBlacklisted(questID) or not IsWorldQuest(questID) or _WorldQuestBlock:GetWorldQuest(questID) then
     return
   end
@@ -208,7 +210,7 @@ function UpdateWorldQuest(self, worldQuest, cache)
   end
 
 
-  local itemLink, itemTexture = GetQuestLogSpecialItemInfo(GetQuestLogIndexByID(worldQuest.id))
+  local itemLink, itemTexture = GetQuestLogSpecialItemInfo(GetLogIndexForQuestID(worldQuest.id))
   if itemLink and itemTexture then
     local itemQuest  = worldQuest:GetQuestItem()
     itemQuest.link = itemLink
@@ -296,7 +298,7 @@ end
 __SystemEvent__()
 function EKT_WORLDQUEST_TRACKED_LIST_CHANGED(questID, isAdded, hardWatch)
   if isAdded then
-    QUEST_ACCEPTED(nil, questID, true)
+    QUEST_ACCEPTED(questID, true)
     if not hardWatch then
       if LAST_TRACKED_WORLD_QUEST and LAST_TRACKED_WORLD_QUEST ~= questID then
         QUEST_REMOVED(LAST_TRACKED_WORLD_QUEST, true)

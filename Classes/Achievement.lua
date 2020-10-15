@@ -198,7 +198,7 @@ class "Achievement" (function(_ENV)
     super(self, CreateFrame("Frame"))
     self.frame:SetBackdrop(_Backdrops.Common)
 
-    local ftex = CreateFrame("Frame", nil, self.frame)
+    local ftex = CreateFrame("Frame", nil, self.frame, "BackdropTemplate")
     ftex:SetBackdrop(_Backdrops.Common)
     ftex:SetPoint("TOPLEFT")
     ftex:SetHeight(46)
@@ -212,7 +212,7 @@ class "Achievement" (function(_ENV)
     texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
     self.frame.ftex.texture = texture
 
-    local headerFrame = CreateFrame("Button", nil, self.frame)
+    local headerFrame = CreateFrame("Button", nil, self.frame, "BackdropTemplate")
     headerFrame:SetBackdrop(_Backdrops.Common)
     headerFrame:SetPoint("TOPRIGHT")
     headerFrame:SetPoint("TOPLEFT", ftex, "TOPRIGHT")

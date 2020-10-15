@@ -43,7 +43,7 @@ class "Currency" (function(_ENV)
     __Static__() property "_prefix" { DEFAULT = "currency" }
 
     function Currency(self)
-        super(self, CreateFrame("Frame"))
+        super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
 
         local icon = self.frame:CreateTexture()
         icon:SetTexture(self.icon)
@@ -147,7 +147,7 @@ class "Currencies" (function(_ENV)
     --                            Constructors                                  --
     ------------------------------------------------------------------------------
     function Currencies(self)
-        super(self, CreateFrame("Frame"))
+        super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
         self.frame:SetBackdrop(_Backdrops.Common)
 
         self.currencies = Array[Currency]()

@@ -10,13 +10,14 @@ import                              "EKT"
 _Active                             = false
 --============================================================================--
 IsWorldQuest                        = QuestUtils_IsQuestWorldQuest
-IsQuestTask                         = IsQuestTask
+IsQuestTask                         = C_QuestLog.IsQuestTask
 GetTaskInfo                         = GetTaskInfo
 GetTasksTable                       = GetTasksTable
-GetQuestLogIndexByID                = GetQuestLogIndexByID
-SelectQuestLogEntry                 = SelectQuestLogEntry 
+GetQuestLogIndexByID                = C_QuestLog.GetLogIndexForQuestID
 GetQuestLogCompletionText           = GetQuestLogCompletionText
 IsBlacklisted                       = Utils.Blacklist.IsBlacklistedForBonusObjectives
+SetSelectedQuest                    = C_QuestLog.SetSelectedQuest
+IsWorldQuestWatched                 = QuestUtils_IsQuestWatched
 --============================================================================--
 function OnActive(self)
   if not _BonusObjectives then
@@ -42,7 +43,7 @@ end
 __ActiveOnEvents__ "QUEST_ACCEPTED" "PLAYER_ENTERING_WORLD"
 function ActiveOn(self, event, ...)
   if event == "QUEST_ACCEPTED" then
-    local _, questID = ...
+    local questID = ...
     return not IsBlacklisted(questID) and IsQuestTask(questID) and not IsWorldQuest(questID) and not IsWorldQuestWatched(questID)
   elseif event == "PLAYER_ENTERING_WORLD" then
     return self:HasBonusQuest()
@@ -64,7 +65,7 @@ function InactiveOn(self, event, ...)
 end
 
 __SystemEvent__()
-function QUEST_ACCEPTED(_, questID)
+function QUEST_ACCEPTED(questID)
   if IsBlacklisted(questID) and not IsQuestTask(questID) or IsWorldQuest(questID) or IsWorldQuestWatched(questID) or _BonusObjectives:GetBonusQuest(questID) then
     return
   end
@@ -137,7 +138,7 @@ function UpdateBonusQuest(self, bonusQuest)
     if numObjectivesCompleted == numObjectives then 
       bonusQuest.numObjectives = bonusQuest.numObjectives + 1
       local objective = bonusQuest:GetObjective(bonusQuest.numObjectives)
-      SelectQuestLogEntry(GetQuestLogIndexByID(bonusQuest.id))
+      SetSelectedQuest(bonusQuest.id)
       objective.text        = GetQuestLogCompletionText()
       objective.isCompleted = false
     end
@@ -147,7 +148,7 @@ function UpdateBonusQuest(self, bonusQuest)
       bonusQuest.numObjectives = 1
       local objective = bonusQuest:GetObjective(1)
 
-      SelectQuestLogEntry(GetQuestLogIndexByID(bonusQuest.id))
+      SetSelectedQuest(bonusQuest.id)
       objective.text        = GetQuestLogCompletionText()
       objective.isCompleted = false
   end

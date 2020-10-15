@@ -200,7 +200,7 @@ class "Reward" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Reward(self)
-    super(self, CreateFrame("Frame"))
+    super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
     self.frame:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
     self.frame:SetBackdrop(_Backdrops.Common)
 
@@ -285,7 +285,7 @@ class "Rewards" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Rewards(self)
-    super(self, CreateFrame("Frame"))
+    super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
 
 
     self.rewards = Array[Reward]()

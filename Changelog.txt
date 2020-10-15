@@ -1,3 +1,6 @@
+[1.5.0]
+- Updated for Shadowlands prepatch.
+
 [1.4.0]
 - Support for EskaTracker 1.4, adding a way to change the margin top of block content.
 

@@ -13,7 +13,7 @@ class "Objective" (function(_ENV)
   _ObjectiveCache = setmetatable({}, { __mode = "k"})
 
   local function CreateStatusBar(self)
-    local bar = CreateFrame("StatusBar", nil, self.frame)
+    local bar = CreateFrame("StatusBar", nil, self.frame, "BackdropTemplate")
     bar:SetStatusBarTexture(_Backdrops.Common.bgFile)
     bar:SetStatusBarColor(0, 148/255, 1, 0.6)
     bar:SetMinMaxValues(0, 1)
@@ -30,7 +30,7 @@ class "Objective" (function(_ENV)
     text:SetJustifyV("MIDDLE")
     bar.text = text
 
-    local bgFrame = CreateFrame("Frame", nil, bar)
+    local bgFrame = CreateFrame("Frame", nil, bar, "BackdropTemplate")
     bgFrame:SetPoint("TOPLEFT", -2, 2)
     bgFrame:SetPoint("BOTTOMRIGHT", 2, -2)
     bgFrame:SetFrameLevel(bgFrame:GetFrameLevel() - 1)
@@ -309,12 +309,12 @@ class "Objective" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Objective(self)
-    super(self, CreateFrame("Frame"))
+    super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
     self.frame:SetBackdrop(_Backdrops.Common)
     self.frame:SetBackdropColor(0.1, 1, 0.1, 0)
     self.frame:SetBackdropBorderColor(0, 0, 0, 0)
 
-    local square = CreateFrame("Frame", nil, self.frame)
+    local square = CreateFrame("Frame", nil, self.frame, "BackdropTemplate")
     square:SetBackdrop(_Backdrops.Common)
     square:SetPoint("TOP", 0, -4)
     square:SetPoint("LEFT", 10, 0)
@@ -354,7 +354,7 @@ class "DottedObjective" (function(_ENV)
   function DottedObjective(self)
     super(self)
 
-    local frame = CreateFrame("Frame")
+    local frame = CreateFrame("Frame", nil, nil, "BackdropTemplate")
     frame:SetHeight(8)
 
     local text = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")

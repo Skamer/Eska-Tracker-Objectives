@@ -347,7 +347,7 @@ class "Quest" (function(_ENV)
     ContextMenu():ClearAll()
     ContextMenu():AnchorTo(self.frame.header):UpdateAnchorPoint()
     if not QuestUtils_IsQuestWorldQuest(self.id) then
-      if GetSuperTrackedQuestID() == self.id then
+      if C_SuperTrack.GetSuperTrackedQuestID() == self.id then
         ContextMenu():AddAction("stop-super-tracking-quest")
       else
         ContextMenu():AddAction("super-track-quest", self)
@@ -417,11 +417,11 @@ class "Quest" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Quest(self)
-    super(self, CreateFrame("Frame"))
+    super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
     self.frame:SetBackdrop(_Backdrops.Common)
     self.frame:SetBackdropBorderColor(0, 0, 0, 0)
 
-    local headerFrame = CreateFrame("Button", nil, self.frame)
+    local headerFrame = CreateFrame("Button", nil, self.frame, "BackdropTemplate")
     headerFrame:SetBackdrop(_Backdrops.Common)
     headerFrame:SetBackdropBorderColor(0, 0, 0, 0)
     headerFrame:SetPoint("TOPRIGHT")
@@ -551,11 +551,11 @@ class "ShowQuestDetailsAction" (function(_ENV)
 
   __Arguments__ { Number }
   __Static__() function Exec(questID)
-      local questLogIndex = GetQuestLogIndexByID(questID)
-      if IsQuestComplete(questID) and GetQuestLogIsAutoComplete(questLogIndex) then
-        ShowQuestComplete(questLogIndex)
-      else
-        QuestLogPopupDetailFrame_Show(questLogIndex)
+      local quest = QuestCache:Get(questID)
+      if quest.isAutoComplete and quest:IsComplete() then 
+        ShowQuestComplete(questID)
+      else 
+        QuestLogPopupDetailFrame_Show(quest:GetQuestLogIndex())
       end
   end
 
@@ -596,8 +596,7 @@ __Action__ "untrack-quest" "Untrack"
 class "UntrackQuestAction" (function(_ENV)
   __Arguments__ { Number }
   __Static__() function Exec(questID)
-    local questLogIndex = GetQuestLogIndexByID(questID)
-    RemoveQuestWatch(questLogIndex)
+    C_QuestLog.RemoveQuestWatch(questID)
   end
 
   __Arguments__ { Quest }
@@ -623,7 +622,7 @@ end)
 __Action__ "stop-super-tracking-quest" "Stop supertracking"
 class "StopSuperTrackingQuestAction" (function(_ENV)
   __Static__() function Exec()
-    SetSuperTrackedQuestID(0)
+    C_SuperTrack.SetSuperTrackedQuestID(0)
     QuestSuperTracking_ChooseClosestQuest()
   end
 end)
@@ -632,7 +631,7 @@ __Action__ "super-track-quest" "Supertrack quest"
 class "SuperTrackQuestAction" (function(_ENV)
   __Arguments__ { Number }
   __Static__() function Exec(questID)
-    SetSuperTrackedQuestID(questID)
+    C_SuperTrack.SetSuperTrackedQuestID(questID)
   end
 
   __Arguments__ { Quest }

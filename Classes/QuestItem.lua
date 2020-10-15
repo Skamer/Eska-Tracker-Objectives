@@ -50,7 +50,7 @@ class "QuestItem" (function(_ENV)
   function QuestItem(self)
     super(self)
 
-    self.frame = CreateFrame("Frame")
+    self.frame = CreateFrame("Frame", nil, nil, "BackdropTemplate")
     self.frame:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
     local tex = self.frame:CreateTexture()

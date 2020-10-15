@@ -164,7 +164,7 @@ class "QuestHeader" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function QuestHeader(self)
-    super(self, CreateFrame("Frame"))
+    super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
     self.frame:SetBackdrop(_Backdrops.Common)
     self.frame:SetBackdropBorderColor(0, 0, 0, 0)
 
