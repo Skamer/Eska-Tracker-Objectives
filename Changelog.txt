@@ -1,3 +1,7 @@
+[1.5.1]
+- Resolved an issue where the quest wasn't automatically watched when taking it.
+- Fixed an issue where in some case the quest wasn't added when taking it.
+
 [1.5.0]
 - Updated for Shadowlands prepatch.
 

@@ -38,6 +38,7 @@ GetRequiredMoney                  = C_QuestLog.GetRequiredMoney
 GetSuggestedGroupSize             = C_QuestLog.GetSuggestedGroupSize
 GetTimeAllowed                    = C_QuestLog.GetTimeAllowed
 IsOnMap                           = C_QuestLog.IsOnMap
+EnumQuestWatchType                = _G.Enum.QuestWatchType
 --============================================================================--
 SORT_QUESTS_BY_DISTANCE_SETTING   = "sort-quests-by-distance"
 SHOW_ONLY_QUESTS_IN_ZONE_SETTING  = "show-only-quests-in-zone"
@@ -192,8 +193,8 @@ function QUEST_ACCEPTED(questID)
   if IsWorldQuest(questID) or IsQuestTask(questID) or IsQuestBounty(questID) then return end
 
   -- Add it in the quest watched
-  if AUTO_QUEST_WATCH == "1" and GetNumQuestWatches() < MAX_WATCHABLE_QUESTS then
-    AddQuestWatch(questID, Enum.QuestWatchType.Automatic)
+  if AUTO_QUEST_WATCH == "1" and GetNumQuestWatches() < Constants.QuestWatchConsts.MAX_QUEST_WATCHES then
+    AddQuestWatch(questID, EnumQuestWatchType.Automatic)
     QuestSuperTracking_OnQuestTracked(questID)
   end
 end
@@ -211,6 +212,7 @@ function QUEST_WATCH_LIST_CHANGED(questID, isAdded)
   if IsWorldQuest(questID) or IsQuestBounty(questID) then
     return
   end
+
 
   if isAdded then
     QUESTS_CACHE[questID] = true
@@ -334,6 +336,7 @@ end
 function UpdateQuest(self, questID, cache)
   local isLocal = IsQuestOnMap(questID)
   local quest, blockUsed = self:GetQuest(questID)
+
 
   if Settings:Get(SHOW_ONLY_QUESTS_IN_ZONE_SETTING) and not isLocal and not blockUsed == "instance-quest-block" then
     if quest then
@@ -555,7 +558,7 @@ function GetQuestHeader(self, qID)
       local data = GetInfo(i)
       if data.isHeader then
         currentHeader = data.title
-      elseif questID == qID then
+      elseif data.questID == qID then
         QUEST_HEADERS_CACHE[qID] = currentHeader
         return currentHeader
       end
