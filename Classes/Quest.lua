@@ -685,10 +685,10 @@ class "QuestPopupNotification" (function(_ENV)
 
   local function OnClickHandler(self)
     if self.type == "OFFER" then
-      ShowQuestOffer(GetQuestLogIndexByID(self.questID))
+      ShowQuestOffer(self.questID)
       RemoveAutoQuestPopUp(self.questID)
     elseif self.type == "COMPLETE" then
-      ShowQuestComplete(GetQuestLogIndexByID(self.questID))
+      ShowQuestComplete(self.questID)
       RemoveAutoQuestPopUp(self.questID)
     end
   end
