@@ -195,7 +195,7 @@ class "Achievement" (function(_ENV)
   --                            Constructors                                  --
   ------------------------------------------------------------------------------
   function Achievement(self)
-    super(self, CreateFrame("Frame"))
+    super(self, CreateFrame("Frame", nil, nil, "BackdropTemplate"))
     self.frame:SetBackdrop(_Backdrops.Common)
 
     local ftex = CreateFrame("Frame", nil, self.frame, "BackdropTemplate")
