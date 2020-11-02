@@ -1,3 +1,6 @@
+[1.5.4]
+- Fixed an issue where the mythic timer wasn't working.
+
 [1.5.3]
 - Fixed some issues relative to BackdropTemplate
 

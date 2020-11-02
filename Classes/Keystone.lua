@@ -146,13 +146,13 @@ class "BFAKeystoneBlock" (function(_ENV)
     self.timeLimit2Key = new * 0.8
     self.timeLimit3Key = new * 0.6
 
-    self.frame.plus2KeyLevelTimer:SetFormattedText("[2+] %s", GetTimeStringFromSeconds(self.timeLimit2Key, false, true))
-    self.frame.plus3KeyLevelTimer:SetFormattedText("[3+] %s", GetTimeStringFromSeconds(self.timeLimit3Key, false, true))
+    self.frame.plus2KeyLevelTimer:SetFormattedText("[2+] %s", SecondsToClock(self.timeLimit2Key))
+    self.frame.plus3KeyLevelTimer:SetFormattedText("[3+] %s", SecondsToClock(self.timeLimit3Key))
   end
 
   local function SetTimer(self, new)
-    local strTimer = GetTimeStringFromSeconds(new, false, true)
-    local strTimeLimit = GetTimeStringFromSeconds(self.timeLimit, false, true)
+    local strTimer = SecondsToClock(new)
+    local strTimeLimit = SecondsToClock(self.timeLimit)
 
     -- Update the color for the 3 chest
     if new > self.timeLimit3Key then
@@ -535,7 +535,7 @@ class "BFAKeystoneBlock" (function(_ENV)
     death:SetScript("OnEnter", function(f)
       GameTooltip:SetOwner(f, "ANCHOR_TOPLEFT")
       GameTooltip:SetText(CHALLENGE_MODE_DEATH_COUNT_TITLE:format(self.deathCount), 1, 1, 1)
-      GameTooltip:AddLine(CHALLENGE_MODE_DEATH_COUNT_DESCRIPTION:format(GetTimeStringFromSeconds(self.timeLost, false, true)))
+      GameTooltip:AddLine(CHALLENGE_MODE_DEATH_COUNT_DESCRIPTION:format(SecondsToClock(self.timeLost)))
       GameTooltip:Show()
     end)
 
@@ -603,13 +603,13 @@ class "KeystoneBlock" (function(_ENV)
     self.timeLimit2Chest = new * 0.8
     self.timeLimit3Chest = new * 0.6
 
-    self.frame.twoChestTimer:SetText(string.format("[2+] %s", GetTimeStringFromSeconds(self.timeLimit2Chest, false, true)))
-    self.frame.threeChestTimer:SetText(string.format("[3+] %s", GetTimeStringFromSeconds(self.timeLimit3Chest, false, true)))
+    self.frame.twoChestTimer:SetText(string.format("[2+] %s", SecondsToClock(self.timeLimit2Chest)))
+    self.frame.threeChestTimer:SetText(string.format("[3+] %s", SecondsToClock(self.timeLimit3Chest)))
   end
 
   local function SetTimer(self, new)
-    local strTimer = GetTimeStringFromSeconds(new, false, true)
-    local strTimeLimit = GetTimeStringFromSeconds(self.timeLimit, false, true)
+    local strTimer = SecondsToClock(new)
+    local strTimeLimit = SecondsToClock(self.timeLimit)
 
     -- Update the color for the 3 chest
     if new > self.timeLimit3Chest then
